@@ -3163,9 +3163,6 @@ async function load_resources() {
             game_res.add(load_list[i].name, git_src+"res/" + load_list[i].name + "." +  load_list[i].image_format);		
 
 
-	//добавляем текстуры стикеров
-	for (var i=0;i<16;i++)
-		game_res.add("sticker_texture_"+i, git_src+"stickers/"+i+".png");
 
 	game_res.onProgress.add(progress);
 	function progress(loader, resource) {
