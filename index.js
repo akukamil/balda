@@ -605,7 +605,7 @@ var online_player = {
 		
 	
 		//таймер времени
-		this.time_t = 15;
+		this.reset_timer();
 		var that = this;
 		this.timer = setTimeout(function(){online_player.process_time()}, 1000);
 		objects.timer.visible=true;
@@ -621,7 +621,7 @@ var online_player = {
 	
 	reset_timer : function() {
 		
-		this.time_t=15;
+		this.time_t=90;
 		objects.timer.tint=0xffffff;	
 		
 	},
