@@ -1408,7 +1408,7 @@ var game = {
 		anim2.add(objects.cells_cont,{y:[objects.cells_cont.y,-450]}, false, 0.6,'easeInOutCubic');		
 		
 		//показыаем рекламу		
-		show_ad();
+		//show_ad();
 		
 		main_menu.activate();
 		
