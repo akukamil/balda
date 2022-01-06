@@ -3140,7 +3140,7 @@ async function load_resources() {
 	game_res.add('click',git_src+'/sounds/click.mp3');
 	game_res.add('locked',git_src+'/sounds/locked.mp3');
 	game_res.add('clock',git_src+'/sounds/clock.mp3');
-	game_res.add('close',git_src+'/sounds/close.wav');
+	game_res.add('close',git_src+'/sounds/close.mp3');
 	game_res.add('game_start',git_src+'/sounds/game_start.mp3');
 	game_res.add('lose',git_src+'/sounds/lose.mp3');
 	game_res.add('receive_move',git_src+'/sounds/receive_move.mp3');
