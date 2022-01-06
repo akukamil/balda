@@ -3137,22 +3137,22 @@ async function load_resources() {
 	game_res.add("m2_font", git_src+"fonts/Neucha/font.fnt");
 
 
-	game_res.add('click',git_src+'/sounds/click.wav');
-	game_res.add('locked',git_src+'/sounds/locked.wav');
+	game_res.add('click',git_src+'/sounds/click.mp3');
+	game_res.add('locked',git_src+'/sounds/locked.mp3');
 	game_res.add('clock',git_src+'/sounds/clock.mp3');
 	game_res.add('close',git_src+'/sounds/close.wav');
-	game_res.add('game_start',git_src+'/sounds/game_start.wav');
-	game_res.add('lose',git_src+'/sounds/lose.wav');
+	game_res.add('game_start',git_src+'/sounds/game_start.mp3');
+	game_res.add('lose',git_src+'/sounds/lose.mp3');
 	game_res.add('receive_move',git_src+'/sounds/receive_move.mp3');
-	game_res.add('bad_word',git_src+'/sounds/bad_word.wav');
+	game_res.add('bad_word',git_src+'/sounds/bad_word.mp3');
 	game_res.add('good_word',git_src+'/sounds/good_word.mp3');
-	game_res.add('key_down',git_src+'/sounds/key_down.wav');
+	game_res.add('key_down',git_src+'/sounds/key_down.mp3');
 	game_res.add('cell_down',git_src+'/sounds/cell_down.mp3');
 	game_res.add('cell_move',git_src+'/sounds/cell_move.mp3');
-	game_res.add('bad_move',git_src+'/sounds/bad_move.wav');
-	game_res.add('win',git_src+'/sounds/win.wav');
+	game_res.add('bad_move',git_src+'/sounds/bad_move.mp3');
+	game_res.add('win',git_src+'/sounds/win.mp3');
 	game_res.add('invite',git_src+'/sounds/invite.mp3');
-	game_res.add('draw',git_src+'/sounds/draw.wav');
+	game_res.add('draw',git_src+'/sounds/draw.mp3');
 	
 	
     //добавляем из листа загрузки
