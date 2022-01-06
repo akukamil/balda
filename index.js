@@ -1718,7 +1718,7 @@ var social_dialog = {
 		
 		game_res.resources.click.sound.play();
 		vkBridge.send('VKWebAppShowWallPostBox', {"message": `Мой рейтинг в игре Балда ${my_data.rating}. Сможешь победить меня?`,
-		"attachments": "https://vk.com/app8044184"
+		"attachments": "https://vk.com/app8044184"});
 		social_dialog.close();
 	},
 	
