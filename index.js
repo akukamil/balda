@@ -187,7 +187,7 @@ class keys_class extends PIXI.Container {
 		
 
 		this.letter=new PIXI.BitmapText("", {fontName: 'mfont',fontSize: 25});
-		this.letter.tint=0xeecccc;
+		this.letter.tint=0x000000;
 		this.letter.x=15;
 		this.letter.y=10;
 		
@@ -605,7 +605,7 @@ var online_player = {
 		
 	
 		//таймер времени
-		this.reset_timer();
+		this.time_t = 15;
 		var that = this;
 		this.timer = setTimeout(function(){online_player.process_time()}, 1000);
 		objects.timer.visible=true;
@@ -621,7 +621,7 @@ var online_player = {
 	
 	reset_timer : function() {
 		
-		this.time_t=90;
+		this.time_t=15;
 		objects.timer.tint=0xffffff;	
 		
 	},
@@ -920,7 +920,7 @@ var bot_player = {
 		let data = this.search_word();		
 		let cur_time = Date.now();
 				
-		if (cur_time - this.search_start_time > 15000) {
+		if (cur_time - this.search_start_time > 20000) {
 			
 			game.stop('GIVE_UP');			
 			return;
@@ -977,7 +977,7 @@ var word_waiting = {
 		objects.cells[cell_id].letter.text=letter;			
 		
 		//подсвечиваем новое слово
-		this.show_new_word_anim(word_ids);
+		await this.show_new_word_anim(word_ids);
 
 		//убираем процесс
 		some_process.wait_opponent_move = function(){};
@@ -1408,7 +1408,7 @@ var game = {
 		anim2.add(objects.cells_cont,{y:[objects.cells_cont.y,-450]}, false, 0.6,'easeInOutCubic');		
 		
 		//показыаем рекламу		
-		//show_ad();
+		show_ad();
 		
 		main_menu.activate();
 		
@@ -1798,14 +1798,13 @@ var main_menu = {
 		game_res.resources.click.sound.play();
 
 	
-		anim2.add(objects.rules_cont,{y:[-450, objects.req_cont.sy]}, true, 1,'easeOutBack');
+		anim2.add(objects.rules_cont,{y:[-450, objects.rules_cont.sy]}, true, 1,'easeOutBack');
 
 	},
 
 	rules_ok_down: function () {
-		any_dialog_active=0;
-		
-		anim2.add(objects.rules_cont,{y:[objects.req_cont.sy,-450, ]}, false, 1,'easeInBack');
+		any_dialog_active=0;		
+		anim2.add(objects.rules_cont,{y:[objects.rules_cont.y,-450, ]}, false, 1,'easeInBack');
 	}
 
 }
@@ -3131,8 +3130,8 @@ async function load_resources() {
 	return;*/
 
 
-	let git_src="https://akukamil.github.io/balda/"
-	//let git_src=""
+	//let git_src="https://akukamil.github.io/chess/"
+	let git_src=""
 
 
 	game_res=new PIXI.Loader();
@@ -3163,6 +3162,9 @@ async function load_resources() {
             game_res.add(load_list[i].name, git_src+"res/" + load_list[i].name + "." +  load_list[i].image_format);		
 
 
+	//добавляем текстуры стикеров
+	for (var i=0;i<16;i++)
+		game_res.add("sticker_texture_"+i, git_src+"stickers/"+i+".png");
 
 	game_res.onProgress.add(progress);
 	function progress(loader, resource) {
