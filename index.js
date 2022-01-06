@@ -605,8 +605,7 @@ var online_player = {
 		
 	
 		//таймер времени
-		this.time_t = 90;
-		var that = this;
+		this.reset_timer();
 		this.timer = setTimeout(function(){online_player.process_time()}, 1000);
 		objects.timer.visible=true;
 		
