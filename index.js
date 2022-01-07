@@ -2792,7 +2792,12 @@ var auth = function() {
 				game_platform="YANDEX";
 
 				//ищем в локальном хранилище
-				let local_uid = localStorage.getItem('uid');
+				let local_uid = null;
+				try {
+					local_uid = localStorage.getItem('uid');
+				} catch (e) {
+					console.log(e);
+				}
 
 				//здесь создаем нового игрока в локальном хранилище
 				if (local_uid===undefined || local_uid===null) {
@@ -2803,13 +2808,18 @@ var auth = function() {
 					let rnd_num=Math.floor(Math.random()*rnd_names.length)
 					let rand_uid=Math.floor(Math.random() * 9999999);
 
-					let name_postfix = rand_uid.toString().substring(0, 3);
-					my_data.name 		=	rnd_names[rnd_num] + name_postfix;
-					my_data.rating 		= 	1400;
+					my_data.name 		=	rnd_names[rnd_num]+rand_uid;
+					my_data.record 		= 	0;
 					my_data.uid			=	"ls"+rand_uid;
 					my_data.pic_url		=	'https://avatars.dicebear.com/v2/male/'+irnd(10,10000)+'.svg';
 
-					localStorage.setItem('uid',my_data.uid);
+
+					try {
+						localStorage.setItem('uid',my_data.uid);
+					} catch (e) {
+						console.log(e);
+					}
+					
 					help_obj.process_results();
 				}
 				else
