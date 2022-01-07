@@ -1135,15 +1135,24 @@ var word_creation = {
 		}
 		
 		
+
+		
+		
+		if (this.active_key === -1) {
+			add_message("Сначала поставьте новую букву на поле");
+			gres.bad_move.sound.play();
+			return;				
+		}
+
+		
+		if (objects.cells[cell_id].letter.text !== "") {
+			add_message("Букву нужно поставить на пустую клетку");
+			gres.bad_move.sound.play();
+			return;				
+		}
+		
 		gres.cell_down.sound.play();
 		
-		
-		if (this.active_key === -1)
-			return;
-		
-		if (objects.cells[cell_id].letter.text !== "")
-			return;
-				
 		this.new_cell = cell_id;
 		
 		objects.cells[cell_id].letter.text = rus_let[this.active_key];
