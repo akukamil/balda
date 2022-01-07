@@ -1151,6 +1151,15 @@ var word_creation = {
 			return;				
 		}
 		
+		if (this.check_if_near_adj(cell_id) === false) {
+			add_message("Букву нужно поставить рядом с имеющимися на поле");
+			gres.bad_move.sound.play();
+			return;				
+		}
+		
+		
+		
+		
 		gres.cell_down.sound.play();
 		
 		this.new_cell = cell_id;
@@ -1167,6 +1176,15 @@ var word_creation = {
 		this.active_key=-1;
 		
 	},
+	
+	check_if_near_adj : function(cell_id) {		
+		let adj_arr = adj_cells[cell_id];
+		for (let i = 0 ; i < adj_arr.length ; i++){			
+			if (objects.cells[adj_arr[i]].letter.text!=='')
+				return true;
+		}
+		return false;
+	}
 	
 	ok_down : async function () {		
 		
