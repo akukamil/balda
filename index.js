@@ -1184,7 +1184,7 @@ var word_creation = {
 				return true;
 		}
 		return false;
-	}
+	},
 	
 	ok_down : async function () {		
 		
