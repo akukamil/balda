@@ -10,7 +10,6 @@ var rus_let = ['А','Б','В','Г','Д','Е','Ё','Ж','З','И','Й','К','Л',
 var rus_let2 = ['А','Б','В','Г','Д','Е','Ж','З','И','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ь','Ю','Я'];
 var adj_cells = {0:[1,5],1:[0,6,2],2:[1,7,3],3:[2,8,4],4:[3,9],5:[0,6,10],6:[1,5,7,11],7:[2,6,8,12],8:[3,7,9,13],9:[4,8,14],10:[5,11,15],11:[6,10,12,16],12:[7,11,13,17],13:[8,12,14,18],14:[9,13,19],15:[10,16,20],16:[11,15,17,21],17:[12,16,18,22],18:[13,17,19,23],19:[14,18,24],20:[15,21],21:[16,20,22],22:[17,21,23],23:[18,22,24],24:[19,23]};
 
-
 irnd = function (min,max) {	
 	//мин и макс включительно
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -549,7 +548,7 @@ var big_message = {
 		if (objects.big_message_cont.ready===false)
 			return;
 
-		game_res.resources.close.sound.play();
+		gres.close.sound.play();
 		anim2.add(objects.big_message_cont,{y:[objects.big_message_cont.sy,450]}, false, 0.4,'easeInBack');		
 		this.p_resolve("close");			
 	}
@@ -649,7 +648,7 @@ var online_player = {
 		//подсвечиваем красным если осталость мало времени
 		if (this.time_t === 5) {
 			objects.timer.tint=0xff0000;
-			game_res.resources.clock.sound.play();
+			gres.clock.sound.play();
 		}
 		
 		clearTimeout(this.timer);
@@ -965,7 +964,7 @@ var word_waiting = {
 	receive_move : async function (move_data) {
 		
 		//воспроизводим уведомление о том что соперник произвел ход
-		game_res.resources.receive_move.sound.play();
+		gres.receive_move.sound.play();
 
 		//console.log(move_data);
 		let cell_id = move_data[0];
@@ -1345,7 +1344,7 @@ var game = {
 			lb.close();
 				
 		//воспроизводим звук о начале игры
-		game_res.resources.game_start.sound.play();
+		gres.game_start.sound.play();
 				
 		//показываем карточки игроков		
 		objects.my_card_cont.visible=true;
@@ -1732,7 +1731,7 @@ var social_dialog = {
 		if (objects.social_cont.ready !== true)
 			return;
 		
-		game_res.resources.click.sound.play();
+		gres.click.sound.play();
 		vkBridge.send('VKWebAppShowInviteBox');
 		social_dialog.close();
 		
@@ -1743,7 +1742,7 @@ var social_dialog = {
 		if (objects.social_cont.ready !== true)
 			return;
 		
-		game_res.resources.click.sound.play();
+		gres.click.sound.play();
 		vkBridge.send('VKWebAppShowWallPostBox', {"message": `Мой рейтинг в игре Балда ${my_data.rating}. Сможешь победить меня?`,
 		"attachments": "https://vk.com/app8044184"});
 		social_dialog.close();
@@ -1753,7 +1752,7 @@ var social_dialog = {
 		if (objects.social_cont.ready !== true)
 			return;
 		
-		game_res.resources.click.sound.play();
+		gres.click.sound.play();
 		social_dialog.close();
 	},
 	
@@ -1789,7 +1788,7 @@ var main_menu = {
 	play_button_down: function () {
 
 		if (any_dialog_active===1 || activity_on===1) {
-			game_res.resources.locked.sound.play();
+			gres.locked.sound.play();
 			return
 		};
 
@@ -1803,11 +1802,11 @@ var main_menu = {
 	lb_button_down: function () {
 
 		if (any_dialog_active===1) {
-			game_res.resources.locked.sound.play();
+			gres.locked.sound.play();
 			return
 		};
 
-		game_res.resources.click.sound.play();
+		gres.click.sound.play();
 
 		this.close();
 		lb.show();
@@ -1817,11 +1816,11 @@ var main_menu = {
 	rules_button_down: function () {
 
 		if (any_dialog_active===1) {
-			game_res.resources.locked.sound.play();
+			gres.locked.sound.play();
 			return
 		};
 
-		game_res.resources.click.sound.play();
+		gres.click.sound.play();
 
 	
 		anim2.add(objects.rules_cont,{y:[-450, objects.rules_cont.sy]}, true, 1,'easeOutBack');
@@ -1879,12 +1878,12 @@ var lb = {
 	back_button_down: function() {
 
 		if (any_dialog_active===1 || objects.lb_1_cont.ready===false) {
-			game_res.resources.locked.sound.play();
+			gres.locked.sound.play();
 			return
 		};
 
 
-		game_res.resources.click.sound.play();
+		gres.click.sound.play();
 		this.close();
 		main_menu.activate();
 
@@ -2411,12 +2410,12 @@ var cards_menu = {
 	show_table_dialog : function (card_id) {
 		
 		if (objects.td_cont.ready === false || objects.td_cont.visible === true || objects.big_message_cont.visible === true ||objects.req_cont.visible === true)	{
-			game_res.resources.locked.sound.play();
+			gres.locked.sound.play();
 			return
 		};
 
 
-		game_res.resources.click.sound.play();
+		gres.click.sound.play();
 		
 		anim2.add(objects.td_cont,{y:[-150,objects.td_cont.sy]}, true, 1,'easeOutBack');
 		
@@ -2438,7 +2437,7 @@ var cards_menu = {
 		
 		any_dialog_active--;	
 		
-		game_res.resources.close.sound.play();
+		gres.close.sound.play();
 		
 		anim2.add(objects.td_cont,{y:[objects.td_cont.sy,400,]}, false, 1,'easeInBack');
 		
@@ -2455,7 +2454,7 @@ var cards_menu = {
 
 		pending_player="";
 
-		game_res.resources.click.sound.play();
+		gres.click.sound.play();
 
 		//показыаем кнопку приглашения
 		objects.invite_button.texture=game_res.resources.invite_button.texture;
@@ -2510,7 +2509,7 @@ var cards_menu = {
 		if (objects.invite_cont.ready === false)
 			return;
 		
-		game_res.resources.close.sound.play();
+		gres.close.sound.play();
 
 		//отправляем сообщение что мы уже не заинтересованы в игре
 		if (pending_player!=="") {
@@ -2525,7 +2524,7 @@ var cards_menu = {
 
 
 		if (objects.invite_cont.ready === false || 	objects.big_message_cont.visible === true ||objects.req_cont.visible === true)	{
-			game_res.resources.locked.sound.play();
+			gres.locked.sound.play();
 			return
 		}
 
@@ -2542,7 +2541,7 @@ var cards_menu = {
 		}
 		else
 		{
-			game_res.resources.click.sound.play();
+			gres.click.sound.play();
 			objects.invite_button.texture=game_res.resources.wait_response.texture;
 			firebase.database().ref("inbox/"+cards_menu._opp_data.uid).set({sender:my_data.uid,message:"INV",tm:Date.now()});
 			pending_player=cards_menu._opp_data.uid;
@@ -2581,102 +2580,18 @@ var cards_menu = {
 	back_button_down: function() {
 
 		if (objects.td_cont.visible === true || objects.big_message_cont.visible === true ||objects.req_cont.visible === true ||objects.invite_cont.visible === true)	{
-			game_res.resources.locked.sound.play();
+			gres.locked.sound.play();
 			return
 		};
 
 
 
-		game_res.resources.close.sound.play();
+		gres.close.sound.play();
 
 		this.close();
 		main_menu.activate();
 
 	}
-
-}
-
-var stickers = {
-
-	show_panel: function() {
-
-
-		if (any_dialog_active===1) {
-			game_res.resources.locked.sound.play();
-			return
-		};
-		any_dialog_active=1;
-
-		if (objects.stickers_cont.ready===false)
-			return;
-		game_res.resources.click.sound.play();
-
-
-		//ничего не делаем если панель еще не готова
-		if (objects.stickers_cont.ready===false || objects.stickers_cont.visible===true || state!=="p")
-			return;
-
-		//анимационное появление панели стикеров
-		anim2.add(objects.stickers_cont,{y:[450, objects.stickers_cont.sy]}, true, 1,'easeOutBack');
-	},
-
-	hide_panel: function() {
-
-		game_res.resources.close.sound.play();
-
-		if (objects.stickers_cont.ready===false)
-			return;
-
-		any_dialog_active=0;
-
-		//анимационное появление панели стикеров
-		anim2.add(objects.stickers_cont,{y:[objects.stickers_cont.sy,-450]}, false, 1,'easeOutBack');
-	},
-
-	send : function(id) {
-
-		if (objects.stickers_cont.ready===false)
-			return;
-
-		this.hide_panel();
-
-		firebase.database().ref("inbox/"+opp_data.uid).set({sender:my_data.uid,message:"MSG",tm:Date.now(),data:id});
-		add_message("Стикер отправлен сопернику");
-
-		//показываем какой стикер мы отправили
-		objects.sent_sticker_area.texture=game_res.resources['sticker_texture_'+id].texture;
-		
-		anim2.add(objects.sent_sticker_area,{alpha:[0,0.5]}, true, 1,'linear');
-		//objects.sticker_area.visible=true;
-		//убираем стикер через 5 секунд
-		if (objects.sent_sticker_area.timer_id!==undefined)
-			clearTimeout(objects.sent_sticker_area.timer_id);
-
-		objects.sent_sticker_area.timer_id=setTimeout(()=>{objects.sent_sticker_area.visible=false;}, 3000);
-
-	},
-
-	receive: function(id) {
-
-		//воспроизводим соответствующий звук
-		game_res.resources.receive_sticker.sound.play();
-
-		objects.rec_sticker_area.texture=game_res.resources['sticker_texture_'+id].texture;
-
-		anim2.add(objects.rec_sticker_area,{x:[-150,objects.rec_sticker_area.sx]}, true, 1,'easeOutBack');
-
-
-		//убираем стикер через 5 секунд
-		if (objects.rec_sticker_area.timer_id!==undefined)
-			clearTimeout(objects.rec_sticker_area.timer_id);
-		objects.rec_sticker_area.timer_id=setTimeout(()=>{
-
-			anim2.add(objects.rec_sticker_area,{x:[objects.rec_sticker_area.x, -150]}, false, 1,'easeInBack');
-			
-		}, 5000);
-
-	}
-
 
 }
 
@@ -3166,8 +3081,8 @@ async function load_resources() {
 	return;*/
 
 
-	let git_src="https://akukamil.github.io/balda/"
-	//let git_src=""
+	//let git_src="https://akukamil.github.io/balda/"
+	let git_src=""
 
 
 	game_res=new PIXI.Loader();
