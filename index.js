@@ -548,7 +548,7 @@ var big_message = {
 		if (objects.big_message_cont.ready===false)
 			return;
 
-		gres.close.sound.play();
+		gres.close_it.sound.play();
 		anim2.add(objects.big_message_cont,{y:[objects.big_message_cont.sy,450]}, false, 0.4,'easeInBack');		
 		this.p_resolve("close");			
 	}
@@ -2437,7 +2437,7 @@ var cards_menu = {
 		
 		any_dialog_active--;	
 		
-		gres.close.sound.play();
+		gres.close_it.sound.play();
 		
 		anim2.add(objects.td_cont,{y:[objects.td_cont.sy,400,]}, false, 1,'easeInBack');
 		
@@ -2509,7 +2509,7 @@ var cards_menu = {
 		if (objects.invite_cont.ready === false)
 			return;
 		
-		gres.close.sound.play();
+		gres.close_it.sound.play();
 
 		//отправляем сообщение что мы уже не заинтересованы в игре
 		if (pending_player!=="") {
@@ -2586,7 +2586,7 @@ var cards_menu = {
 
 
 
-		gres.close.sound.play();
+		gres.close_it.sound.play();
 
 		this.close();
 		main_menu.activate();
@@ -3092,7 +3092,7 @@ async function load_resources() {
 	game_res.add('click',git_src+'/sounds/click.mp3');
 	game_res.add('locked',git_src+'/sounds/locked.mp3');
 	game_res.add('clock',git_src+'/sounds/clock.mp3');
-	game_res.add('close',git_src+'/sounds/close.mp3');
+	game_res.add('close_it',git_src+'/sounds/close_it.mp3');
 	game_res.add('game_start',git_src+'/sounds/game_start.mp3');
 	game_res.add('lose',git_src+'/sounds/lose.mp3');
 	game_res.add('receive_move',git_src+'/sounds/receive_move.mp3');
