@@ -936,35 +936,40 @@ var bot_player = {
 		if (cur_time - this.search_start_time > 3000) {
 			if (this.found_data[6]!==undefined) {				
 				some_process.bot_search_word = function(){};
-				word_waiting.receive_move(this.found_data[6])				
+				word_waiting.receive_move(this.found_data[6]);
+				return;
 			}			
 		}
 		
 		if (cur_time - this.search_start_time > 5000) {
 			if (this.found_data[5]!==undefined) {				
 				some_process.bot_search_word = function(){};
-				word_waiting.receive_move(this.found_data[5])				
+				word_waiting.receive_move(this.found_data[5]);		
+				return;
 			}			
 		}
 		
 		if (cur_time - this.search_start_time > 7000) {
 			if (this.found_data[4]!==undefined) {				
 				some_process.bot_search_word = function(){};
-				word_waiting.receive_move(this.found_data[4])				
+				word_waiting.receive_move(this.found_data[4]);		
+				return;				
 			}			
 		}
 		
 		if (cur_time - this.search_start_time > 9000) {
 			if (this.found_data[3]!==undefined) {				
 				some_process.bot_search_word = function(){};
-				word_waiting.receive_move(this.found_data[3])				
+				word_waiting.receive_move(this.found_data[3]);		
+				return;				
 			}			
 		}
 		
 		if (cur_time - this.search_start_time > 12000) {
 			if (this.found_data[2]!==undefined) {				
 				some_process.bot_search_word = function(){};
-				word_waiting.receive_move(this.found_data[2])				
+				word_waiting.receive_move(this.found_data[2]);
+				return;				
 			}			
 		}
 		
