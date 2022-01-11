@@ -876,17 +876,14 @@ var bot_player = {
 		
 		
 		
-		if (res === 'DRAW') {
+		if (res === 'DRAW')
 			gres.draw.sound.play();
-		}
 
-		if (res === 'MY_WIN' || res === 'GIVE_UP') {
-			gres.win.sound.play();
-			
-		}
-		if (res === 'MY_LOSE' || res === 'MY_CANCEL') {
+		if (res === 'MY_WIN' || res === 'GIVE_UP')
+			gres.win.sound.play();			
+		
+		if (res === 'MY_LOSE' || res === 'MY_CANCEL')
 			gres.lose.sound.play();
-		}
 		
 		
 		
@@ -908,7 +905,7 @@ var bot_player = {
 			res_s = 'Вы выиграли. У соперника закончилось время!'
 			
 		if (res === 'GIVE_UP') 
-			res_s = 'Вы выиграли. Бот не смог найти слово!'
+			res_s = 'Вы выиграли! Бот не смог найти слово!'
 			
 		if (res === 'MY_CANCEL') 
 			res_s = 'Вы отменили игру!'
@@ -928,6 +925,7 @@ var bot_player = {
 		//ищем слова и наполняем массив найденных слов
 		this.search_word();		
 		let cur_time = Date.now();
+				
 				
 		if (cur_time - this.search_start_time > 15000) {
 			
@@ -960,6 +958,13 @@ var bot_player = {
 			if (this.found_data[3]!==undefined) {				
 				some_process.bot_search_word = function(){};
 				word_waiting.receive_move(this.found_data[3])				
+			}			
+		}
+		
+		if (cur_time - this.search_start_time > 12000) {
+			if (this.found_data[2]!==undefined) {				
+				some_process.bot_search_word = function(){};
+				word_waiting.receive_move(this.found_data[2])				
 			}			
 		}
 		
