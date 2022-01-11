@@ -712,6 +712,8 @@ var bot_player = {
 	
 	true_rating : 0,	
 	timer : 0,
+	found_data : {},
+	found_words : [],
 	time_t : 0,
 	search_start_time : 0,
 		
@@ -721,6 +723,8 @@ var bot_player = {
 		
 		
 		//начинаем поиск слова
+		this.found_words = [];
+		this.found_data = {};
 		this.search_start_time = Date.now();
 		some_process.bot_search_word = this.process.bind(this);
 
@@ -731,11 +735,11 @@ var bot_player = {
 		set_state({state : 'b'});
 		
 		//выбираем случайным образом стартовое слово
-		let d_size = rus_dict.length;
+		let d_size = rus_dict0.length;
 		while(1) {
 			
 			let r_num = irnd(0,d_size-1);
-			start_word = rus_dict[r_num];
+			start_word = rus_dict0[r_num];
 			let _wlen = start_word.length;
 			if (_wlen === 5)
 				break;			
@@ -826,17 +830,19 @@ var bot_player = {
 				letters_pos.push(i);
 
 		//несколько попыток найти слово на новом поле............................
-		for (let r=0;r<10;r++) {
+		for (let r=0;r<30;r++) {
 			let [acc_word, acc_pos] = this.read_random_word(_field, letters_pos);		
-			console.log(r,acc_word[0]);
-			if (acc_word[0].length > 2)
-				if(rus_dict.includes(acc_word[0])===true)
-					if( game.words_hist.includes(acc_word[0])===false)					
-						return [new_letter_cell_id, new_letter, acc_pos];			
+			//console.log(r,acc_word[0]);
+			if(this.found_words.includes(acc_word[0])===false && acc_word[0]!==start_word && rus_dict0.includes(acc_word[0])===true)
+				if( game.words_hist.includes(acc_word[0])===false) {
+					this.found_data[acc_word[0].length]=[new_letter_cell_id, new_letter, acc_pos];		
+					this.found_words.push(acc_word[0]);				
+					
+					console.log("Найдено слово: "+acc_word[0]);
+				}
+
 		}
 
-		
-		return -999;
 	},
 		
 	read_random_word : function(field, letters_pos) {
@@ -851,8 +857,13 @@ var bot_player = {
 		
 		//делаем четыре хода от начальной буквы
 		this.make_move(field, acc_word, acc_pos);
+		
 		this.make_move(field, acc_word, acc_pos);
+		
 		this.make_move(field, acc_word, acc_pos);
+		
+		this.make_move(field, acc_word, acc_pos);
+		
 		this.make_move(field, acc_word, acc_pos);
 		
 		return [acc_word,acc_pos];	
@@ -914,22 +925,43 @@ var bot_player = {
 	
 	process : function () {
 		
-		
-		let data = this.search_word();		
+		//ищем слова и наполняем массив найденных слов
+		this.search_word();		
 		let cur_time = Date.now();
 				
-		if (cur_time - this.search_start_time > 20000) {
+		if (cur_time - this.search_start_time > 15000) {
 			
 			game.stop('GIVE_UP');			
 			return;
 		}
 		
-		if (data !== -999) {
-			some_process.bot_search_word = function(){};
-			word_waiting.receive_move(data)
+		if (cur_time - this.search_start_time > 3000) {
+			if (this.found_data[6]!==undefined) {				
+				some_process.bot_search_word = function(){};
+				word_waiting.receive_move(this.found_data[6])				
+			}			
 		}
 		
+		if (cur_time - this.search_start_time > 5000) {
+			if (this.found_data[5]!==undefined) {				
+				some_process.bot_search_word = function(){};
+				word_waiting.receive_move(this.found_data[5])				
+			}			
+		}
 		
+		if (cur_time - this.search_start_time > 7000) {
+			if (this.found_data[4]!==undefined) {				
+				some_process.bot_search_word = function(){};
+				word_waiting.receive_move(this.found_data[4])				
+			}			
+		}
+		
+		if (cur_time - this.search_start_time > 9000) {
+			if (this.found_data[3]!==undefined) {				
+				some_process.bot_search_word = function(){};
+				word_waiting.receive_move(this.found_data[3])				
+			}			
+		}
 		
 	}
 	
@@ -1213,7 +1245,7 @@ var word_creation = {
 			return;
 		}
 		
-		if (rus_dict.includes(_word) === false) {
+		if (rus_dict0.includes(_word) === false && rus_dict1.includes(_word) === false) {
 			gres.bad_word.sound.play();
 			this.cancel_down();
 			add_message("Такого слова нету в словаре(")
@@ -1657,14 +1689,14 @@ var req_dialog = {
 		anim2.add(objects.req_cont,{y:[objects.req_cont.sy, -260]}, false, 1,'easeInBack');
 
 		//сразу определяем начальное слово и отправляем сопернику
-		let d_size = rus_dict.length;
+		let d_size = rus_dict0.length;
 		let w_len = 0;
 		start_word = "";
 		
 		while(1) {
 			
 			let r_num = irnd(0,d_size-1);
-			start_word = rus_dict[r_num];
+			start_word = rus_dict0[r_num];
 			let _wlen = start_word.length;
 			if (_wlen === 5)
 				break;			
