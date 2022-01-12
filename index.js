@@ -598,13 +598,17 @@ var online_player = {
 	
 	init : function (r) {
 	
+		
+		me_conf_play = 0;
+		opp_conf_play = 0;
+
 
 		//устанавливаем статус в базе данных а если мы не видны то установливаем только скрытое состояние
 		set_state({state : 'p'});
 		
 	
 		//таймер времени
-		this.reset_timer();
+		//this.reset_timer(30);
 		this.timer = setTimeout(function(){online_player.process_time()}, 1000);
 		objects.timer.visible=true;
 		
@@ -617,9 +621,12 @@ var online_player = {
 		
 	},
 	
-	reset_timer : function() {
+	reset_timer : function(t) {
 		
-		this.time_t=90;
+		if (t===undefined)
+			this.time_t=90;
+		else
+			this.time_t=t;
 		objects.timer.tint=0xffffff;	
 		
 	},
@@ -657,8 +664,11 @@ var online_player = {
 	},
 	
 	stop : async function(res) {
+					
 		
-		
+		//случай если не смогли начать игру
+		if (opp_conf_play === 0 || me_conf_play === 0)
+			res = "NO_CONNECTION";
 		
 		
 		//отключаем таймер времени
@@ -698,6 +708,8 @@ var online_player = {
 			res_s = 'Вы проиграли. У Вас закончилось время!'
 		if (res === 'OPP_NO_TIME')
 			res_s = 'Вы выиграли. У соперника закончилось время!'
+		if (res === 'NO_CONNECTION')
+			res_s = 'Похоже игру не получилось начать!'
 		if (res === 'MY_CANCEL') {
 			res_s = 'Вы отменили игру!'			
 			firebase.database().ref("inbox/"+opp_data.uid).set({sender:my_data.uid,message:"OPP_CANCEL",tm:Date.now()});
@@ -1006,12 +1018,12 @@ var bot_player = {
 
 var word_waiting = {
 	
-	activate : async function () {		
+	activate : async function (init_time) {		
 		
 		my_turn = 0;
 		
 		objects.timer.x = 600;
-		game.opponent.reset_timer();
+		game.opponent.reset_timer(init_time);
 		
 		//процесс ожидания
 		some_process.wait_opponent_move = this.process;
@@ -1034,6 +1046,8 @@ var word_waiting = {
 		
 		//воспроизводим уведомление о том что соперник произвел ход
 		gres.receive_move.sound.play();
+		
+		opp_conf_play = 1;
 
 		//console.log(move_data);
 		let cell_id = move_data[0];
@@ -1105,11 +1119,11 @@ var word_creation = {
 	new_cell : null,
 	show_word_mode : 0,
 	
-	activate : async function () {		
+	activate : async function (init_time) {		
 		
 		my_turn = 1;
 		this.show_word_mode=0;	
-		game.opponent.reset_timer();
+		game.opponent.reset_timer(init_time);
 		objects.word.text="";
 		this.word=[];
 		
@@ -1308,6 +1322,8 @@ var word_creation = {
 		//отправляем ход оппоненту
 		let data = [this.new_cell,objects.cells[this.new_cell].letter.text,this.word];
 		game.opponent.send_move(data);		
+		
+		me_conf_play = 1;
 				
 		//считаем сколько букв во всех моих словах
 		let l = game.get_letters_num();	
@@ -1425,9 +1441,9 @@ var game = {
 		objects.stop_bot_button.visible=true;
 
 		if (my_role==="master")
-			word_creation.activate();
+			word_creation.activate(90);
 		else 
-			word_waiting.activate();	
+			word_waiting.activate(90);	
 
 	},
 		
