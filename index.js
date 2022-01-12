@@ -727,8 +727,7 @@ var bot_player = {
 	send_move : async function  () {
 
 		await new Promise((resolve, reject) => setTimeout(resolve, 1000));
-		
-		
+				
 		//начинаем поиск слова
 		this.found_words = [];
 		this.found_data = {};
@@ -837,16 +836,35 @@ var bot_player = {
 				letters_pos.push(i);
 
 		//несколько попыток найти слово на новом поле............................
-		for (let r=0;r<30;r++) {
+		for (let r=0;r<20;r++) {
 			let [acc_word, acc_pos] = this.read_random_word(_field, letters_pos);		
-			//console.log(r,acc_word[0]);
-			if(this.found_words.includes(acc_word[0])===false && acc_word[0]!==start_word && rus_dict0.includes(acc_word[0])===true)
+
+			//проверяем сначала все слово
+			if(this.found_words.includes(acc_word[0])===false && acc_word[0]!==start_word && rus_dict0.includes(acc_word[0])===true) {
+				
 				if( game.words_hist.includes(acc_word[0])===false) {
 					this.found_data[acc_word[0].length]=[new_letter_cell_id, new_letter, acc_pos];		
 					this.found_words.push(acc_word[0]);				
 					
 					console.log("Найдено слово: "+acc_word[0]);
-				}
+				}				
+			}
+			
+			//теперь только 3 буквы			
+			if (acc_word[0].length >=4) {
+				let word3 = acc_word[0][0]+acc_word[0][1]+acc_word[0][2];	
+				
+				if(this.found_words.includes(word3)===false && acc_word[0]!==start_word && rus_dict0.includes(word3)===true) {
+					
+					let acc_pos3 = [acc_pos[0],acc_pos[1],acc_pos[2]]
+					if( game.words_hist.includes(word3)===false) {
+						this.found_data[3]=[new_letter_cell_id, new_letter, acc_pos3];		
+						this.found_words.push(word3);				
+						
+						console.log("Найдено также слово: "+word3);
+					}				
+				}				
+			}
 
 		}
 
@@ -2468,7 +2486,7 @@ var cards_menu = {
 
 		gres.click.sound.play();
 		
-		anim2.add(objects.td_cont,{y:[-150,objects.td_cont.sy]}, true, 1,'easeOutBack');
+		anim2.add(objects.td_cont,{y:[-150,objects.td_cont.sy]}, true, 0.5,'easeOutBack');
 		
 		objects.td_avatar1.texture = objects.mini_cards[card_id].avatar1.texture;
 		objects.td_avatar2.texture = objects.mini_cards[card_id].avatar2.texture;
@@ -2490,7 +2508,7 @@ var cards_menu = {
 		
 		gres.close_it.sound.play();
 		
-		anim2.add(objects.td_cont,{y:[objects.td_cont.sy,400,]}, false, 1,'easeInBack');
+		anim2.add(objects.td_cont,{y:[objects.td_cont.sy,400,]}, false, 0.5,'easeInBack');
 		
 	},
 
