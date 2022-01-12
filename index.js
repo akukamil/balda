@@ -681,7 +681,6 @@ var online_player = {
 			gres.draw.sound.play();
 			int_res=0;
 		}
-
 		if (res === 'MY_WIN' || res === 'OPP_NO_TIME' || res === 'OPP_CANCEL') {
 			my_data.rating = Math.round(my_data.rating + 16 * (1 - Ea));
 			gres.win.sound.play();
