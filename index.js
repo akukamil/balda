@@ -664,20 +664,24 @@ var online_player = {
 		//отключаем таймер времени
 		clearTimeout(this.timer);
 		let old_rating = my_data.rating;
+		let int_res = 0;
 		let Ea = 1 / (1 + Math.pow(10, ((opp_data.rating-my_data.rating)/400)));
 		if (res === 'DRAW') {
 			my_data.rating = Math.round(my_data.rating + 16 * (0.5 - Ea));	
 			gres.draw.sound.play();
+			int_res=0;
 		}
 
 		if (res === 'MY_WIN' || res === 'OPP_NO_TIME' || res === 'OPP_CANCEL') {
 			my_data.rating = Math.round(my_data.rating + 16 * (1 - Ea));
 			gres.win.sound.play();
+			int_res=1;
 			
 		}
 		if (res === 'MY_LOSE' || res === 'MY_NO_TIME' || res === 'MY_CANCEL') {
 			my_data.rating = Math.round(my_data.rating + 16 * (0 - Ea));
 			gres.lose.sound.play();
+			int_res=-1;
 		}
 		
 		firebase.database().ref("players/"+my_data.uid+"/rating").set(my_data.rating);	
@@ -701,6 +705,9 @@ var online_player = {
 
 		if (res === 'OPP_CANCEL')
 			res_s = 'Соперник отменил игру!'
+		
+		//записываем в историю партий
+		firebase.database().ref("finishes/"+game_id).set({'player1':objects.my_card_name.text,'player2':objects.opp_card_name.text, 'res':int_res, 'ts':firebase.database.ServerValue.TIMESTAMP});
 		
 		await big_message.show(res_s,"Рейтинг: " + old_rating + ' > ' + my_data.rating);
 	
@@ -1558,6 +1565,7 @@ var process_new_message = function(msg) {
 	//принимаем только положительный ответ от соответствующего соперника и начинаем игру
 	if (msg.message==="ACCEPT"  && pending_player===msg.sender && state !== "p") {
 		//в данном случае я мастер и хожу вторым
+		game_id=msg.game_id;
 		start_word=msg.start_word;
 		cards_menu.accepted_invite();
 	}
@@ -1713,11 +1721,10 @@ var req_dialog = {
 			if (_wlen === 5)
 				break;			
 		}
-		
-		
-		
-		
-		firebase.database().ref("inbox/"+opp_data.uid).set({sender:my_data.uid,message:"ACCEPT",tm:Date.now(),start_word:start_word});
+				
+		//отправляем информацию о согласии играть с идентификатором игры
+		game_id=~~(Math.random()*299);
+		firebase.database().ref("inbox/"+opp_data.uid).set({sender:my_data.uid,message:"ACCEPT",tm:Date.now(),start_word:start_word,game_id:game_id});
 
 		//заполняем карточку оппонента
 		make_text(objects.opp_card_name,opp_data.name,150);
