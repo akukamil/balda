@@ -646,7 +646,7 @@ var online_player = {
 		}
 
 		//подсвечиваем красным если осталость мало времени
-		if (this.time_t === 5) {
+		if (this.time_t === 15) {
 			objects.timer.tint=0xff0000;
 			gres.clock.sound.play();
 		}
