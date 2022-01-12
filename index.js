@@ -879,39 +879,41 @@ var bot_player = {
 		if (res === 'DRAW')
 			gres.draw.sound.play();
 
-		if (res === 'MY_WIN' || res === 'GIVE_UP')
-			gres.win.sound.play();			
+		if (res === 'MY_WIN' || res === 'GIVE_UP') {			
+			gres.win.sound.play();					
+			my_data.rating = my_data.rating + 1;
+			firebase.database().ref("players/"+my_data.uid+"/rating").set(my_data.rating);	
+			firebase.database().ref("states/"+my_data.uid+"/rating").set(my_data.rating);	
+		}	
 		
 		if (res === 'MY_LOSE' || res === 'MY_CANCEL')
 			gres.lose.sound.play();
+				
 		
-		
-		
-		let res_s="";
+		let res_s=["",""];
 		if (res === 'DRAW') 
-			res_s = 'Ничья!!!'
+			res_s = ['Ничья!!!','--**--))--**--']
 
 		if (res === 'MY_WIN') 
-			res_s = 'Вы выиграли!!!'
+			res_s = ['Вы выиграли!!!','Рейтинг: +1']
 			
 		if (res === 'MY_LOSE') 
-			res_s = 'Вы проиграли!!!'
+			res_s = ['Вы проиграли!!!','--**--))--**--']
 		
 		if (res === 'MY_NO_TIME') 
-			res_s = 'Вы проиграли. У Вас закончилось время!'
-			
-		
+			res_s = ['Вы проиграли. У Вас закончилось время!','--**--))--**--']
+					
 		if (res === 'OPP_NO_TIME') 
-			res_s = 'Вы выиграли. У соперника закончилось время!'
+			res_s = ['Вы выиграли. У соперника закончилось время!','Рейтинг: +1']
 			
 		if (res === 'GIVE_UP') 
-			res_s = 'Вы выиграли! Бот не смог найти слово!'
+			res_s = ['Вы выиграли! Бот не смог найти слово!','Рейтинг: +1']
 			
 		if (res === 'MY_CANCEL') 
-			res_s = 'Вы отменили игру!'
+			res_s = ['Вы отменили игру!','--**--))--**--']
 
 		
-		await big_message.show(res_s, '--))--');
+		await big_message.show(res_s[0], res_s[1]);
 	
 	},
 	
