@@ -1440,9 +1440,9 @@ var game = {
 		objects.stop_bot_button.visible=true;
 
 		if (my_role==="master")
-			word_creation.activate(90);
+			word_creation.activate(45);
 		else 
-			word_waiting.activate(90);	
+			word_waiting.activate(45);	
 
 	},
 		
