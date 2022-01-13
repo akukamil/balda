@@ -722,7 +722,8 @@ var online_player = {
 			res_s = 'Соперник отменил игру!'
 		
 		//записываем в историю партий
-		firebase.database().ref("finishes/"+game_id).set({'player1':objects.my_card_name.text,'player2':objects.opp_card_name.text, 'res':int_res, 'ts':firebase.database.ServerValue.TIMESTAMP});
+		if (res !== 'NO_CONNECTION')
+			firebase.database().ref("finishes/"+game_id).set({'player1':objects.my_card_name.text,'player2':objects.opp_card_name.text, 'res':int_res, 'ts':firebase.database.ServerValue.TIMESTAMP});
 		
 		await big_message.show(res_s,"Рейтинг: " + old_rating + ' > ' + my_data.rating);
 	
