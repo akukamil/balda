@@ -1021,7 +1021,7 @@ var word_waiting = {
 		
 		my_turn = 0;
 		
-		objects.timer.x = 600;
+		objects.timer.x = 585;
 		game.opponent.reset_timer(init_time);
 		
 		//процесс ожидания
@@ -1126,7 +1126,7 @@ var word_creation = {
 		objects.word.text="";
 		this.word=[];
 		
-		objects.timer.x = 225;
+		objects.timer.x = 215;
 		
 		anim2.add(objects.cells_cont,{y:[objects.cells_cont.y,10]}, true, 2,'easeOutCubic');		
 		anim2.add(objects.keys_cont,{y:[600,objects.keys_cont.sy]}, true, 2,'easeOutCubic');
