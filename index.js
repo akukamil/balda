@@ -2269,7 +2269,7 @@ var cards_menu = {
 			break;
 
 			case "p":
-				return 0x344472;
+				return 0x185592;
 			break;
 
 			case "w":
