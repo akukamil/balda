@@ -151,10 +151,11 @@ class cells_class extends PIXI.Container {
 		this.bcg3=new PIXI.Sprite(gres.big_letter_image_h2.texture);
 		this.bcg3.visible = false;
 
-		this.letter=new PIXI.BitmapText("", {fontName: 'mfont',fontSize: 35});
+		this.letter=new PIXI.BitmapText("", {fontName: 'mfont',fontSize: 50});
 		this.letter.tint=0xffff00;
-		this.letter.x=22;
-		this.letter.y=12;
+		this.letter.anchor.set(0.5,0.5);
+		this.letter.x=30;
+		this.letter.y=30;
 		
 		this.bcg.pointerdown = this.pointer_down.bind(this);
 
@@ -185,10 +186,11 @@ class keys_class extends PIXI.Container {
 		this.bcg.pointerout=function(){this.tint=0xffffff};
 		
 
-		this.letter=new PIXI.BitmapText("", {fontName: 'mfont',fontSize: 25});
-		this.letter.tint=0x000000;
-		this.letter.x=15;
-		this.letter.y=10;
+		this.letter=new PIXI.BitmapText("", {fontName: 'mfont',fontSize: 30});
+		this.letter.tint=0xFFFFFF;
+		this.letter.x=20;
+		this.letter.y=20;
+		this.letter.anchor.set(0.5,0.5);
 		
 		this.bcg.pointerdown = this.pointer_down.bind(this);
 
