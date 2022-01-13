@@ -180,6 +180,8 @@ class keys_class extends PIXI.Container {
 		this.y=y;
 
 		this.bcg=new PIXI.Sprite(gres.key_image.texture);
+		this.bcg.width=40;
+		this.bcg.height=40;
 		this.bcg.interactive=true;
 		this.bcg.buttonMode = true;
 		this.bcg.pointerover=function(){this.tint=0x55ffff};
