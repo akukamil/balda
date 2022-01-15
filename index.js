@@ -700,6 +700,7 @@ var online_player = {
 		firebase.database().ref("players/"+my_data.uid+"/rating").set(my_data.rating);	
 		firebase.database().ref("states/"+my_data.uid+"/rating").set(my_data.rating);	
 		
+		
 		let res_s="";
 		if (res === 'DRAW')
 			res_s = 'Ничья!!!'
@@ -722,8 +723,12 @@ var online_player = {
 			res_s = 'Соперник отменил игру!'
 		
 		//записываем в историю партий
-		if (res !== 'NO_CONNECTION')
+		if (res !== 'NO_CONNECTION') {
 			firebase.database().ref("finishes/"+game_id).set({'player1':objects.my_card_name.text,'player2':objects.opp_card_name.text, 'res':int_res, 'ts':firebase.database.ServerValue.TIMESTAMP});
+			my_data.games++;
+			firebase.database().ref("players/"+my_data.uid+"/games").set(my_data.games);	
+			
+		}
 		
 		await big_message.show(res_s,"Рейтинг: " + old_rating + ' > ' + my_data.rating);
 	
