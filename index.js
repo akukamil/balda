@@ -924,19 +924,14 @@ var bot_player = {
 		
 		if (res === 'DRAW')
 			gres.draw.sound.play();
-
-		if (res === 'MY_WIN' || res === 'GIVE_UP') {			
-			gres.win.sound.play();					
-			my_data.rating = my_data.rating + 1;
-			firebase.database().ref("players/"+my_data.uid+"/rating").set(my_data.rating);	
-			firebase.database().ref("states/"+my_data.uid+"/rating").set(my_data.rating);	
-		}	
 		
 		if (res === 'MY_LOSE' || res === 'MY_CANCEL')
-			gres.lose.sound.play();
+			gres.lose.sound.play();		
+		
 				
 		
 		let res_s=["",""];
+		
 		if (res === 'DRAW') 
 			res_s = ['Ничья!!!','(o_O)']
 
@@ -948,16 +943,29 @@ var bot_player = {
 		
 		if (res === 'MY_NO_TIME') 
 			res_s = ['Вы проиграли. У Вас закончилось время!','(o_O)']
-					
-		if (res === 'OPP_NO_TIME') 
-			res_s = ['Вы выиграли. У соперника закончилось время!','Рейтинг: +1']
-			
+								
 		if (res === 'GIVE_UP') 
-			res_s = ['Вы выиграли! Бот не смог найти слово!','Рейтинг: +1']
+			res_s = ['Вы выиграли! Я не могу найти слово!','Рейтинг: +1']
 			
 		if (res === 'MY_CANCEL') 
 			res_s = ['Вы отменили игру!','(o)_(o)']
+				
+		
+		if (res === 'MY_WIN' || res === 'GIVE_UP') {		
+		
+			gres.win.sound.play();			
 
+			if (my_data.rating > 1500) {
+				
+				res_s[1]=")))"
+				
+			} else {
+				
+				my_data.rating = my_data.rating + 1;			
+				firebase.database().ref("players/"+my_data.uid+"/rating").set(my_data.rating);	
+				firebase.database().ref("states/"+my_data.uid+"/rating").set(my_data.rating);					
+			}
+		}						
 		
 		await big_message.show(res_s[0], res_s[1]);
 	
@@ -1730,7 +1738,7 @@ var req_dialog = {
 		
 		gres.click.sound.play();
 
-		anim2.add(objects.req_cont,{y:[objects.req_cont.sy, -260]}, false, 1,'easeInBack');
+		anim2.add(objects.req_cont,{y:[objects.req_cont.sy, -260]}, false, 0.5,'easeInBack');
 		
 		
 		firebase.database().ref("inbox/"+req_dialog._opp_data.uid).set({sender:my_data.uid,message:"REJECT",tm:Date.now()});
@@ -1786,7 +1794,7 @@ var req_dialog = {
 		if (objects.req_cont.ready===false || objects.req_cont.visible===false)
 			return;
 
-		anim2.add(objects.req_cont,{y:[objects.req_cont.sy, -260]}, false, 1,'easeInBack');
+		anim2.add(objects.req_cont,{y:[objects.req_cont.sy, -260]}, false, 0.5,'easeInBack');
 	}
 
 }
