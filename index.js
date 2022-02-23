@@ -982,7 +982,12 @@ var bot_player = {
 		this.search_word();		
 		let cur_time = Date.now();
 				
-				
+		//если появилось сообщение то выходим из игры
+		if (objects.big_message_cont.visible === true) {
+				some_process.bot_search_word = function(){};
+				return;	
+		}
+		
 		if (cur_time - this.search_start_time > 15000) {
 			
 			game.stop('GIVE_UP');			
