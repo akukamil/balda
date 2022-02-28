@@ -697,6 +697,7 @@ var online_player = {
 			int_res=-1;
 		}
 		
+		objects.my_card_rating.text = my_data.rating;
 		firebase.database().ref("players/"+my_data.uid+"/rating").set(my_data.rating);	
 		firebase.database().ref("states/"+my_data.uid+"/rating").set(my_data.rating);	
 		
@@ -965,7 +966,9 @@ var bot_player = {
 				firebase.database().ref("players/"+my_data.uid+"/rating").set(my_data.rating);	
 				firebase.database().ref("states/"+my_data.uid+"/rating").set(my_data.rating);					
 			}
-		}						
+		}				
+
+		objects.my_card_rating.text = my_data.rating;
 		
 		await big_message.show(res_s[0], res_s[1]);
 	
