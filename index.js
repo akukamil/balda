@@ -1,6 +1,6 @@
 var M_WIDTH=800, M_HEIGHT=450;
 var app, game_res, game, objects={}, state="",my_role="", game_tick=0, my_turn=0, move=0, game_id=0, last_cell=null, show_word=0, start_word="БАЛДА";
-var me_conf_play=0,opp_conf_play=0, any_dialog_active=0, h_state=0, game_platform="",activity_on=1, hidden_state_start = 0;
+var me_conf_play=0,opp_conf_play=0, any_dialog_active=0, h_state=0, game_platform="",activity_on=1, hidden_state_start = 0, room_name = 'states2';
 g_board=[];
 var players="", pending_player="";
 var my_data={opp_id : ''},opp_data={};
@@ -620,8 +620,7 @@ var online_player = {
 		var Ea = 1 / (1 + Math.pow(10, ((opp_data.rating-my_data.rating)/400)));
 		let lose_rating =  Math.round(my_data.rating + 16 * (0 - Ea));
 		firebase.database().ref("players/"+my_data.uid+"/rating").set(lose_rating);	
-		//firebase.database().ref("states/"+my_data.uid+"/rating").set(my_data.rating);	
-		
+	
 		
 	},
 	
@@ -699,7 +698,7 @@ var online_player = {
 		
 		objects.my_card_rating.text = my_data.rating;
 		firebase.database().ref("players/"+my_data.uid+"/rating").set(my_data.rating);	
-		firebase.database().ref("states/"+my_data.uid+"/rating").set(my_data.rating);	
+		firebase.database().ref(room_name+"/"+my_data.uid+"/rating").set(my_data.rating);	
 		
 		
 		let res_s="";
@@ -964,7 +963,7 @@ var bot_player = {
 				
 				my_data.rating = my_data.rating + 1;			
 				firebase.database().ref("players/"+my_data.uid+"/rating").set(my_data.rating);	
-				firebase.database().ref("states/"+my_data.uid+"/rating").set(my_data.rating);					
+				firebase.database().ref(room_name+"/"+my_data.uid+"/rating").set(my_data.rating);					
 			}
 		}				
 
@@ -1603,14 +1602,14 @@ var keep_alive = function() {
 		//убираем из списка если прошло время с момента перехода в скрытое состояние		
 		let cur_ts = Date.now();	
 		let sec_passed = (cur_ts - hidden_state_start)/1000;		
-		if ( sec_passed > 100 )	firebase.database().ref("states/"+my_data.uid).remove();
+		if ( sec_passed > 100 )	firebase.database().ref(room_name+"/"+my_data.uid).remove();
 		return;		
 	}
 
 
 	firebase.database().ref("players/"+my_data.uid+"/tm").set(firebase.database.ServerValue.TIMESTAMP);
 	firebase.database().ref("inbox/"+my_data.uid).onDisconnect().remove();
-	firebase.database().ref("states/"+my_data.uid).onDisconnect().remove();
+	firebase.database().ref(room_name+"/"+my_data.uid).onDisconnect().remove();
 
 	set_state({});
 }
@@ -2107,7 +2106,7 @@ var cards_menu = {
 		objects.players_online.visible=true;
 
 		//подписываемся на изменения состояний пользователей
-		firebase.database().ref("states") .on('value', (snapshot) => {cards_menu.players_list_updated(snapshot.val());});
+		firebase.database().ref(room_name).on('value', (snapshot) => {cards_menu.players_list_updated(snapshot.val());});
 
 	},
 
@@ -2610,7 +2609,7 @@ var cards_menu = {
 		objects.players_online.visible=false;
 
 		//подписываемся на изменения состояний пользователей
-		firebase.database().ref("states").off();
+		firebase.database().ref(room_name).off();
 
 	},
 
@@ -2980,7 +2979,7 @@ function set_state(params) {
 	if (opp_data.uid!==undefined)
 		small_opp_id=opp_data.uid.substring(0,10);
 
-	firebase.database().ref("states/"+my_data.uid).set({state:state, name:my_data.name, rating : my_data.rating, hidden:h_state, opp_id : small_opp_id});
+	firebase.database().ref(room_name+"/"+my_data.uid).set({state:state, name:my_data.name, rating : my_data.rating, hidden:h_state, opp_id : small_opp_id});
 
 }
 
@@ -3026,6 +3025,13 @@ async function load_user_data() {
 			my_data.games = 0 :
 			my_data.games = data.games || 0;
 
+
+		//номер комнаты
+		if (my_data.rating >= 1450)
+			room_name= 'states2';			
+		else
+			room_name= 'states';
+		
 		//устанавливаем рейтинг в попап
 		objects.id_rating.text=objects.my_card_rating.text=my_data.rating;
 
@@ -3046,7 +3052,7 @@ async function load_user_data() {
 
 		//отключение от игры и удаление не нужного
 		firebase.database().ref("inbox/"+my_data.uid).onDisconnect().remove();
-		firebase.database().ref("states/"+my_data.uid).onDisconnect().remove();
+		firebase.database().ref(room_name+"/"+my_data.uid).onDisconnect().remove();
 
 		//это событие когда меняется видимость приложения
 		document.addEventListener("visibilitychange", vis_change);
