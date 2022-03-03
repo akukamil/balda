@@ -1753,7 +1753,7 @@ var req_dialog = {
 
 	accept: function() {
 
-		if (objects.req_cont.ready===false)
+		if (objects.req_cont.ready===false || objects.big_message_cont.visible === true)
 			return;
 		
 		
@@ -3027,7 +3027,7 @@ async function load_user_data() {
 
 
 		//номер комнаты
-		if (my_data.rating >= 1450)
+		if (my_data.rating >= 1420)
 			room_name= 'states2';			
 		else
 			room_name= 'states';
