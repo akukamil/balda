@@ -1427,6 +1427,7 @@ var game = {
 		
 		//отключаем клавиатуру и поле если они вдруг остались
 		objects.cells_cont.visible=false;
+		objects.cells_cont.y = -400;
 		objects.keys_cont.visible=false;
 		objects.word_cont.visible=false;
 		objects.my_words.text="";
@@ -1754,7 +1755,7 @@ var req_dialog = {
 
 	accept: function() {
 
-		if (objects.req_cont.ready===false || objects.big_message_cont.visible === true)
+		if (objects.req_cont.ready===false || objects.big_message_cont.visible === true || objects.keys_cont.ready === false)
 			return;
 		
 		
