@@ -984,8 +984,8 @@ var bot_player = {
 		this.search_word();		
 		let cur_time = Date.now();
 				
-		//если появилось сообщение то выходим из игры
-		if (objects.big_message_cont.visible === true) {
+		//если появилось сообщение то выходим из игры или изменилось состояние
+		if (objects.big_message_cont.visible === true || state !== 'b') {
 				some_process.bot_search_word = function(){};
 				return;	
 		}
@@ -1431,6 +1431,7 @@ var game = {
 		objects.word_cont.visible=false;
 		objects.my_words.text="";
 		objects.opp_words.text="";
+		
 		
 		//инициируем все что связано с оппонентом
 		this.opponent.init(my_role);
