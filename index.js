@@ -559,6 +559,40 @@ var big_message = {
 
 }
 
+var confirm_dialog = {
+	
+	p_resolve : 0,
+		
+	show: function(msg) {
+				
+				
+		if (objects.confirm_cont.visible === true) {
+			gres.locked.sound.play();
+			return;			
+		}		
+				
+		objects.confirm_msg.text=msg;
+		
+		gres.bad_move.sound.play();
+		anim2.add(objects.confirm_cont,{y:[450,objects.confirm_cont.sy]}, true, 0.6,'easeOutBack');		
+				
+		return new Promise(function(resolve, reject){					
+			confirm_dialog.p_resolve = resolve;	  		  
+		});
+	},
+	
+	button_down : function(res) {
+		
+		if (objects.confirm_cont.ready===false)
+			return;
+		gres.close_it.sound.play();
+		anim2.add(objects.confirm_cont,{y:[objects.confirm_cont.sy,450]}, false, 0.4,'easeInBack');		
+		this.p_resolve(res);	
+		
+	}
+
+}
+
 var make_text = function (obj, text, max_width) {
 
 	let sum_v=0;
@@ -1505,6 +1539,20 @@ var game = {
 	stop : async function (res) {
 				
 		
+		//если отменяем игру то сначала предупреждение
+		if (res === 'MY_CANCEL') {
+			
+			if (objects.req_cont.visible === true) {
+				gres.locked.sound.play();
+				return;			
+			}
+			
+			let conf = await confirm_dialog.show("Уверены?");
+			if (conf === 'no')
+				return;			
+		}
+
+		
 		//убираем диалог
 		if (objects.word_cont.visible === true)
 			anim2.add(objects.word_cont,{y:[objects.word_cont.y,450]}, false, 0.5,'linear');
@@ -1512,6 +1560,10 @@ var game = {
 		//убираем клавиатуру если она есть
 		if (objects.keys_cont.visible === true)
 			anim2.add(objects.keys_cont,{y:[objects.keys_cont.sy,450]}, false, 1,'easeInOutCubic');
+		
+		//убираем окно подтверждения если оно есть
+		if (objects.confirm_cont.visible === true)
+			anim2.add(objects.confirm_cont,{y:[objects.confirm_cont.y,450]}, false, 1,'easeInOutCubic');
 		
 		//сдвигаем поле в центр
 		anim2.add(objects.cells_cont,{y:[objects.cells_cont.y,objects.cells_cont.y+10]}, true, 0.5,'easeInOutCubic');
@@ -1755,8 +1807,11 @@ var req_dialog = {
 
 	accept: function() {
 
-		if (objects.req_cont.ready===false || objects.big_message_cont.visible === true || objects.keys_cont.ready === false)
-			return;
+		if (objects.req_cont.ready===false || objects.big_message_cont.visible === true || objects.keys_cont.ready === false || objects.confirm_cont.visible === true) {
+			gres.locked.sound.play();
+			return;			
+		}
+
 		
 		
 		gres.click.sound.play();
