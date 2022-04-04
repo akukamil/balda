@@ -622,6 +622,7 @@ var online_player = {
 	timer : 0,
 	time_t : 0,
 	disconnect_time : 0,
+	start_time : 0,
 	
 	send_move : function  (move_data) {
 		
@@ -645,7 +646,10 @@ var online_player = {
 		//устанавливаем статус в базе данных а если мы не видны то установливаем только скрытое состояние
 		set_state({state : 'p'});
 		
-	
+		//фиксируем врему начала игры
+		this.start_time = Date.now();
+		
+		
 		//таймер времени
 		//this.reset_timer(30);
 		this.timer = setTimeout(function(){online_player.process_time()}, 1000);
@@ -773,7 +777,12 @@ var online_player = {
 		
 		//записываем в историю партий
 		if (res !== 'NO_CONNECTION') {
-			firebase.database().ref("finishes/"+game_id + my_role).set({'player1':objects.my_card_name.text,'player2':objects.opp_card_name.text, 'res':res, 'ts':firebase.database.ServerValue.TIMESTAMP});
+			
+			
+			//записываем результат в базу данных
+			let duration = ~~((Date.now() - this.start_time)*0.001);
+			
+			firebase.database().ref("finishes/"+game_id + my_role).set({'player1':objects.my_card_name.text,'player2':objects.opp_card_name.text, 'res':res,'duration':duration, 'ts':firebase.database.ServerValue.TIMESTAMP});
 			my_data.games++;
 			firebase.database().ref("players/"+my_data.uid+"/games").set(my_data.games);	
 			
