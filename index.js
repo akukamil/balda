@@ -1,6 +1,6 @@
 var M_WIDTH=800, M_HEIGHT=450;
 var app, game_res, game, objects={}, state="",my_role="", game_tick=0, my_turn=0, move=0, game_id=0, last_cell=null, show_word=0, start_word="БАЛДА";
-var me_conf_play=0,opp_conf_play=0, any_dialog_active=0, h_state=0, game_platform="",activity_on=1, hidden_state_start = 0, room_name = 'states2';
+var me_conf_play=0,opp_conf_play=0, any_dialog_active=0, h_state=0, game_platform="",activity_on=1, hidden_state_start = 0, room_name = 'states2', connected = 1;
 g_board=[];
 var players="", pending_player="";
 var my_data={opp_id : ''},opp_data={};
@@ -621,6 +621,7 @@ var online_player = {
 		
 	timer : 0,
 	time_t : 0,
+	disconnect_time : 0,
 	
 	send_move : function  (move_data) {
 		
@@ -698,6 +699,17 @@ var online_player = {
 		clearTimeout(this.timer);
 		this.timer = setTimeout(function(){online_player.process_time()}, 1000);
 		
+		if (connected === 0)
+			this.disconnect_time++;
+		else
+			this.disconnect_time=0;
+		
+		if (this.disconnect_time > 6) {
+			game.stop('MY_NO_CONNECTION');
+			return;				
+		}
+		
+		
 	},
 	
 	stop : async function(res) {
@@ -724,7 +736,7 @@ var online_player = {
 			int_res=1;
 			
 		}
-		if (res === 'MY_LOSE' || res === 'MY_NO_TIME' || res === 'MY_CANCEL') {
+		if (res === 'MY_LOSE' || res === 'MY_NO_TIME' || res === 'MY_CANCEL' || res === 'MY_NO_CONNECTION') {
 			my_data.rating = Math.round(my_data.rating + 16 * (0 - Ea));
 			gres.lose.sound.play();
 			int_res=-1;
@@ -738,6 +750,8 @@ var online_player = {
 		let res_s="";
 		if (res === 'DRAW')
 			res_s = 'Ничья!!!'
+		if (res === 'MY_NO_CONNECTION')
+			res_s = 'Потеряна связь!'
 		if (res === 'MY_WIN')
 			res_s = 'Вы выиграли!!!'
 		if (res === 'MY_LOSE')
@@ -748,17 +762,18 @@ var online_player = {
 			res_s = 'Вы выиграли. У соперника закончилось время!'
 		if (res === 'NO_CONNECTION')
 			res_s = 'Похоже игру не получилось начать!'
+		if (res === 'OPP_CANCEL')
+			res_s = 'Соперник отменил игру!'		
 		if (res === 'MY_CANCEL') {
 			res_s = 'Вы отменили игру!'			
 			firebase.database().ref("inbox/"+opp_data.uid).set({sender:my_data.uid,message:"OPP_CANCEL",tm:Date.now()});
 		}
 
-		if (res === 'OPP_CANCEL')
-			res_s = 'Соперник отменил игру!'
+
 		
 		//записываем в историю партий
 		if (res !== 'NO_CONNECTION') {
-			firebase.database().ref("finishes/"+game_id).set({'player1':objects.my_card_name.text,'player2':objects.opp_card_name.text, 'res':int_res, 'ts':firebase.database.ServerValue.TIMESTAMP});
+			firebase.database().ref("finishes/"+game_id + my_role).set({'player1':objects.my_card_name.text,'player2':objects.opp_card_name.text, 'res':res, 'ts':firebase.database.ServerValue.TIMESTAMP});
 			my_data.games++;
 			firebase.database().ref("players/"+my_data.uid+"/games").set(my_data.games);	
 			
@@ -1101,6 +1116,11 @@ var word_waiting = {
 	},
 	
 	receive_move : async function (move_data) {
+		
+		
+		if (objects.big_message_cont.visible === true)
+			return;
+		
 		
 		//воспроизводим уведомление о том что соперник произвел ход
 		gres.receive_move.sound.play();
@@ -3258,6 +3278,16 @@ async function init_game_env() {
 	
 	//загружаем данные об игроке
 	load_user_data();
+	
+	//контроль за присутсвием
+	var connected_control = firebase.database().ref(".info/connected");
+	connected_control.on("value", (snap) => {
+	  if (snap.val() === true) {
+		connected = 1;
+	  } else {
+		connected = 0;
+	  }
+	});
 		
 	//показыаем основное меню
 	main_menu.activate();
