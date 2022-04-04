@@ -708,7 +708,7 @@ var online_player = {
 		else
 			this.disconnect_time=0;
 		
-		if (this.disconnect_time > 6) {
+		if (this.disconnect_time > 15) {
 			game.stop('MY_NO_CONNECTION');
 			return;				
 		}
