@@ -830,8 +830,6 @@ var bot_player = {
 				break;			
 		}
 		
-
-		
 		//отключаем таймер...........................
 		objects.timer.visible=false;
 	
@@ -890,6 +888,40 @@ var bot_player = {
 		acc_pos.push(next_pos);
 		
 	},
+		
+	search_surrogate_match : function (dir_sur, inv_sur, new_letter_cell_id, acc_pos) {
+		
+		
+		//длина суррогата
+		let sur_len = dir_sur.length;		
+	
+		
+		for (let word of rus_dict0) {
+			
+			if (word.length !== sur_len + 1 || word === start_word || this.found_words.includes(word) === true || game.words_hist.includes(word) === true)
+				continue;
+				
+				
+			//убираем первую букву для проверки прямого суррогата
+			let dir_surrogated_word = word.substring(1, sur_len + 1);			
+			if (dir_surrogated_word === dir_sur) {				
+				this.found_words.push(word);
+				console.log("Совп. прямого суррогата ", word);	
+				this.found_data[word.length]=[new_letter_cell_id, word[0], acc_pos.slice()];	
+			}
+			
+				
+			//убираем первую букву для проверки обратного суррогата
+			let inv_surrogated_word = word.substring(0, sur_len);			
+			if (inv_surrogated_word === inv_sur) {
+				this.found_words.push(word);
+				console.log("Совп. обратного суррогата ", word);
+				this.found_data[word.length]=[new_letter_cell_id, word[word.length - 1], acc_pos.slice().reverse()];	
+			}		
+
+		};		
+		
+	},
 	
 	search_word : function () {
 		
@@ -899,58 +931,97 @@ var bot_player = {
 			field.push(objects.cells[i].letter.text);		
 		let _adj_cells = this.get_adj_cells(field);
 		let _adj_cells_cnt = _adj_cells.length;
-							
-		//выбирем случайную букву...............................................
-		let new_letter = rus_let2[irnd(0,27)];
-				
-		//ставим букву в случайное место на поле................................
-		let _field = [...field];
-		let new_letter_cell_id = _adj_cells[irnd(0 , _adj_cells_cnt - 1 )];	
-		_field[new_letter_cell_id] = new_letter;	
 
-		//получаем позиции только букв на поле...................................
+
+		//здесь нужно поискать 3-буквенные слова чтобы не остасть когда суррогатов нет
+		let new_letter_cell_id = _adj_cells[irnd(0 , _adj_cells_cnt - 1 )];	
+		let new_letter = rus_let2[irnd(0,27)];
 		let letters_pos = [];
 		for (let i = 0 ; i < 25 ; i++)
-			if (_field[i] !== "")
-				letters_pos.push(i);
-
-		//несколько попыток найти слово на новом поле............................
-		for (let r=0;r<20;r++) {
-			let [acc_word, acc_pos] = this.read_random_word(_field, letters_pos);		
-
-			//проверяем сначала все слово
-			if(this.found_words.includes(acc_word[0])===false && acc_word[0]!==start_word && rus_dict0.includes(acc_word[0])===true) {
-				
-				if( game.words_hist.includes(acc_word[0])===false) {
-					this.found_data[acc_word[0].length]=[new_letter_cell_id, new_letter, acc_pos];		
-					this.found_words.push(acc_word[0]);				
-					
-					console.log("Найдено слово: "+acc_word[0]);
-				}				
-			}
+			if (field[i] !== "")
+				letters_pos.push(i);			
 			
-			//теперь только 3 буквы			
-			if (acc_word[0].length >=4) {
-				let word3 = acc_word[0][0]+acc_word[0][1]+acc_word[0][2];	
-				
-				if(this.found_words.includes(word3)===false && acc_word[0]!==start_word && rus_dict0.includes(word3)===true) {
-					
-					let acc_pos3 = [acc_pos[0],acc_pos[1],acc_pos[2]]
-					if( game.words_hist.includes(word3)===false) {
-						this.found_data[3]=[new_letter_cell_id, new_letter, acc_pos3];		
-						this.found_words.push(word3);				
-						
-						console.log("Найдено также слово: "+word3);
-					}				
-				}				
-			}
-
+		let [acc_word, acc_pos] = this.read_random_word4(field, letters_pos);
+		
+		if ( this.found_words.includes(acc_word[0]) !== true && game.words_hist.includes(acc_word[0]) !== true && rus_dict0.includes(acc_word[0])=== true) {
+			this.found_data[acc_word[0].length]=[new_letter_cell_id, new_letter, acc_pos.slice()];		
+			this.found_words.push(acc_word[0]);	
+			console.log('Совпадение #4 ',acc_word[0] )
 		}
+		
+		//если 4 буквы проверяем еще 3 буквы
+		if (acc_word[0].length === 4) {			
+			let acc_word3 = acc_word[0].substring(0, 3);	
+			acc_pos.pop();				
+			if ( this.found_words.includes(acc_word3) !== true && game.words_hist.includes(acc_word3) !== true && rus_dict0.includes(acc_word3)=== true) {
+				this.found_data[3]=[new_letter_cell_id, new_letter, acc_pos.slice()];		
+				this.found_words.push(acc_word3);	
+				console.log('Совпадение #3 ',acc_word3 )
+			}
+		}
+
+		
+		
+		
+
+		
+		
+		
+
+		//несколько попыток найти слово-суррогат начиная с рандомной смежной ячейки
+		for (let i = 0 ; i < _adj_cells_cnt ; i++) {			
+		
+			//выбираем пустую клетку
+			let start_cell = _adj_cells[i];			
+			
+			//считываем слово-суррогат 5 букв
+			let [acc_word, acc_pos] = this.read_random_word(field, start_cell);	
+			
+			//прямой и обратный суррогат
+			let dir_sur = acc_word[0];
+			let inv_sur = dir_sur.split('').reverse().join('');
+			
+			//ищем совпадения суррогатов
+			this.search_surrogate_match(dir_sur, inv_sur, start_cell, acc_pos);
+
+			//если слово большое то делаем еще маленьких суррогатов
+			for (let b = 0 ; b < 3 ; b++) {
+				
+				if (dir_sur.length > 2) {
+					dir_sur = dir_sur.substring(0, dir_sur.length - 1);				
+					inv_sur = inv_sur.substring(1, inv_sur.length);	
+					acc_pos.pop();					
+					
+					//ищем совпадения суррогатов
+					this.search_surrogate_match(dir_sur, inv_sur, start_cell, acc_pos);
+				}				
+			}			
+		}
+
+
 
 	},
 		
-	read_random_word : function(field, letters_pos) {
+	read_random_word : function(field, start_cell) {
 		
+		
+		//начинаем идти от этой буквы пока не будет дальше ходов или достигнута максимальная длина
+		let acc_pos = [start_cell];
+		let acc_word = [''];
+		
+		//читаем 5 букв
+		this.make_move(field, acc_word, acc_pos);		
+		this.make_move(field, acc_word, acc_pos);		
+		this.make_move(field, acc_word, acc_pos);		
+		this.make_move(field, acc_word, acc_pos);		
+		this.make_move(field, acc_word, acc_pos);
+		
+		return [acc_word,acc_pos];	
+		
+	},
+	
+	read_random_word4 : function(field, letters_pos) {
+						
 		//выбираем начальную для поиска букву
 		let letters_pos_len = letters_pos.length;
 		let start_letter_pos = letters_pos[irnd(0 , letters_pos_len - 1 )];		
@@ -959,21 +1030,15 @@ var bot_player = {
 		let acc_pos = [start_letter_pos];
 		let acc_word = [field[start_letter_pos]];
 		
-		//делаем четыре хода от начальной буквы
-		this.make_move(field, acc_word, acc_pos);
-		
-		this.make_move(field, acc_word, acc_pos);
-		
-		this.make_move(field, acc_word, acc_pos);
-		
-		this.make_move(field, acc_word, acc_pos);
-		
-		this.make_move(field, acc_word, acc_pos);
-		
+		//читаем еще 3 буквы
+		this.make_move(field, acc_word, acc_pos);		
+		this.make_move(field, acc_word, acc_pos);		
+		this.make_move(field, acc_word, acc_pos);		
+			
 		return [acc_word,acc_pos];	
 		
 	},
-		
+			
 	stop : async function (res) {
 		
 		some_process.bot_search_word = function(){};
@@ -3384,5 +3449,4 @@ function main_loop() {
 
 	requestAnimationFrame(main_loop);
 }
-
 
