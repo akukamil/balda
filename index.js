@@ -216,6 +216,15 @@ var anim2= {
 		
 	slot: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
 	
+	some_anim_on : function() {
+		
+		for (var i = 0; i < this.slot.length; i++) {
+			if (this.slot[i] !== null)
+				return 1;
+		}
+		return 0;			
+	},
+	
 	linear: function(x) {
 		return x
 	},
@@ -1165,6 +1174,8 @@ var bot_player = {
 
 var word_waiting = {
 	
+	receiving_move : 0,
+	
 	activate : async function (init_time) {		
 		
 		my_turn = 0;
@@ -1182,10 +1193,14 @@ var word_waiting = {
 	
 	show_new_word_anim : async function(word_ids) {
 		
+		this.receiving_move = 1;
+		
 		for (let i =0 ; i < word_ids.length ; i++){
 			anim2.add(objects.cells[word_ids[i]].bcg3,{alpha:[0.7,0]}, false, 1,'easeInBack');		
 			await new Promise((resolve, reject) => setTimeout(resolve, 300));
 		}
+		
+		this.receiving_move = 0;
 		
 	},
 	
@@ -1294,6 +1309,12 @@ var word_creation = {
 	key_down : function (key) {				
 		
 		
+		if (objects.req_cont.visible === true) {
+			gres.locked.sound.play();
+			return;
+		}
+		
+		
 		gres.key_down.sound.play();
 		
 		//если уже активирована клавиша то отменяем ее
@@ -1311,8 +1332,10 @@ var word_creation = {
 	cell_down : async function (cell_id) {		
 		
 		//если имеется какое-то сообщение
-		if (objects.big_message_cont.visible===true)
+		if (objects.big_message_cont.visible===true || objects.req_cont.visible === true) {
+			gres.locked.sound.play();
 			return;
+		}
 		
 		if (my_turn === 0) {
 			add_message("Не твоя очередь");
@@ -1421,6 +1444,12 @@ var word_creation = {
 	},
 	
 	ok_down : async function () {		
+		
+		//если имеется какое-то сообщение
+		if (objects.big_message_cont.visible===true || objects.req_cont.visible === true) {
+			gres.locked.sound.play();
+			return;
+		}
 		
 		
 		let _word = "";
@@ -1901,7 +1930,7 @@ var req_dialog = {
 
 	accept: function() {
 
-		if (objects.req_cont.ready===false || objects.big_message_cont.visible === true || objects.keys_cont.ready === false || objects.confirm_cont.visible === true) {
+		if (objects.req_cont.ready===false || objects.big_message_cont.visible === true || objects.keys_cont.ready === false || objects.confirm_cont.visible === true || anim2.some_anim_on()===1) {
 			gres.locked.sound.play();
 			return;			
 		}
