@@ -630,6 +630,7 @@ var online_player = {
 		
 	timer : 0,
 	time_t : 0,
+	control_time : 0,
 	disconnect_time : 0,
 	start_time : 0,
 	
@@ -674,17 +675,21 @@ var online_player = {
 	
 	reset_timer : function(t) {
 		
+		this.move_start = Date.now();
+		
 		if (t===undefined)
-			this.time_t=90;
+			this.control_time = Date.now() + 90000;	
 		else
-			this.time_t=t;
+			this.control_time = Date.now() + t*1000;	
+
+
 		objects.timer.tint=0xffffff;	
 		
 	},
 	
 	process_time : function () {
 		
-		this.time_t--;
+		this.time_t = Math.floor((this.control_time - Date.now())*0.001);
 		
 		if (this.time_t >= 0) {
 			if ( this.time_t >9 )
@@ -1225,7 +1230,7 @@ var word_waiting = {
 		objects.cells[cell_id].letter.text=letter;			
 		
 		//подсвечиваем новое слово
-		await this.show_new_word_anim(word_ids);
+		this.show_new_word_anim(word_ids);
 
 		//убираем процесс
 		some_process.wait_opponent_move = function(){};
@@ -1259,9 +1264,10 @@ var word_waiting = {
 		}		
 
 		//записываем слово в историю
-		game.words_hist.push(word);		
+		game.words_hist.push(word);			
+		word_creation.activate();	
+
 		
-		word_creation.activate();		
 	},
 	
 	stop : async function () {
