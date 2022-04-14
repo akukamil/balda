@@ -1681,6 +1681,9 @@ var game = {
 				return;			
 		}
 
+		//теперь уже можно принимать приглашения
+		req_dialog.reject_all_game_val = 0;
+		
 		
 		//убираем диалог
 		if (objects.word_cont.visible === true)
@@ -1811,9 +1814,14 @@ var process_new_message = function(msg) {
 		cards_menu.accepted_invite();
 	}
 
+	
 	//принимаем также отрицательный ответ от соответствующего соперника
-	if (msg.message==="REJECT"  && pending_player===msg.sender) {
-		cards_menu.rejected_invite();
+	if ( pending_player===msg.sender) {
+		
+		if (msg.message==="REJECT")
+			cards_menu.rejected_invite('Соперник отказался от игры!');
+		if (msg.message==="REJECT_ALL")
+			cards_menu.rejected_invite('Соперник пока не принимает приглашения!');
 	}
 
 	//получение сообщение в состояни игры
@@ -1860,8 +1868,16 @@ var process_new_message = function(msg) {
 var req_dialog = {
 	
 	_opp_data : {} ,
+	reject_all_game_val : 0,
 	
-	show(uid) {		
+	show(uid) {	
+
+		if (state === 'b' && req_dialog.reject_all_game_val === 1) {
+			
+			firebase.database().ref("inbox/"+uid).set({sender:my_data.uid,message:"REJECT_ALL",tm:Date.now()});
+			return;
+		}	
+		
 
 		firebase.database().ref("players/"+uid).once('value').then((snapshot) => {
 
@@ -1888,6 +1904,23 @@ var req_dialog = {
 				make_text(objects.req_name,player_data.name,200);
 				objects.req_rating.text=player_data.rating;
 				req_dialog._opp_data.rating=player_data.rating;
+
+
+				if (state === 'b') {			
+					objects.req_ok_w.visible=false;	
+					objects.req_deny_w.visible=false;					
+					objects.req_ok.visible=true;	
+					objects.req_deny.visible=true;		
+					objects.req_deny_all_game.visible=true;				
+				} else {
+					objects.req_ok.visible=false;	
+					objects.req_deny.visible=false;		
+					objects.req_deny_all_game.visible=false;	
+					objects.req_ok_w.visible=true;	
+					objects.req_deny_w.visible=true;	
+					
+				}
+
 
 				//throw "cut_string erroor";
 				req_dialog._opp_data.uid=uid;
@@ -1932,6 +1965,17 @@ var req_dialog = {
 		
 		
 		firebase.database().ref("inbox/"+req_dialog._opp_data.uid).set({sender:my_data.uid,message:"REJECT",tm:Date.now()});
+	},
+
+	reject_all_game: function() {
+
+		if (objects.req_cont.ready===false)
+			return;
+		
+		add_message("Приглашения отключены до конца игры");
+		req_dialog.reject_all_game_val = 1;
+		anim2.add(objects.req_cont,{y:[objects.req_cont.sy, -260]}, false, 0.5,'easeInBack');
+		firebase.database().ref("inbox/"+req_dialog._opp_data.uid).set({sender:my_data.uid,message:"REJECT_ALL",tm:Date.now()});
 	},
 
 	accept: function() {
@@ -2858,12 +2902,12 @@ var cards_menu = {
 
 	},
 
-	rejected_invite: function() {
+	rejected_invite: function(rej_text) {
 
 		pending_player="";
 		cards_menu._opp_data={};
 		this.hide_invite_dialog();
-		big_message.show("Соперник отказался от игры",'(((');
+		big_message.show(rej_text,'(((');
 
 	},
 
