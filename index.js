@@ -2418,7 +2418,8 @@ var cards_menu = {
 		for (let uid in players)
 			if (players[uid].hidden===0)
 				num++
-		objects.players_online.text='Игроков онлайн: ' + num;
+
+		objects.players_online.text='Игроков онлайн: ' + num + '   ( комната: ' +room_name +' )';
 		
 		
 		//считаем сколько одиночных игроков и сколько столов
@@ -3331,9 +3332,7 @@ async function load_user_data() {
 		//ждем и убираем попап
 		await new Promise((resolve, reject) => setTimeout(resolve, 1000));
 		
-
-		anim2.add(objects.id_cont,{y:[objects.id_cont.y, -200]}, false, 1,'easeInBack');
-	
+		anim2.add(objects.id_cont,{y:[objects.id_cont.y, -200]}, false, 1,'easeInBack');	
 	
 	} catch (error) {		
 		alert (error);		
