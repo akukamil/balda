@@ -3288,11 +3288,14 @@ async function load_user_data() {
 			my_data.games = data.games || 0;
 
 
-		//номер комнаты
-		if (my_data.rating >= 1420)
-			room_name= 'states2';			
-		else
-			room_name= 'states';
+		//номер комнаты в зависимости от рейтинга игрока
+		if (my_data.rating <= 1399)
+			room_name= 'states';			
+		if (my_data.rating >= 1400 && my_data.rating <=1415)
+			room_name= 'states2';	
+		if (my_data.rating >= 1416)
+			room_name= 'states3';
+		
 		
 		//устанавливаем рейтинг в попап
 		objects.id_rating.text=objects.my_card_rating.text=my_data.rating;
