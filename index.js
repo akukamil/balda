@@ -946,7 +946,7 @@ var bot_player = {
 		let _adj_cells = this.get_adj_cells(field);
 		let _adj_cells_cnt = _adj_cells.length;
 
-
+		/*
 		//здесь нужно поискать 3-буквенные слова чтобы не остасть когда суррогатов нет
 		let new_letter_cell_id = _adj_cells[irnd(0 , _adj_cells_cnt - 1 )];	
 		let new_letter = rus_let2[irnd(0,27)];
@@ -972,14 +972,9 @@ var bot_player = {
 				this.found_words.push(acc_word3);	
 				console.log('Совпадение #3 ',acc_word3 )
 			}
-		}
+		}*/
 
-		
-		
-		
-
-		
-		
+	
 		
 
 		//несколько попыток найти слово-суррогат начиная с рандомной смежной ячейки
@@ -1396,17 +1391,12 @@ var word_creation = {
 			objects.word.text =_word;			
 			return;
 		}
-		
-		
-
-		
-		
+				
 		if (this.active_key === -1) {
 			add_message("Сначала поставьте новую букву на поле");
 			gres.bad_move.sound.play();
 			return;				
 		}
-
 		
 		if (objects.cells[cell_id].letter.text !== "") {
 			add_message("Букву нужно поставить на пустую клетку");
@@ -1420,8 +1410,7 @@ var word_creation = {
 			return;				
 		}
 		
-		
-		
+
 		
 		gres.cell_down.sound.play();
 		
@@ -1475,6 +1464,14 @@ var word_creation = {
 			add_message("Главное слово нельзя выбирать");
 			return;
 		}		
+		
+		if (this.word.includes(this.new_cell) === false) {
+			this.cancel_down();
+			gres.bad_word.sound.play();
+			add_message("Нужно использовать новую букву!");
+			return;
+		}
+		
 		
 		if (game.words_hist.includes(_word) === true) {
 			gres.bad_word.sound.play();
@@ -2165,13 +2162,13 @@ var main_menu = {
 		gres.click.sound.play();
 
 	
-		anim2.add(objects.rules_cont,{y:[-450, objects.rules_cont.sy]}, true, 1,'easeOutBack');
+		anim2.add(objects.rules_cont,{y:[-450, objects.rules_cont.sy]}, true, 0.5,'easeOutBack');
 
 	},
 
 	rules_ok_down: function () {
 		any_dialog_active=0;		
-		anim2.add(objects.rules_cont,{y:[objects.rules_cont.y,-450, ]}, false, 1,'easeInBack');
+		anim2.add(objects.rules_cont,{y:[objects.rules_cont.y,-450, ]}, false, 0.5,'easeInBack');
 	}
 
 }
