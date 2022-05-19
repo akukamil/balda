@@ -1122,7 +1122,7 @@ var bot_player = {
 				return;	
 		}
 		
-		if (cur_time - this.search_start_time > 15000) {
+		if (cur_time - this.search_start_time > 20000) {
 			
 			game.stop('GIVE_UP');			
 			return;
