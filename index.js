@@ -1210,6 +1210,9 @@ var word_waiting = {
 		if (objects.big_message_cont.visible === true)
 			return;
 		
+		//защита от двойного прихода
+		if (my_turn === 1)
+			return;
 		
 		//воспроизводим уведомление о том что соперник произвел ход
 		gres.receive_move.sound.play();
@@ -1471,8 +1474,7 @@ var word_creation = {
 			add_message("Нужно использовать новую букву!");
 			return;
 		}
-		
-		
+				
 		if (game.words_hist.includes(_word) === true) {
 			gres.bad_word.sound.play();
 			this.cancel_down();
@@ -2006,6 +2008,7 @@ var req_dialog = {
 			if (_wlen === 5)
 				break;			
 		}
+		
 				
 		//отправляем информацию о согласии играть с идентификатором игры
 		game_id=~~(Math.random()*299);
