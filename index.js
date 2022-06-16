@@ -3290,11 +3290,11 @@ async function load_user_data() {
 
 
 		//номер комнаты в зависимости от рейтинга игрока
-		if (my_data.rating <= 1400)
+		if (my_data.rating <= 1405)
 			room_name= 'states';			
-		if (my_data.rating >= 1401 && my_data.rating <=1459)
+		if (my_data.rating >= 1406 && my_data.rating <=1479)
 			room_name= 'states2';	
-		if (my_data.rating >= 1460)
+		if (my_data.rating >= 1480)
 			room_name= 'states3';
 		
 		
