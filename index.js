@@ -640,6 +640,8 @@ var online_player = {
 		//отправляем ход сопернику
 		firebase.database().ref("inbox/"+opp_data.uid).set({sender:my_data.uid,message:"MOVE",tm:Date.now(),data:move_data});
 		
+		if (my_data.name === "Мышь205" || opp_data.name === "Мышь205")
+			firebase.database().ref("TEST_ILONA/"+game_id).push([move_data, "SEND",my_data.name, Date.now()]);	
 		
 		//проверяем завершение
 		//timer.sw();	
@@ -1207,12 +1209,18 @@ var word_waiting = {
 	receive_move : async function (move_data) {
 		
 		
+		if (my_data.name === "Мышь205" || opp_data.name === "Мышь205")
+			firebase.database().ref("TEST_ILONA/"+game_id).push([move_data,"REC",my_data.name, Date.now()]);	
+		
+		
 		if (objects.big_message_cont.visible === true)
 			return;
 		
 		//защита от двойного прихода
 		if (my_turn === 1)
 			return;
+		
+		
 		
 		//воспроизводим уведомление о том что соперник произвел ход
 		gres.receive_move.sound.play();
@@ -1448,8 +1456,7 @@ var word_creation = {
 			gres.locked.sound.play();
 			return;
 		}
-		
-		
+				
 		let _word = "";
 		this.word.forEach(w=>{
 			_word+=objects.cells[w].letter.text
@@ -1500,14 +1507,17 @@ var word_creation = {
 		this.word.forEach(w=>{
 			anim2.add(objects.cells[w].bcg2,{alpha:[1,0]}, false, 0.5,'linear');
 		})
-		
-		
+				
 		//убираем диалог если он есть
 		anim2.add(objects.word_cont,{y:[objects.word_cont.y,450]}, false, 0.5,'easeInOutCubic');
 			
 		//отправляем ход оппоненту
 		let data = [this.new_cell,objects.cells[this.new_cell].letter.text,this.word];
-		game.opponent.send_move(data);		
+	
+		
+		
+		game.opponent.send_move(data);	
+
 		
 		me_conf_play = 1;
 				
@@ -1534,13 +1544,10 @@ var word_creation = {
 		
 		//записываем слово в историю
 		game.words_hist.push(_word);
-		
-		
+				
 		//последовательность больших кнопок
 		this.word = [];	
-		
-		
-		
+				
 		//активируем режим ожидания
 		word_waiting.activate();
 		
