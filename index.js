@@ -3301,8 +3301,10 @@ async function load_user_data() {
 			room_name= 'states';			
 		if (my_data.rating >= 1406 && my_data.rating <=1479)
 			room_name= 'states2';	
-		if (my_data.rating >= 1480)
-			room_name= 'states3';
+		if (my_data.rating >= 1480 && my_data.rating <=1580)
+			room_name= 'states3';	
+		if (my_data.rating >= 1581)
+			room_name= 'states4';
 		
 		
 		//устанавливаем рейтинг в попап
@@ -3537,4 +3539,3 @@ function main_loop() {
 
 	requestAnimationFrame(main_loop);
 }
-
