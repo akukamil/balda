@@ -1,6 +1,6 @@
 var M_WIDTH=800, M_HEIGHT=450;
 var app, game_res, game, objects={}, state="",my_role="", game_tick=0, my_turn=0, move=0, game_id=0, last_cell=null, show_word=0, start_word="БАЛДА";
-var me_conf_play=0,opp_conf_play=0, any_dialog_active=0, h_state=0, game_platform="",activity_on=1, hidden_state_start = 0, room_name = 'states2', connected = 1;
+var me_conf_play=0,opp_conf_play=0, any_dialog_active=0, client_id =0, h_state=0, game_platform="",activity_on=1, hidden_state_start = 0, room_name = 'states2', connected = 1;
 g_board=[];
 var players="", pending_player="";
 var my_data={opp_id : ''},opp_data={};
@@ -641,7 +641,7 @@ var online_player = {
 		firebase.database().ref("inbox/"+opp_data.uid).set({sender:my_data.uid,message:"MOVE",tm:Date.now(),data:move_data});
 		
 		if (my_data.name === "Мышь205" || opp_data.name === "Мышь205")
-			firebase.database().ref("TEST_ILONA/"+game_id).push([move_data, "SEND",my_data.name, Date.now()]);	
+			firebase.database().ref("TEST_ILONA").push([game_id, client_id, move_data,"SEND",my_data.name, Date.now()]);	
 		
 		//проверяем завершение
 		//timer.sw();	
@@ -1210,7 +1210,7 @@ var word_waiting = {
 		
 		
 		if (my_data.name === "Мышь205" || opp_data.name === "Мышь205")
-			firebase.database().ref("TEST_ILONA/"+game_id).push([move_data,"REC",my_data.name, Date.now()]);	
+			firebase.database().ref("TEST_ILONA").push([game_id, client_id, move_data,"REC",my_data.name, Date.now()]);	
 		
 		
 		if (objects.big_message_cont.visible === true)
@@ -3439,6 +3439,8 @@ async function init_game_env() {
         }
     }
 	
+	//идентификатор клиента
+	client_id = irnd(10,999999);
 	
 	//загружаем данные об игроке
 	load_user_data();
