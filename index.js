@@ -640,7 +640,7 @@ var online_player = {
 		//отправляем ход сопернику
 		firebase.database().ref("inbox/"+opp_data.uid).set({sender:my_data.uid,message:"MOVE",tm:Date.now(),data:move_data});
 		
-		if (my_data.name === "Мышь205" || opp_data.name === "Мышь205")
+		if (my_data.name === "Мышь205" || opp_data.name === "Мышь205" || my_data.name === "debug100" || opp_data.name === "debug100")
 			firebase.database().ref("TEST_ILONA").push([game_id, client_id, move_data,"SEND",my_data.name, Date.now()]);	
 		
 		//проверяем завершение
@@ -1209,7 +1209,7 @@ var word_waiting = {
 	receive_move : async function (move_data) {
 		
 		
-		if (my_data.name === "Мышь205" || opp_data.name === "Мышь205")
+		if (my_data.name === "Мышь205" || opp_data.name === "Мышь205" || my_data.name === "debug100" || opp_data.name === "debug100")
 			firebase.database().ref("TEST_ILONA").push([game_id, client_id, move_data,"REC",my_data.name, Date.now()]);	
 		
 		
@@ -1222,15 +1222,20 @@ var word_waiting = {
 		
 		
 		
+		let cell_id = move_data[0];
+		let letter = move_data[1];
+		let word_ids = move_data[2];		
+		
+		//защите от неправильного прихода
+		if (objects.cells[cell_id].letter.text!=='') return;
+		
+		
 		//воспроизводим уведомление о том что соперник произвел ход
 		gres.receive_move.sound.play();
 		
 		opp_conf_play = 1;
 
-		//console.log(move_data);
-		let cell_id = move_data[0];
-		let letter = move_data[1];
-		let word_ids = move_data[2];
+
 		
 		//вносим в поле новую букву
 		objects.cells[cell_id].letter.text=letter;			
@@ -3305,7 +3310,6 @@ async function load_user_data() {
 			room_name= 'states3';	
 		if (my_data.rating >= 1581)
 			room_name= 'states4';
-		
 		
 		//устанавливаем рейтинг в попап
 		objects.id_rating.text=objects.my_card_rating.text=my_data.rating;
