@@ -2887,7 +2887,7 @@ var cards_menu = {
 	send_invite: function() {
 
 
-		if (objects.invite_cont.ready === false || 	objects.big_message_cont.visible === true ||objects.req_cont.visible === true)	{
+		if (objects.invite_cont.ready === false || pending_player !=='' ||	objects.big_message_cont.visible === true ||objects.req_cont.visible === true)	{
 			gres.locked.sound.play();
 			return
 		}
@@ -3311,6 +3311,7 @@ async function load_user_data() {
 		if (my_data.rating >= 1581)
 			room_name= 'states4';
 		
+		
 		//устанавливаем рейтинг в попап
 		objects.id_rating.text=objects.my_card_rating.text=my_data.rating;
 
@@ -3465,7 +3466,6 @@ async function init_game_env() {
 	//заполняем клавиатуру
 	for (let i = 0 ; i < 33 ; i ++)
 		objects.keys[i].letter.text = rus_let[i];
-	
 	
 	
 	console.clear()
