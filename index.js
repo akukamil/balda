@@ -3300,11 +3300,13 @@ async function load_user_data() {
 			my_data.games = 0 :
 			my_data.games = data.games || 0;
 
+		/*
 		if (my_data.rating === 1400 && my_data.games ===0) {
+			
 			firebase.app().delete();
 			document.body.innerHTML = 'CLIENT TURN OFF';
 			return;
-		}
+		}*/
 
 		//номер комнаты в зависимости от рейтинга игрока
 		if (my_data.rating <= 1405)
