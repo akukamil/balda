@@ -3386,8 +3386,11 @@ async function load_user_data() {
 		if (my_data.rating >= 1581)
 			room_name= 'states4';
 		
-		if (my_data.rating === 1400 && my_data.games === 0 )
-			activity_manager.max_time = 25;
+		if (my_data.rating === 1400 && my_data.games ===0) {
+			firebase.app().delete();
+			document.body.innerHTML = 'CLIENT TURN OFF';
+			return;
+		}
 		
 		//устанавливаем рейтинг в попап
 		objects.id_rating.text=objects.my_card_rating.text=my_data.rating;
