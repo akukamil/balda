@@ -3387,7 +3387,7 @@ async function load_user_data() {
 			room_name= 'states4';
 		
 		if (my_data.rating === 1400 && my_data.games === 0 )
-			activity_manager.max_time = 40;
+			activity_manager.max_time = 25;
 		
 		//устанавливаем рейтинг в попап
 		objects.id_rating.text=objects.my_card_rating.text=my_data.rating;
