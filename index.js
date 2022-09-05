@@ -558,6 +558,9 @@ var big_message = {
 
 	close : function() {
 		
+		//сбрасываем время простоя
+		activity_manager.reset();
+		
 		if (objects.big_message_cont.ready===false)
 			return;
 
@@ -1179,6 +1182,7 @@ var word_waiting = {
 	receiving_move : 0,
 	
 	activate : async function (init_time) {		
+				
 		
 		my_turn = 0;
 		
@@ -1325,6 +1329,8 @@ var word_creation = {
 	
 	key_down : function (key) {				
 		
+		//сбрасываем время простоя
+		activity_manager.reset();
 		
 		if (objects.req_cont.visible === true) {
 			gres.locked.sound.play();
@@ -1347,6 +1353,8 @@ var word_creation = {
 	},
 	
 	cell_down : async function (cell_id) {		
+		
+
 		
 		//если имеется какое-то сообщение
 		if (objects.big_message_cont.visible===true || objects.req_cont.visible === true) {
@@ -1456,6 +1464,9 @@ var word_creation = {
 	
 	ok_down : async function () {		
 		
+		//сбрасываем время простоя
+		activity_manager.reset();
+		
 		//если имеется какое-то сообщение
 		if (objects.big_message_cont.visible===true || objects.req_cont.visible === true) {
 			gres.locked.sound.play();
@@ -1559,6 +1570,9 @@ var word_creation = {
 	},
 		
 	cancel_down : async function () {		
+		
+		//сбрасываем время простоя
+		activity_manager.reset();
 		
 		objects.cells[this.new_cell].letter.text = "";
 		
@@ -1792,6 +1806,36 @@ var rating = {
 	
 }
 
+var activity_manager = {
+	
+	idle_time : 0,
+	
+	start : function() {		
+		
+		if (this.idle_time === 100)
+			show_ad();
+
+		
+		if (this.idle_time === 120) {
+			
+			firebase.app().delete();
+			document.body.innerHTML = 'CLIENT TURN OFF';
+			return;
+		}
+		
+		//console.log(this.idle_time);
+		
+		this.idle_time +=1;
+		setTimeout(function(){activity_manager.start()}, 10000);
+	},
+	
+	reset : function() {		
+		
+		this.idle_time = 0;		
+	}
+	
+}
+
 var keep_alive = function() {
 	
 	if (h_state === 1) {		
@@ -1803,8 +1847,8 @@ var keep_alive = function() {
 		return;		
 	}
 
-
 	firebase.database().ref("players/"+my_data.uid+"/tm").set(firebase.database.ServerValue.TIMESTAMP);
+	firebase.database().ref("players/"+my_data.uid+"/idle_time").set(activity_manager.idle_time);
 	firebase.database().ref("inbox/"+my_data.uid).onDisconnect().remove();
 	firebase.database().ref(room_name+"/"+my_data.uid).onDisconnect().remove();
 
@@ -1908,7 +1952,7 @@ var req_dialog = {
 				
 				
 				//так как успешно получили данные о сопернике то показываем окно	
-				anim2.add(objects.req_cont,{y:[-260, objects.req_cont.sy]}, true, 1,'easeOutElastic');
+				anim2.add(objects.req_cont,{y:[-260, objects.req_cont.sy]}, true, 0.5,'easeOutElastic');
 
 				//Отображаем  имя и фамилию в окне приглашения
 				req_dialog._opp_data.name=player_data.name;
@@ -1967,6 +2011,9 @@ var req_dialog = {
 
 	reject: function() {
 
+		//сбрасываем время простоя
+		activity_manager.reset();
+
 		if (objects.req_cont.ready===false)
 			return;
 		
@@ -1990,6 +2037,9 @@ var req_dialog = {
 	},
 
 	accept: function() {
+
+		//сбрасываем время простоя
+		activity_manager.reset();
 
 		if (objects.req_cont.ready===false || objects.big_message_cont.visible === true || objects.keys_cont.ready === false || objects.confirm_cont.visible === true || anim2.some_anim_on()===1) {
 			gres.locked.sound.play();
@@ -2120,7 +2170,6 @@ var social_dialog = {
 
 var main_menu = {
 
-
 	activate: function() {
 
 		//просто добавляем контейнер с кнопками
@@ -2141,6 +2190,9 @@ var main_menu = {
 
 	play_button_down: function () {
 
+		//сбрасываем время простоя
+		activity_manager.reset();
+
 		if (any_dialog_active===1 || activity_on===1) {
 			gres.locked.sound.play();
 			return
@@ -2154,6 +2206,9 @@ var main_menu = {
 	},
 
 	lb_button_down: function () {
+
+		//сбрасываем время простоя
+		activity_manager.reset();
 
 		if (any_dialog_active===1) {
 			gres.locked.sound.play();
@@ -2169,6 +2224,9 @@ var main_menu = {
 
 	rules_button_down: function () {
 
+		//сбрасываем время простоя
+		activity_manager.reset();
+
 		if (any_dialog_active===1) {
 			gres.locked.sound.play();
 			return
@@ -2182,6 +2240,10 @@ var main_menu = {
 	},
 
 	rules_ok_down: function () {
+		
+		//сбрасываем время простоя
+		activity_manager.reset();
+		
 		any_dialog_active=0;		
 		anim2.add(objects.rules_cont,{y:[objects.rules_cont.y,-450, ]}, false, 0.5,'easeInBack');
 	}
@@ -2230,6 +2292,9 @@ var lb = {
 	},
 
 	back_button_down: function() {
+
+		//сбрасываем время простоя
+		activity_manager.reset();
 
 		if (any_dialog_active===1 || objects.lb_1_cont.ready===false) {
 			gres.locked.sound.play();
@@ -2763,6 +2828,9 @@ var cards_menu = {
 	
 	card_down : function ( card_id ) {
 		
+		//сбрасываем время простоя
+		activity_manager.reset();
+		
 		if (objects.mini_cards[card_id].type === 'single')
 			this.show_invite_dialog(card_id);
 		
@@ -2772,7 +2840,8 @@ var cards_menu = {
 	},
 	
 	show_table_dialog : function (card_id) {
-		
+				
+				
 		if (objects.td_cont.ready === false || objects.td_cont.visible === true || objects.big_message_cont.visible === true ||objects.req_cont.visible === true)	{
 			gres.locked.sound.play();
 			return
@@ -2942,6 +3011,9 @@ var cards_menu = {
 	},
 
 	back_button_down: function() {
+
+		//сбрасываем время простоя
+		activity_manager.reset();
 
 		if (objects.td_cont.visible === true || objects.big_message_cont.visible === true ||objects.req_cont.visible === true ||objects.invite_cont.visible === true)	{
 			gres.locked.sound.play();
@@ -3301,12 +3373,7 @@ async function load_user_data() {
 			my_data.games = data.games || 0;
 
 		
-		if (my_data.rating === 1400 && my_data.games ===0) {
-			
-			firebase.app().delete();
-			document.body.innerHTML = 'CLIENT TURN OFF';
-			return;
-		}
+
 
 		//номер комнаты в зависимости от рейтинга игрока
 		if (my_data.rating <= 1405)
@@ -3469,6 +3536,9 @@ async function init_game_env() {
 		
 	//показыаем основное меню
 	main_menu.activate();
+	
+	//менеджер простоя
+	activity_manager.start();
 	
 	//заполняем клавиатуру
 	for (let i = 0 ; i < 33 ; i ++)
