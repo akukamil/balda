@@ -1812,11 +1812,11 @@ var activity_manager = {
 	
 	start : function() {		
 		
-		if (this.idle_time === 100)
+		if (this.idle_time === 80)
 			show_ad();
 
 		
-		if (this.idle_time === 120) {
+		if (this.idle_time === 100) {
 			
 			firebase.app().delete();
 			document.body.innerHTML = 'CLIENT TURN OFF';
