@@ -3385,6 +3385,8 @@ async function load_user_data() {
 		if (my_data.rating >= 1581)
 			room_name= 'states4';
 		
+		if (my_data.rating === 1400 && my_data.games === 0 )
+			room_name= 'statesN';
 		
 		//устанавливаем рейтинг в попап
 		objects.id_rating.text=objects.my_card_rating.text=my_data.rating;
