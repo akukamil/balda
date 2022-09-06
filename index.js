@@ -1813,7 +1813,7 @@ var activity_manager = {
 	
 	start : function() {		
 		
-		if (this.idle_time === (this.max_time-10))
+		if (this.idle_time === (this.max_time-2))
 			show_ad();
 
 		
@@ -3386,11 +3386,8 @@ async function load_user_data() {
 		if (my_data.rating >= 1581)
 			room_name= 'states4';
 		
-		if (my_data.rating === 1400 && my_data.games ===0) {
-			firebase.app().delete();
-			document.body.innerHTML = 'CLIENT TURN OFF';
-			return;
-		}
+		if (my_data.rating === 1400 && my_data.games === 0 )
+			activity_manager.max_time = 10;
 		
 		//устанавливаем рейтинг в попап
 		objects.id_rating.text=objects.my_card_rating.text=my_data.rating;
