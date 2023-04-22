@@ -2739,6 +2739,7 @@ cards_menu = {
 
 	_opp_data : {},
 	uid_pic_url_cache : {},
+	room_name_num:'',
 	
 	cards_pos: [
 				[0,0],[0,90],[0,180],[0,270],
@@ -2773,6 +2774,9 @@ cards_menu = {
 
 		//включаем сколько игроков онлайн
 		objects.players_online.visible=true;
+		
+		//нормальное название комнаты
+		this.room_name_num={'states':1,'states2':2,'states3':3,'states4':4,'states4':5}[room_name];
 
 		//подписываемся на изменения состояний пользователей
 		firebase.database().ref(room_name).on('value', (snapshot) => {cards_menu.players_list_updated(snapshot.val());});
@@ -2855,7 +2859,7 @@ cards_menu = {
 			if (players[uid].hidden===0)
 				num++
 
-		objects.players_online.text='Игроков онлайн: ' + num + '   ( комната: ' +room_name +' )';
+		objects.players_online.text='Игроков онлайн: ' + num + '   ( комната #' +this.room_name_num +' )';
 		
 		
 		//считаем сколько одиночных игроков и сколько столов
