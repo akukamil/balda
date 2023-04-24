@@ -39,14 +39,14 @@ class player_mini_card_class extends PIXI.Container {
 		this.avatar.width=this.avatar.height=60;
 
 		this.name="";
-		this.name_text=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 20,align: 'center'});
+		this.name_text=new PIXI.BitmapText('', {fontName: 'balsamic',fontSize: 25,align: 'center'});
 		this.name_text.tint=objects.minicard_name_color;
 		this.name_text.anchor.set(0.5,0.5);
 		this.name_text.x=135;
 		this.name_text.y=35;
 
 		this.rating=0;
-		this.rating_text=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 24,align: 'center'});
+		this.rating_text=new PIXI.BitmapText('', {fontName: 'balsamic',fontSize: 32,align: 'center'});
 		this.rating_text.tint=objects.minicard_rating_color;
 		this.rating_text.anchor.set(0.5,0.5);
 		this.rating_text.x=135;
@@ -64,13 +64,13 @@ class player_mini_card_class extends PIXI.Container {
 		this.avatar2.y=20;
 		this.avatar2.width=this.avatar2.height=60;
 
-		this.rating_text1=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 18,align: 'center'});
+		this.rating_text1=new PIXI.BitmapText('', {fontName: 'balsamic',fontSize: 18,align: 'center'});
 		this.rating_text1.tint=0xffff00;
 		this.rating_text1.anchor.set(0.5,0);
 		this.rating_text1.x=50;
 		this.rating_text1.y=70;
 
-		this.rating_text2=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 18,align: 'center'});
+		this.rating_text2=new PIXI.BitmapText('', {fontName: 'balsamic',fontSize: 18,align: 'center'});
 		this.rating_text2.tint=0xffff00;
 		this.rating_text2.anchor.set(0.5,0);
 		this.rating_text2.x=150;
@@ -101,7 +101,7 @@ class lb_player_card_class extends PIXI.Container{
 		this.bcg.width = 370;
 		this.bcg.height = 70;
 
-		this.place=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 25,align: 'center'});
+		this.place=new PIXI.BitmapText('', {fontName: 'balsamic',fontSize: 25,align: 'center'});
 		this.place.tint=objects.lb_place_color;
 		this.place.x=20;
 		this.place.y=22;
@@ -112,13 +112,13 @@ class lb_player_card_class extends PIXI.Container{
 		this.avatar.width=this.avatar.height=48;
 
 
-		this.name=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 25,align: 'center'});
+		this.name=new PIXI.BitmapText('', {fontName: 'balsamic',fontSize: 30,align: 'center'});
 		this.name.tint=objects.lb_name_color;
 		this.name.x=105;
 		this.name.y=22;
 
 
-		this.rating=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 25,align: 'center'});
+		this.rating=new PIXI.BitmapText('', {fontName: 'balsamic',fontSize: 35,align: 'center'});
 		this.rating.x=298;
 		this.rating.tint=objects.lb_rating_color;
 		this.rating.y=22;
@@ -153,7 +153,7 @@ class cells_class extends PIXI.Container {
 		this.bcg3.visible = false;
 		this.bcg3.width=this.bcg3.height=60;
 
-		this.letter=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 60});
+		this.letter=new PIXI.BitmapText('', {fontName: 'balsamic_bold',fontSize: 76});
 		this.letter.tint=objects.cell_color;
 		this.letter.anchor.set(0.5,0.5);
 		this.letter.x=30;
@@ -191,7 +191,7 @@ class keys_class extends PIXI.Container {
 		this.bcg.width=this.bcg.height=50;
 		
 
-		this.letter=new PIXI.BitmapText("", {fontName: 'mfont',fontSize: 35});
+		this.letter=new PIXI.BitmapText("", {fontName: 'balsamic',fontSize: 35});
 		this.letter.tint=objects.key_color;
 		this.letter.x=20;
 		this.letter.y=20;
@@ -226,7 +226,7 @@ class chat_record_class extends PIXI.Container {
 		this.msg_bcg.x=90;
 		
 
-		this.name = new PIXI.BitmapText('Имя Фамил', {fontName: 'mfont',fontSize: 15});
+		this.name = new PIXI.BitmapText('Имя Фамил', {fontName: 'balsamic',fontSize: 20});
 		this.name.anchor.set(0.5,0.5);
 		this.name.x=65;
 		this.name.y=55;
@@ -241,14 +241,14 @@ class chat_record_class extends PIXI.Container {
 		this.avatar.anchor.set(0.5,0)
 				
 		
-		this.msg = new PIXI.BitmapText('Имя Фамил', {fontName: 'mfont',fontSize: 20,align: 'left'}); 
+		this.msg = new PIXI.BitmapText('Имя Фамил', {fontName: 'balsamic',fontSize: 25,align: 'left'}); 
 		this.msg.x=140;
 		this.msg.y=37.5;
-		this.msg.maxWidth=400;
+		this.msg.maxWidth=470;
 		this.msg.anchor.set(0,0.5);
 		this.msg.tint = objects.chat_message_color;
 		
-		this.msg_tm = new PIXI.BitmapText('28.11.22 12:31', {fontName: 'mfont',fontSize: 14}); 
+		this.msg_tm = new PIXI.BitmapText('28.11.22 12:31', {fontName: 'balsamic',fontSize: 20}); 
 		this.msg_tm.y=57;
 		this.msg_tm.tint=objects.chat_time_color;
 		//this.msg_tm.alpha=0.5;
@@ -341,7 +341,7 @@ class chat_record_class extends PIXI.Container {
 	
 }
 
-var anim2 = {
+anim2 = {
 		
 	c1: 1.70158,
 	c2: 1.70158 * 1.525,
@@ -536,7 +536,7 @@ var anim2 = {
 	
 }
 
-var sound = {
+sound = {
 	
 	on : 1,
 	
@@ -555,16 +555,43 @@ var sound = {
 	
 }
 
-async function add_message(text) {
+message =  {
 	
-	if (objects.message_cont.visible === true)
-		return;
+	promise_resolve :0,
+	
+	add : async function(text, timeout) {
+		
+		if (this.promise_resolve!==0)
+			this.promise_resolve("forced");
+		
+		if (timeout === undefined) timeout = 3000;
+		
+		//воспроизводим звук
+		sound.play('message');
 
-	objects.message_text.text = text;
-	await anim2.add(objects.message_cont,{x:[-200,objects.message_cont.sx]}, true, 1,'easeOutElastic');
-	await new Promise((resolve, reject) => setTimeout(resolve, 3000));
-	await anim2.add(objects.message_cont,{x:[objects.message_cont.sx,-200]}, false, 0.5,'easeInBack');
+		objects.message_text.text=text;
+
+		await anim2.add(objects.message_cont,{x:[-200,objects.message_cont.sx]}, true, 0.25,'easeOutBack');
+
+		let res = await new Promise((resolve, reject) => {
+				message.promise_resolve = resolve;
+				setTimeout(resolve, timeout)
+			}
+		);
+		
+		if (res === "forced")
+			return;
+
+		anim2.add(objects.message_cont,{x:[objects.message_cont.sx, -200]}, false, 0.25,'easeInBack');			
+	},
 	
+	clicked : function() {
+		
+		
+		message.promise_resolve();
+		
+	}
+
 }
 
 var big_message = {
@@ -638,14 +665,14 @@ confirm_dialog = {
 var make_text = function (obj, text, max_width) {
 
 	let sum_v=0;
-	let f_size=obj.fontSize;
-
+	const f_size=obj.fontSize;
+	const font=gres[obj.fontName].bitmapFont;
 	for (let i=0;i<text.length;i++) {
 
 		let code_id=text.charCodeAt(i);
-		let char_obj=game_res.resources.m2_font.bitmapFont.chars[code_id];
+		let char_obj=font.chars[code_id];
 		if (char_obj===undefined) {
-			char_obj=game_res.resources.m2_font.bitmapFont.chars[83];
+			char_obj=font.chars[83];
 			text = text.substring(0, i) + 'S' + text.substring(i + 1);
 		}
 
@@ -667,7 +694,7 @@ online_player = {
 	disconnect_time : 0,
 	start_time : 0,
 	
-	send_move : function  (move_data) {
+	send_move  (move_data) {
 		
 
 		//отправляем ход сопернику
@@ -681,7 +708,7 @@ online_player = {
 		
 	},
 	
-	init : function (r) {
+	init (r) {
 	
 		
 		me_conf_play = 0;
@@ -704,11 +731,13 @@ online_player = {
 		var Ea = 1 / (1 + Math.pow(10, ((opp_data.rating-my_data.rating)/400)));
 		let lose_rating =  Math.round(my_data.rating + 16 * (0 - Ea));
 		firebase.database().ref("players/"+my_data.uid+"/rating").set(lose_rating);	
-	
+		
+		
+		//objects.send_message_button.visible=true;
 		
 	},
 	
-	reset_timer : function(t) {
+	reset_timer(t) {
 		
 		this.move_start = Date.now();
 		
@@ -722,7 +751,7 @@ online_player = {
 		
 	},
 	
-	process_time : function () {
+	process_time () {
 		
 		this.time_t = Math.floor((this.control_time - Date.now())*0.001);
 		
@@ -765,7 +794,7 @@ online_player = {
 		
 	},
 	
-	stop : async function(res) {
+	async stop(res) {
 					
 		
 		//случай если не смогли начать игру
@@ -823,7 +852,7 @@ online_player = {
 		}
 
 
-		
+		objects.send_message_button.visible=false;
 		//записываем в историю партий
 		if (res !== 'NO_CONNECTION') {
 			
@@ -839,6 +868,23 @@ online_player = {
 		
 		await big_message.show(res_s,"Рейтинг: " + old_rating + ' > ' + my_data.rating);
 	
+	},
+	
+	async send_message_down(){
+		
+		if(anim2.any_on())
+			return;
+		
+		let msg_data = await feedback.show();
+		
+		if (msg_data[0] === 'sent')			
+			firebase.database().ref("inbox/"+opp_data.uid).set({sender:my_data.uid,message:"CHAT",tm:Date.now(),data:msg_data[1]});	
+		
+	},
+	
+	chat(data) {		
+		
+		message.add(data, 10000);
 	}
 
 };
@@ -1393,7 +1439,7 @@ word_creation = {
 		}
 		
 		if (my_turn === 0) {
-			add_message("Не твоя очередь");
+			message.add("Не твоя очередь");
 			return;
 		}
 		
@@ -1405,27 +1451,27 @@ word_creation = {
 				
 				if (this.word.includes(cell_id)===true) {		
 					gres.bad_move.sound.play();
-					add_message("Нельзя ходить по кругу")
+					message.add("Нельзя ходить по кругу")
 					return;		
 				}				
 					
 				if (objects.cells[cell_id].letter.text === "") {
 					gres.bad_move.sound.play();
-					add_message("Нужно выбрать следующую букву")		
+					message.add("Нужно выбрать следующую букву")		
 					return;				
 				}				
 				
 				let prv_cell = this.word[this.word.length-1];
 				if (adj_cells[prv_cell].includes(cell_id) === false) {
 					gres.bad_move.sound.play();
-					add_message("Выберите смежную клетку")
+					message.add("Выберите смежную клетку")
 					return;
 				}				
 			}
 
 			if (objects.cells[cell_id].letter.text === "") {
 				gres.bad_move.sound.play();
-				add_message("Нужно выбрать букву с которой начнется слово")		
+				message.add("Нужно выбрать букву с которой начнется слово")		
 				return;				
 			}	
 			
@@ -1447,19 +1493,19 @@ word_creation = {
 		}
 				
 		if (this.active_key === -1) {
-			add_message("Сначала поставьте новую букву на поле");
+			message.add("Сначала поставьте новую букву на поле");
 			gres.bad_move.sound.play();
 			return;				
 		}
 		
 		if (objects.cells[cell_id].letter.text !== "") {
-			add_message("Букву нужно поставить на пустую клетку");
+			message.add("Букву нужно поставить на пустую клетку");
 			gres.bad_move.sound.play();
 			return;				
 		}
 		
 		if (this.check_if_near_adj(cell_id) === false) {
-			add_message("Букву нужно поставить рядом с имеющимися на поле");
+			message.add("Букву нужно поставить рядом с имеющимися на поле");
 			gres.bad_move.sound.play();
 			return;				
 		}
@@ -1510,35 +1556,35 @@ word_creation = {
 		
 		if (this.word.length <2 ) {
 			gres.bad_word.sound.play();
-			add_message("Выделите клетки со словом по буквам");
+			message.add("Выделите клетки со словом по буквам");
 			return;
 		}
 		
 		if (_word === start_word) {
 			this.cancel_down();
 			gres.bad_word.sound.play();
-			add_message("Главное слово нельзя выбирать");
+			message.add("Главное слово нельзя выбирать");
 			return;
 		}		
 		
 		if (this.word.includes(this.new_cell) === false) {
 			this.cancel_down();
 			gres.bad_word.sound.play();
-			add_message("Нужно использовать новую букву!");
+			message.add("Нужно использовать новую букву!");
 			return;
 		}
 				
 		if (game.words_hist.includes(_word) === true) {
 			gres.bad_word.sound.play();
 			this.cancel_down();
-			add_message("Такое слово уже есть(")
+			message.add("Такое слово уже есть(")
 			return;
 		}
 		
 		if (rus_dict0.includes(_word) === false && rus_dict1.includes(_word) === false) {
 			gres.bad_word.sound.play();
 			this.cancel_down();
-			add_message("Такого слова нету в словаре(")
+			message.add("Такого слова нету в словаре(")
 			return;
 		}
 		
@@ -1686,7 +1732,7 @@ game = {
 		objects.opp_letters_num.text = "0";
 		
 		//показываем кнопку стоп
-		objects.stop_bot_button.visible=true;
+		objects.stop_game_button.visible=true;
 
 		if (my_role==="master")
 			word_creation.activate(45);
@@ -1725,8 +1771,7 @@ game = {
 	},
 		
 	stop : async function (res) {
-				
-		
+						
 		//если отменяем игру то сначала предупреждение
 		if (res === 'MY_CANCEL') {
 			
@@ -1764,7 +1809,7 @@ game = {
 		objects.wait_opponent_move.visible=false;
 				
 		//убираем кнопку стоп
-		objects.stop_bot_button.visible=false;
+		objects.stop_game_button.visible=false;
 		
 		
 		//сначала завершаем все что связано с оппонентом
@@ -1931,6 +1976,10 @@ process_new_message = function(msg) {
 			//получение сообщение с ходом игорка
 			if (msg.message==="MOVE")
 				word_waiting.receive_move(msg.data);
+			
+			//получение сообщение с ходом игорка
+			if (msg.message==="CHAT")
+				online_player.chat(msg.data);
 		}
 	}
 
@@ -2059,7 +2108,7 @@ req_dialog = {
 		if (objects.req_cont.ready===false)
 			return;
 		
-		add_message("Приглашения отключены до конца игры");
+		message.add("Приглашения отключены до конца игры");
 		req_dialog.reject_all_game_val = 1;
 		anim2.add(objects.req_cont,{y:[objects.req_cont.sy, -260]}, false, 0.5,'easeInBack');
 		firebase.database().ref("inbox/"+req_dialog._opp_data.uid).set({sender:my_data.uid,message:"REJECT_ALL",tm:Date.now()});
@@ -2245,7 +2294,7 @@ chat = {
 			rec.tm=0;
 		}
 
-		if (my_data.rating<1430)
+		if (my_data.rating<-1430)
 			objects.chat_enter_button.visible=false
 		else
 			objects.chat_enter_button.visible=true
@@ -2776,7 +2825,7 @@ cards_menu = {
 		objects.players_online.visible=true;
 		
 		//нормальное название комнаты
-		this.room_name_num={'states':1,'states2':2,'states3':3,'states4':4,'states4':5}[room_name];
+		this.room_name_num={'states':1,'states2':2,'states3':3,'states4':4,'states5':5}[room_name];
 
 		//подписываемся на изменения состояний пользователей
 		firebase.database().ref(room_name).on('value', (snapshot) => {cards_menu.players_list_updated(snapshot.val());});
@@ -3815,7 +3864,7 @@ async function init_game_env() {
 	app.stage = new PIXI.Container();
 	app.renderer = new PIXI.Renderer({width:M_WIDTH, height:M_HEIGHT,antialias:true});
 	document.body.appendChild(app.renderer.view).style["boxShadow"] = "0 0 15px #000000";
-	document.body.style.backgroundColor = 'rgb(141,211,200)';
+	document.body.style.backgroundColor = 'rgb(62,52,62)';
 
 	resize();
 	window.addEventListener("resize", resize);
@@ -3903,8 +3952,6 @@ async function init_game_env() {
 	//показыаем основное меню
 	main_menu.activate();
 	
-	//менеджер простоя
-	//activity_manager.start();
 	
 	//заполняем клавиатуру
 	for (let i = 0 ; i < 33 ; i ++)
@@ -3927,12 +3974,13 @@ async function load_resources() {
 
 
 	let git_src="https://akukamil.github.io/balda/"
-	//git_src=""
+	git_src=""
 
 
 	game_res=new PIXI.Loader();
-	game_res.add("m2_font", git_src+"fonts/Neucha/font.fnt");
-
+	game_res.add("balsamic_bold", git_src+"fonts/balsamic_bold/font.fnt");
+	game_res.add("balsamic", git_src+"fonts/balsamic/font.fnt");
+	
 	game_res.add('click',git_src+'/sounds/click.mp3');
 	game_res.add('locked',git_src+'/sounds/locked.mp3');
 	game_res.add('clock',git_src+'/sounds/clock.mp3');
