@@ -615,9 +615,6 @@ var big_message = {
 
 	close : function() {
 		
-		//сбрасываем время простоя
-		activity_manager.reset();
-		
 		if (objects.big_message_cont.ready===false)
 			return;
 
@@ -1412,10 +1409,7 @@ word_creation = {
 	},
 	
 	key_down : function (key) {				
-		
-		//сбрасываем время простоя
-		activity_manager.reset();
-		
+				
 		if (objects.req_cont.visible === true) {
 			gres.locked.sound.play();
 			return;
@@ -1549,9 +1543,7 @@ word_creation = {
 	
 	ok_down : async function () {		
 		
-		//сбрасываем время простоя
-		activity_manager.reset();
-		
+	
 		//если имеется какое-то сообщение
 		if (objects.big_message_cont.visible===true || objects.req_cont.visible === true) {
 			gres.locked.sound.play();
@@ -1651,10 +1643,9 @@ word_creation = {
 		
 	},
 		
-	cancel_down : async function () {		
-		
-		//сбрасываем время простоя
-		activity_manager.reset();
+	cancel_down : async function () {	
+
+		sound.play('click');
 		
 		objects.cells[this.new_cell].letter.text = "";
 		
@@ -1895,37 +1886,6 @@ rating = {
 	
 }
 
-activity_manager = {
-	
-	idle_time : 0,
-	max_time : 100,
-	
-	start : function() {		
-		
-		if (this.idle_time === (this.max_time-2))
-			show_ad();
-
-		
-		if (this.idle_time === this.max_time) {
-			
-			firebase.app().delete();
-			document.body.innerHTML = 'CLIENT TURN OFF';
-			return;
-		}
-		
-		//console.log(this.idle_time);
-		
-		this.idle_time +=1;
-		setTimeout(function(){activity_manager.start()}, 10000);
-	},
-	
-	reset : function() {		
-		
-		this.idle_time = 0;		
-	}
-	
-}
-
 keep_alive = function() {
 	
 	if (h_state === 1) {		
@@ -1938,7 +1898,6 @@ keep_alive = function() {
 	}
 
 	firebase.database().ref("players/"+my_data.uid+"/tm").set(firebase.database.ServerValue.TIMESTAMP);
-	firebase.database().ref("players/"+my_data.uid+"/idle_time").set(activity_manager.idle_time);
 	firebase.database().ref("inbox/"+my_data.uid).onDisconnect().remove();
 	firebase.database().ref(room_name+"/"+my_data.uid).onDisconnect().remove();
 
@@ -2101,8 +2060,6 @@ req_dialog = {
 
 	reject: function() {
 
-		//сбрасываем время простоя
-		activity_manager.reset();
 
 		if (anim2.any_on()) {
 			gres.locked.sound.play();
@@ -2129,9 +2086,6 @@ req_dialog = {
 	},
 
 	accept: function() {
-
-		//сбрасываем время простоя
-		activity_manager.reset();
 
 		if (objects.big_message_cont.visible||objects.confirm_cont.visible|| anim2.any_on()) {
 			gres.locked.sound.play();
@@ -2231,9 +2185,6 @@ main_menu = {
 
 	play_button_down: function () {
 
-		//сбрасываем время простоя
-		activity_manager.reset();
-
 		if (anim2.any_on()) {
 			gres.locked.sound.play();
 			return
@@ -2246,9 +2197,6 @@ main_menu = {
 	},
 
 	lb_button_down: function () {
-
-		//сбрасываем время простоя
-		activity_manager.reset();
 
 		if (anim2.any_on()) {
 			gres.locked.sound.play();
@@ -2264,8 +2212,6 @@ main_menu = {
 
 	chat_button_down: function () {
 
-		//сбрасываем время простоя
-		activity_manager.reset();
 
 		if (anim2.any_on()) {
 			gres.locked.sound.play();
@@ -2714,9 +2660,6 @@ lb = {
 	},
 
 	back_button_down: function() {
-
-		//сбрасываем время простоя
-		activity_manager.reset();
 
 		if (anim2.any_on()) {
 			gres.locked.sound.play();
@@ -3248,9 +3191,6 @@ cards_menu = {
 	
 	card_down : function ( card_id ) {
 		
-		//сбрасываем время простоя
-		activity_manager.reset();
-		
 		if (objects.mini_cards[card_id].type === 'single')
 			this.show_invite_dialog(card_id);
 		
@@ -3429,9 +3369,6 @@ cards_menu = {
 	},
 
 	back_button_down: function() {
-
-		//сбрасываем время простоя
-		activity_manager.reset();
 
 		if (objects.td_cont.visible|| objects.big_message_cont.visible||objects.req_cont.visible||objects.invite_cont.visible||anim2.any_on())	{
 			gres.locked.sound.play();
@@ -3802,8 +3739,6 @@ async function load_user_data() {
 			room_name= 'states4';
 		//room_name= 'states5';
 		
-		if (my_data.rating === 1400 && my_data.games === 0 )
-			activity_manager.max_time = 10;
 		
 		//устанавливаем рейтинг в попап
 		objects.id_rating.text=objects.my_card_rating.text=my_data.rating;
