@@ -652,9 +652,12 @@ confirm_dialog = {
 	
 	button_down(res) {
 		
-		if (objects.confirm_cont.ready===false)
-			return;
-		gres.close_it.sound.play();
+		if (objects.confirm_cont.ready===false){
+			sound.play('locked');
+			return;			
+		}
+
+		sound.play('click');
 		anim2.add(objects.confirm_cont,{y:[objects.confirm_cont.sy,450]}, false, 0.4,'easeInBack');		
 		this.p_resolve(res);	
 		
@@ -733,7 +736,7 @@ online_player = {
 		firebase.database().ref("players/"+my_data.uid+"/rating").set(lose_rating);	
 		
 		
-		//objects.send_message_button.visible=true;
+		objects.send_message_button.visible=true;
 		
 	},
 	
@@ -798,8 +801,9 @@ online_player = {
 					
 		
 		//случай если не смогли начать игру
-		if (opp_conf_play === 0 || me_conf_play === 0)
-			res = "NO_CONNECTION";
+		if(res === 'MY_NO_TIME'|| res === 'OPP_NO_TIME')
+			if (opp_conf_play === 0 || me_conf_play === 0)
+				res = "NO_CONNECTION";
 		
 		
 		//отключаем таймер времени
@@ -872,9 +876,12 @@ online_player = {
 	
 	async send_message_down(){
 		
-		if(anim2.any_on())
-			return;
-		
+		if(anim2.any_on()){			
+			sound.play('locked');
+			return;			
+		}
+
+		sound.play('click');
 		let msg_data = await feedback.show();
 		
 		if (msg_data[0] === 'sent')			
@@ -884,6 +891,7 @@ online_player = {
 	
 	chat(data) {		
 		
+		sound.play('online_message');
 		message.add(data, 10000);
 	}
 
@@ -1414,7 +1422,7 @@ word_creation = {
 		}
 		
 		
-		gres.key_down.sound.play();
+		sound.play('key_down');
 		
 		//если уже активирована клавиша то отменяем ее
 		if (this.active_key!== -1)
@@ -1439,6 +1447,7 @@ word_creation = {
 		}
 		
 		if (my_turn === 0) {
+			sound.play('locked');
 			message.add("Не твоя очередь");
 			return;
 		}
@@ -1796,6 +1805,11 @@ game = {
 		//убираем клавиатуру если она есть
 		if (objects.keys_cont.visible === true)
 			anim2.add(objects.keys_cont,{y:[objects.keys_cont.sy,450]}, false, 1,'easeInOutCubic');
+		
+		//убираем клавиатуру чата если есть
+		if (objects.feedback_cont.visible === true)
+			feedback.close();
+		
 		
 		//убираем окно подтверждения если оно есть
 		if (objects.confirm_cont.visible === true)
@@ -3978,8 +3992,8 @@ async function load_resources() {
 
 
 	game_res=new PIXI.Loader();
-	game_res.add("balsamic_bold", git_src+"fonts/balsamic_bold/font.fnt");
-	game_res.add("balsamic", git_src+"fonts/balsamic/font.fnt");
+	game_res.add('balsamic_bold', git_src+'fonts/balsamic_bold/font.fnt');
+	game_res.add('balsamic', git_src+'fonts/balsamic/font.fnt');
 	
 	game_res.add('click',git_src+'/sounds/click.mp3');
 	game_res.add('locked',git_src+'/sounds/locked.mp3');
@@ -3998,6 +4012,8 @@ async function load_resources() {
 	game_res.add('invite',git_src+'/sounds/invite.mp3');
 	game_res.add('draw',git_src+'/sounds/draw.mp3');
 	game_res.add('keypress',git_src+'/sounds/keypress.mp3');
+	game_res.add('online_message',git_src+'/sounds/online_message.mp3');
+	
 	
     //добавляем из листа загрузки
     for (var i = 0; i < load_list.length; i++)
