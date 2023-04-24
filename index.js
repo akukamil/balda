@@ -615,10 +615,13 @@ var big_message = {
 
 	close : function() {
 		
-		if (objects.big_message_cont.ready===false)
-			return;
+		if (objects.big_message_cont.ready===false){
+			sound.play('locked');
+			return;			
+		}
 
-		gres.close_it.sound.play();
+
+		sound.play('close_it');
 		anim2.add(objects.big_message_cont,{y:[objects.big_message_cont.sy,450]}, false, 0.4,'easeInBack');		
 		this.p_resolve("close");			
 	}
@@ -633,13 +636,13 @@ confirm_dialog = {
 				
 				
 		if (objects.confirm_cont.visible === true) {
-			gres.locked.sound.play();
+			sound.play('locked');
 			return;			
 		}		
 				
 		objects.confirm_msg.text=msg;
 		
-		gres.bad_move.sound.play();
+		sound.play('bad_move');
 		anim2.add(objects.confirm_cont,{y:[450,objects.confirm_cont.sy]}, true, 0.6,'easeOutBack');		
 				
 		return new Promise(function(resolve, reject){					
@@ -775,7 +778,7 @@ online_player = {
 		//подсвечиваем красным если осталость мало времени
 		if (this.time_t === 15) {
 			objects.timer.tint=0xff0000;
-			gres.clock.sound.play();
+			sound.play('clock');
 		}
 		
 		clearTimeout(this.timer);
@@ -810,18 +813,18 @@ online_player = {
 		let Ea = 1 / (1 + Math.pow(10, ((opp_data.rating-my_data.rating)/400)));
 		if (res === 'DRAW') {
 			my_data.rating = Math.round(my_data.rating + 16 * (0.5 - Ea));	
-			gres.draw.sound.play();
+			sound.play('draw');
 			int_res=0;
 		}
 		if (res === 'MY_WIN' || res === 'OPP_NO_TIME' || res === 'OPP_CANCEL') {
 			my_data.rating = Math.round(my_data.rating + 16 * (1 - Ea));
-			gres.win.sound.play();
+			sound.play('win');
 			int_res=1;
 			
 		}
 		if (res === 'MY_LOSE' || res === 'MY_NO_TIME' || res === 'MY_CANCEL' || res === 'MY_NO_CONNECTION') {
 			my_data.rating = Math.round(my_data.rating + 16 * (0 - Ea));
-			gres.lose.sound.play();
+			sound.play('lose');
 			int_res=-1;
 		}
 		
@@ -1141,10 +1144,10 @@ bot_player = {
 		
 		
 		if (res === 'DRAW')
-			gres.draw.sound.play();
+			sound.play('draw');
 		
 		if (res === 'MY_LOSE' || res === 'MY_CANCEL')
-			gres.lose.sound.play();		
+			sound.play('lose');	
 		
 				
 		
@@ -1171,7 +1174,7 @@ bot_player = {
 		
 		if (res === 'MY_WIN' || res === 'GIVE_UP') {		
 		
-			gres.win.sound.play();			
+			sound.play('win');		
 
 			if (my_data.rating > 1500) {
 				
@@ -1316,7 +1319,7 @@ word_waiting = {
 		
 		
 		//воспроизводим уведомление о том что соперник произвел ход
-		gres.receive_move.sound.play();
+		sound.play('receive_move');
 		
 		opp_conf_play = 1;
 
@@ -1411,7 +1414,7 @@ word_creation = {
 	key_down : function (key) {				
 				
 		if (objects.req_cont.visible === true) {
-			gres.locked.sound.play();
+			sound.play('locked');
 			return;
 		}
 		
@@ -1436,7 +1439,7 @@ word_creation = {
 		
 		//если имеется какое-то сообщение
 		if (objects.big_message_cont.visible===true || objects.req_cont.visible === true) {
-			gres.locked.sound.play();
+			sound.play('locked');
 			return;
 		}
 		
@@ -1453,32 +1456,32 @@ word_creation = {
 			if (this.word.length > 0) {
 				
 				if (this.word.includes(cell_id)===true) {		
-					gres.bad_move.sound.play();
+					sound.play('bad_move');
 					message.add("Нельзя ходить по кругу")
 					return;		
 				}				
 					
 				if (objects.cells[cell_id].letter.text === "") {
-					gres.bad_move.sound.play();
+					sound.play('bad_move');
 					message.add("Нужно выбрать следующую букву")		
 					return;				
 				}				
 				
 				let prv_cell = this.word[this.word.length-1];
 				if (adj_cells[prv_cell].includes(cell_id) === false) {
-					gres.bad_move.sound.play();
+					sound.play('bad_move');
 					message.add("Выберите смежную клетку")
 					return;
 				}				
 			}
 
 			if (objects.cells[cell_id].letter.text === "") {
-				gres.bad_move.sound.play();
+				sound.play('bad_move');
 				message.add("Нужно выбрать букву с которой начнется слово")		
 				return;				
 			}	
 			
-			gres.cell_move.sound.play();
+			sound.play('cell_move');
 				
 			//анимируем ячейку
 			anim2.add(objects.cells[cell_id].bcg2,{alpha:[0,1]}, true, 0.25,'linear');
@@ -1497,25 +1500,25 @@ word_creation = {
 				
 		if (this.active_key === -1) {
 			message.add("Сначала поставьте новую букву на поле");
-			gres.bad_move.sound.play();
+			sound.play('bad_move');
 			return;				
 		}
 		
 		if (objects.cells[cell_id].letter.text !== "") {
 			message.add("Букву нужно поставить на пустую клетку");
-			gres.bad_move.sound.play();
+			sound.play('bad_move');
 			return;				
 		}
 		
 		if (this.check_if_near_adj(cell_id) === false) {
 			message.add("Букву нужно поставить рядом с имеющимися на поле");
-			gres.bad_move.sound.play();
+			sound.play('bad_move');
 			return;				
 		}
 		
 
 		
-		gres.cell_down.sound.play();
+		sound.play('cell_down');
 		
 		this.new_cell = cell_id;
 		
@@ -1546,7 +1549,7 @@ word_creation = {
 	
 		//если имеется какое-то сообщение
 		if (objects.big_message_cont.visible===true || objects.req_cont.visible === true) {
-			gres.locked.sound.play();
+			sound.play('locked');
 			return;
 		}
 				
@@ -1556,41 +1559,41 @@ word_creation = {
 		})
 		
 		if (this.word.length <2 ) {
-			gres.bad_word.sound.play();
+			sound.play('bad_word');
 			message.add("Выделите клетки со словом по буквам");
 			return;
 		}
 		
 		if (_word === start_word) {
 			this.cancel_down();
-			gres.bad_word.sound.play();
+			sound.play('bad_word');
 			message.add("Главное слово нельзя выбирать");
 			return;
 		}		
 		
 		if (this.word.includes(this.new_cell) === false) {
 			this.cancel_down();
-			gres.bad_word.sound.play();
+			sound.play('bad_word');
 			message.add("Нужно использовать новую букву!");
 			return;
 		}
 				
 		if (game.words_hist.includes(_word) === true) {
-			gres.bad_word.sound.play();
+			sound.play('bad_word');
 			this.cancel_down();
 			message.add("Такое слово уже есть(")
 			return;
 		}
 		
 		if (rus_dict0.includes(_word) === false && rus_dict1.includes(_word) === false) {
-			gres.bad_word.sound.play();
+			sound.play('bad_word');
 			this.cancel_down();
 			message.add("Такого слова нету в словаре(")
 			return;
 		}
 		
 		
-		gres.good_word.sound.play();
+		sound.play('good_word');
 
 		//записываем в столбик слов
 		objects.my_words.text += _word;
@@ -1723,7 +1726,7 @@ game = {
 			chat.close();
 				
 		//воспроизводим звук о начале игры
-		gres.game_start.sound.play();
+		sound.play('game_start');
 				
 		//показываем карточки игроков		
 		objects.my_card_cont.visible=true;
@@ -1776,7 +1779,7 @@ game = {
 		if (res === 'MY_CANCEL') {
 			
 			if (objects.req_cont.visible||objects.confirm_cont.visible||anim2.any_on()) {
-				gres.locked.sound.play();
+				sound.play('locked');
 				return;			
 			}
 			
@@ -1997,7 +2000,7 @@ req_dialog = {
 			}	else	{
 
 
-				gres.invite.sound.play();
+				sound.play('invite');
 				
 				
 				//так как успешно получили данные о сопернике то показываем окно	
@@ -2062,11 +2065,11 @@ req_dialog = {
 
 
 		if (anim2.any_on()) {
-			gres.locked.sound.play();
+			sound.play('locked');
 			return;			
 		}
 		
-		gres.click.sound.play();
+		sound.play('click');
 
 		anim2.add(objects.req_cont,{y:[objects.req_cont.sy, -260]}, false, 0.5,'easeInBack');
 		
@@ -2088,11 +2091,11 @@ req_dialog = {
 	accept: function() {
 
 		if (objects.big_message_cont.visible||objects.confirm_cont.visible|| anim2.any_on()) {
-			gres.locked.sound.play();
+			sound.play('locked');
 			return;			
 		}		
 		
-		gres.click.sound.play();
+		sound.play('click');
 
 	
 		//устанавливаем окончательные данные оппонента
@@ -2186,10 +2189,10 @@ main_menu = {
 	play_button_down: function () {
 
 		if (anim2.any_on()) {
-			gres.locked.sound.play();
+			sound.play('locked');
 			return
 		};
-		game_res.resources.click.sound.play();
+		sound.play('click');
 
 		this.close();
 		cards_menu.activate();
@@ -2199,11 +2202,11 @@ main_menu = {
 	lb_button_down: function () {
 
 		if (anim2.any_on()) {
-			gres.locked.sound.play();
+			sound.play('locked');
 			return
 		};
 
-		gres.click.sound.play();
+		sound.play('click');
 
 		this.close();
 		lb.show();
@@ -2214,11 +2217,11 @@ main_menu = {
 
 
 		if (anim2.any_on()) {
-			gres.locked.sound.play();
+			sound.play('locked');
 			return
 		};
 
-		gres.click.sound.play();
+		sound.play('click');
 		
 		this.close();
 		chat.activate();
@@ -2403,10 +2406,11 @@ chat = {
 	close_down : async function() {
 		
 		if (anim2.any_on()) {
-			gres.locked.sound.play();
+			sound.play('locked');
 			return
 		};
-		game_res.resources.click.sound.play();
+		sound.play('click');
+
 		
 		this.close();
 		main_menu.activate();
@@ -2414,6 +2418,12 @@ chat = {
 	},
 	
 	open_keyboard : async function() {
+		
+		if (anim2.any_on()) {
+			sound.play('locked');
+			return
+		};
+		sound.play('click');
 		
 		//пишем отзыв и отправляем его		
 		let fb = await feedback.show(opp_data.uid,65);		
@@ -2662,12 +2672,12 @@ lb = {
 	back_button_down: function() {
 
 		if (anim2.any_on()) {
-			gres.locked.sound.play();
+			sound.play('locked');
 			return
 		};
 
 
-		gres.click.sound.play();
+		sound.play('click');
 		this.close();
 		main_menu.activate();
 
@@ -3203,12 +3213,12 @@ cards_menu = {
 				
 				
 		if (objects.td_cont.ready === false || objects.td_cont.visible === true || objects.big_message_cont.visible === true ||objects.req_cont.visible === true)	{
-			gres.locked.sound.play();
+			sound.play('locked');
 			return
 		};
 
 
-		gres.click.sound.play();
+		sound.play('click');
 		
 		anim2.add(objects.td_cont,{y:[-150,objects.td_cont.sy]}, true, 0.5,'easeOutBack');
 		
@@ -3228,7 +3238,7 @@ cards_menu = {
 		if (objects.td_cont.ready === false)
 			return;
 		
-		gres.close_it.sound.play();
+		sound.play('close_it');
 		
 		anim2.add(objects.td_cont,{y:[objects.td_cont.sy,400,]}, false, 0.5,'easeInBack');
 		
@@ -3238,14 +3248,14 @@ cards_menu = {
 
 
 		if (objects.invite_cont.ready === false || objects.invite_cont.visible === true || 	objects.big_message_cont.visible === true ||objects.req_cont.visible === true)	{
-			game_res.resources.locked.sound.play();
+			sound.play('locked');
 			return
 		};
 
 
 		pending_player="";
 
-		gres.click.sound.play();
+		sound.play('click');
 
 		//показыаем кнопку приглашения
 		objects.invite_button.texture=game_res.resources.invite_button.texture;
@@ -3300,7 +3310,7 @@ cards_menu = {
 		if (objects.invite_cont.ready === false)
 			return;
 		
-		gres.close_it.sound.play();
+		sound.play('close_it');
 
 		//отправляем сообщение что мы уже не заинтересованы в игре
 		if (pending_player!=="") {
@@ -3315,7 +3325,7 @@ cards_menu = {
 
 
 		if (objects.invite_cont.ready === false || pending_player !=='' ||	objects.big_message_cont.visible === true ||objects.req_cont.visible === true)	{
-			gres.locked.sound.play();
+			sound.play('locked');
 			return
 		}
 
@@ -3332,7 +3342,7 @@ cards_menu = {
 		}
 		else
 		{
-			gres.click.sound.play();
+			sound.play('click');
 			objects.invite_button.texture=game_res.resources.wait_response.texture;
 			firebase.database().ref("inbox/"+cards_menu._opp_data.uid).set({sender:my_data.uid,message:"INV",tm:Date.now()});
 			pending_player=cards_menu._opp_data.uid;
@@ -3371,13 +3381,13 @@ cards_menu = {
 	back_button_down: function() {
 
 		if (objects.td_cont.visible|| objects.big_message_cont.visible||objects.req_cont.visible||objects.invite_cont.visible||anim2.any_on())	{
-			gres.locked.sound.play();
+			sound.play('locked');
 			return
 		};
 
 
 
-		gres.close_it.sound.play();
+		sound.play('close_it');
 
 		this.close();
 		main_menu.activate();
