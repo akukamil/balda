@@ -64,17 +64,17 @@ class player_mini_card_class extends PIXI.Container {
 		this.avatar2.y=20;
 		this.avatar2.width=this.avatar2.height=60;
 
-		this.rating_text1=new PIXI.BitmapText('', {fontName: 'balsamic',fontSize: 18,align: 'center'});
+		this.rating_text1=new PIXI.BitmapText('', {fontName: 'balsamic',fontSize: 30,align: 'center'});
 		this.rating_text1.tint=0xffff00;
 		this.rating_text1.anchor.set(0.5,0);
 		this.rating_text1.x=50;
-		this.rating_text1.y=70;
+		this.rating_text1.y=65;
 
-		this.rating_text2=new PIXI.BitmapText('', {fontName: 'balsamic',fontSize: 18,align: 'center'});
+		this.rating_text2=new PIXI.BitmapText('', {fontName: 'balsamic',fontSize: 30,align: 'center'});
 		this.rating_text2.tint=0xffff00;
 		this.rating_text2.anchor.set(0.5,0);
 		this.rating_text2.x=150;
-		this.rating_text2.y=70;
+		this.rating_text2.y=65;
 		
 		//
 		this.rating_bcg = new PIXI.Sprite(game_res.resources.rating_bcg.texture);
