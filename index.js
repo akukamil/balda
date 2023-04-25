@@ -1588,7 +1588,7 @@ word_creation = {
 		if (rus_dict0.includes(_word) === false && rus_dict1.includes(_word) === false) {
 			sound.play('bad_word');
 			this.cancel_down();
-			message.add("Такого слова нету в словаре(")
+			message.add("Такого слова нет в словаре(")
 			return;
 		}
 		
