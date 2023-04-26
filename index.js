@@ -2257,7 +2257,7 @@ chat = {
 			rec.tm=0;
 		}
 
-		if (my_data.rating<-1430)
+		if (my_data.rating<1430)
 			objects.chat_enter_button.visible=false
 		else
 			objects.chat_enter_button.visible=true
