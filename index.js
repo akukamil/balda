@@ -923,11 +923,11 @@ bot_player = {
 		set_state({state : 'b'});
 		
 		//выбираем случайным образом стартовое слово
-		let d_size = rus_dict0.length;
+		let d_size = dict0.length;
 		while(1) {
 			
 			let r_num = irnd(0,d_size-1);
-			start_word = rus_dict0[r_num];
+			start_word = dict0[r_num];
 			let _wlen = start_word.length;
 			if (_wlen === 5)
 				break;			
@@ -999,7 +999,7 @@ bot_player = {
 		let sur_len = dir_sur.length;		
 	
 		
-		for (let word of rus_dict0) {
+		for (let word of dict0) {
 			
 			if (word.length !== sur_len + 1 || word === start_word || this.found_words.includes(word) === true || game.words_hist.includes(word) === true)
 				continue;
@@ -1046,7 +1046,7 @@ bot_player = {
 			
 		let [acc_word, acc_pos] = this.read_random_word4(field, letters_pos);
 		
-		if ( this.found_words.includes(acc_word[0]) !== true && game.words_hist.includes(acc_word[0]) !== true && rus_dict0.includes(acc_word[0])=== true) {
+		if ( this.found_words.includes(acc_word[0]) !== true && game.words_hist.includes(acc_word[0]) !== true && dict0.includes(acc_word[0])=== true) {
 			this.found_data[acc_word[0].length]=[new_letter_cell_id, new_letter, acc_pos.slice()];		
 			this.found_words.push(acc_word[0]);	
 			console.log('Совпадение #4 ',acc_word[0] )
@@ -1056,7 +1056,7 @@ bot_player = {
 		if (acc_word[0].length === 4) {			
 			let acc_word3 = acc_word[0].substring(0, 3);	
 			acc_pos.pop();				
-			if ( this.found_words.includes(acc_word3) !== true && game.words_hist.includes(acc_word3) !== true && rus_dict0.includes(acc_word3)=== true) {
+			if ( this.found_words.includes(acc_word3) !== true && game.words_hist.includes(acc_word3) !== true && dict0.includes(acc_word3)=== true) {
 				this.found_data[3]=[new_letter_cell_id, new_letter, acc_pos.slice()];		
 				this.found_words.push(acc_word3);	
 				console.log('Совпадение #3 ',acc_word3 )
@@ -1585,7 +1585,7 @@ word_creation = {
 			return;
 		}
 		
-		if (rus_dict0.includes(_word) === false && rus_dict1.includes(_word) === false) {
+		if (dict0.includes(_word) === false && dict1.includes(_word) === false) {
 			sound.play('bad_word');
 			this.cancel_down();
 			message.add("Такого слова нет в словаре(")
@@ -2104,14 +2104,14 @@ req_dialog = {
 		anim2.add(objects.req_cont,{y:[objects.req_cont.sy, -260]}, false, 1,'easeInBack');
 
 		//сразу определяем начальное слово и отправляем сопернику
-		let d_size = rus_dict0.length;
+		let d_size = dict0.length;
 		let w_len = 0;
 		start_word = "";
 		
 		while(1) {
 			
 			let r_num = irnd(0,d_size-1);
-			start_word = rus_dict0[r_num];
+			start_word = dict0[r_num];
 			let _wlen = start_word.length;
 			if (_wlen === 5)
 				break;			
