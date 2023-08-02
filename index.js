@@ -1912,7 +1912,7 @@ req_dialog={
 		//если нет в кэше то загружаем из фб
 		await lobby.update_players_cache_data(uid);
 		
-		sound.play('receive_sticker');			
+		sound.play('invite');			
 		anim2.add(objects.req_cont,{y:[-260, objects.req_cont.sy]}, true, 0.75,'easeOutElastic');
 							
 		//Отображаем  имя и фамилию в окне приглашения
