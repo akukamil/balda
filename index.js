@@ -3248,7 +3248,12 @@ lobby={
 	},
 	
 	close_table_dialog() {
-		sound.play('close');
+		
+		if (!objects.td_cont.ready) {
+			sound.play('locked');
+			return
+		};
+		sound.play('close_it');
 		anim2.add(objects.td_cont,{y:[objects.td_cont.y, 600]}, false, 0.1,'linear');
 	},
 
@@ -3390,20 +3395,7 @@ lobby={
 
 
 	},
-	
-	peek_down(){
 		
-		if (anim2.any_on()) {
-			sound.play('locked');
-			return
-		};
-		sound.play('click');
-		this.close();	
-		
-		//активируем просмотр игры
-		game_watching.activate(objects.td_cont.card);
-	},
-	
 	async switch_header(){
 		
 		await anim2.add(objects.lobby_header,{y:[objects.lobby_header.sy, -60],alpha:[1,0]},false,1,'linear',false);	
@@ -3419,7 +3411,7 @@ lobby={
 	
 	close_invite_dialog() {
 
-		sound.play('close');
+		sound.play('close_it');
 
 		if (objects.invite_cont.visible===false)
 			return;
