@@ -2484,16 +2484,15 @@ feedback = {
 		
 	},
 	
-	close : function() {
+	close() {
 			
 		anim2.add(objects.feedback_cont,{y:[objects.feedback_cont.y,450]}, false, 0.4,'easeInBack');		
 		
 	},
 	
-	response_message:function(s) {
-
+	response_message(uid, name) {
 		
-		objects.feedback_msg.text = s.split(' ')[0]+', ';	
+		objects.feedback_msg.text = name.split(' ')[0]+', ';	
 		objects.feedback_control.text = `${objects.feedback_msg.text.length}/${feedback.MAX_SYMBOLS}`		
 		
 	},
@@ -2506,7 +2505,7 @@ feedback = {
 		return gres.hl_key0.texture;
 	},
 	
-	key_down : function(key) {
+	key_down (key) {
 		
 		
 		if (objects.feedback_cont.visible === false || objects.feedback_cont.ready === false) return;
@@ -2527,7 +2526,7 @@ feedback = {
 		
 	},
 	
-	pointerdown : function(e, inp_key) {
+	pointerdown(e, inp_key) {
 		
 		let key = -1;
 		let key_x = 0;
