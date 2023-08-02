@@ -2401,8 +2401,7 @@ chat = {
 		if (my_data.blocked){			
 			message.add('Закрыто');
 			return;
-		}
-		
+		}		
 		
 		sound.play('click');
 		//убираем метки старых сообщений
@@ -2414,12 +2413,15 @@ chat = {
 			return;
 		}		
 		
-		//добавляем отметку о сообщении
-		this.recent_msg.push(Date.now());
+
 		
 		//пишем сообщение в чат и отправляем его		
 		let fb = await feedback.show(opp_data.uid,65);		
-		if (fb[0] === 'sent') {			
+		if (fb[0] === 'sent') {		
+
+			//добавляем отметку о сообщении
+			this.recent_msg.push(Date.now());	
+			
 			const hash=this.make_hash();
 			const index=chat.get_oldest_index();
 			fbs.ref(chat_path+'/'+index).set({uid:my_data.uid,name:my_data.name,msg:fb[1], tm:firebase.database.ServerValue.TIMESTAMP,index, hash});
