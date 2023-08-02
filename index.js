@@ -4079,7 +4079,7 @@ async function load_resources() {
 
 
 	let git_src="https://akukamil.github.io/balda/"
-	git_src=""
+	//git_src=""
 
 
 	game_res=new PIXI.Loader();
