@@ -3889,8 +3889,6 @@ async function load_user_data() {
 			room_name= 'states5';
 		
 		
-		room_name= 'states5';
-		
 		//это путь к чату
 		chat_path='chat';
 		
