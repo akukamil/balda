@@ -2787,7 +2787,7 @@ lobby={
 			chat.init();
 			
 			//создаем заголовки
-			const room_desc=['КОМНАТА #','ROOM #'][LANG]+{'states':1,'states2':2,'states3':3,'states4':4,'states5':5}[room_name];
+			const room_desc=['КОМНАТА #','ROOM #'][LANG]+{'states':1,'states2':2,'states3':3,'states4':4,'states5':5,'states6':6}[room_name];
 			this.sw_header.header_list=['ДОБРО ПОЖАЛОВАТЬ В ИГРУ БАЛДА ОНЛАЙН!',room_desc]
 			objects.lobby_header.text=this.sw_header.header_list[0];
 			this.sw_header.time=Date.now()+12000;
@@ -3876,15 +3876,20 @@ async function load_user_data() {
 
 
 		//номер комнаты в зависимости от рейтинга игрока
-		if (my_data.rating <= 1405)
-			room_name= 'states';			
+		
+		if (my_data.rating <= 1389)
+			room_name= 'states';	
+		if (my_data.rating >= 1390 && my_data.rating <=1405)
+			room_name= 'states2';		
 		if (my_data.rating >= 1406 && my_data.rating <=1479)
-			room_name= 'states2';	
-		if (my_data.rating >= 1480 && my_data.rating <=1580)
 			room_name= 'states3';	
+		if (my_data.rating >= 1480 && my_data.rating <=1580)
+			room_name= 'states4';	
 		if (my_data.rating >= 1581)
-			room_name= 'states4';
-		//room_name= 'states5';
+			room_name= 'states5';
+		
+		
+		room_name= 'states5';
 		
 		//это путь к чату
 		chat_path='chat';
