@@ -2176,7 +2176,7 @@ chat = {
 
 		anim2.add(objects.chat_cont,{alpha:[0, 1]}, true, 0.1,'linear');
 		objects.desktop.texture=gres.desktop.texture;
-		objects.chat_enter_button.visible=my_data.rating>-1430;
+		objects.chat_enter_button.visible=(my_data.rating>-1430)&&(!my_data.blocked);
 
 	},
 	
@@ -3792,6 +3792,16 @@ auth = function() {
 	
 }
 
+async function check_blocked(){
+	
+	//загружаем остальные данные из файербейса
+	let _block_data = await fbs.ref("blocked/" + my_data.uid).once('value');
+	let block_data = _block_data.val();
+	
+	if (block_data) my_data.blocked=1;
+	
+}
+
 function resize() {
     const vpw = window.innerWidth;  // Width of the viewport
     const vph = window.innerHeight; // Height of the viewport
@@ -4035,6 +4045,9 @@ async function init_game_env() {
 	
 	//загружаем данные об игроке
 	await load_user_data();
+	
+	//проверяем блокировку
+	check_blocked();
 	
 	//контроль за присутсвием
 	var connected_control = fbs.ref(".info/connected");
