@@ -3651,6 +3651,8 @@ auth = function() {
 						my_data.uid 	= _player.getUniqueID().replace(/\//g, "Z");
 						my_data.pic_url = _player.getPhoto('medium');
 
+						if (my_data.pic_url === 'https://games-sdk.yandex.ru/games/api/sdk/v1/player/avatar/0/islands-retina-medium')
+							my_data.pic_url = 'https://api.dicebear.com/7.x/adventurer/svg?seed='+my_data.uid;	
 						//console.log(`Получены данные игрока от яндекса:\nимя:${my_data.name}\nid:${my_data.uid}\npic_url:${my_data.pic_url}`);
 
 						//если нет данных то создаем их
@@ -3710,7 +3712,7 @@ auth = function() {
 					my_data.rating 		= 	1400;
 					my_data.uid			=	"ls"+rand_uid;
 					my_data.name 		=	 help_obj.get_random_name(my_data.uid);					
-					my_data.pic_url		=	'https://avatars.dicebear.com/v2/male/'+irnd(10,10000)+'.svg';
+					my_data.pic_url		=	'https://api.dicebear.com/7.x/adventurer/svg?seed='+my_data.uid;
 
 
 					try {
