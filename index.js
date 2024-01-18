@@ -1034,7 +1034,7 @@ bot_player = {
 			let inv_surrogated_word = word.substring(0, sur_len);			
 			if (inv_surrogated_word === inv_sur) {
 				this.found_words.push(word);
-				console.log("Совп. обратного суррогата ", word);
+				//console.log("Совп. обратного суррогата ", word);
 				this.found_data[word.length]=[new_letter_cell_id, word[word.length - 1], acc_pos.slice().reverse()];	
 			}		
 
@@ -3909,9 +3909,10 @@ async function load_user_data() {
 			room_name= 'states3';	
 		if (my_data.rating >= 1480 && my_data.rating <=1580)
 			room_name= 'states4';	
-		if (my_data.rating >= 1581)
+		if (my_data.rating >= 1581 && my_data.rating <=1666)
 			room_name= 'states5';
-		
+		if (my_data.rating >= 1667)
+			room_name= 'states6';
 		
 		//это путь к чату
 		chat_path='chat';
