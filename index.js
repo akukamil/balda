@@ -1,5 +1,5 @@
 var M_WIDTH=800, M_HEIGHT=450;
-var app ={stage:{},renderer:{}}, game_res,fbs, gdata={}, objects={}, state='',my_role='', game_tick=0, my_turn=0, move=0, game_id=0, last_cell=null, show_word=0, start_word='БАЛДА';
+var app ={stage:{},renderer:{}}, game_res,fbs, gdata={}, objects={}, state='',git_src,my_role='', game_tick=0, my_turn=0, move=0, game_id=0, last_cell=null, show_word=0, start_word='БАЛДА';
 var me_conf_play=0,opp_conf_play=0, client_id =0, h_state=0, game_platform="",activity_on=1, hidden_state_start = 0, room_name = 'states2', connected = 1,no_invite=false;
 var players='', pending_player="";
 var my_data={opp_id : ''},opp_data={};
@@ -523,7 +523,7 @@ sound = {
 		if (this.on === 0)
 			return;
 		
-		if (!gres[snd_res])
+		if (!gres[snd_res]?.data)
 			return;
 		
 		gres[snd_res].sound.play();	
@@ -3915,7 +3915,7 @@ async function init_game_env() {
 	}
 
 	//подгружаем библиотеку аватаров
-	await auth.load_script('multiavatar.min.js');
+	await auth.load_script(git_src+'/multiavatar.min.js');
 
 	//получаем данные об игроке из социальных сетей
 	await auth.init();
@@ -4031,7 +4031,7 @@ async function load_resources() {
 	return;*/
 
 
-	let git_src="https://akukamil.github.io/balda/"
+	git_src="https://akukamil.github.io/balda/"
 	//git_src=""
 
 
