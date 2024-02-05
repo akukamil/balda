@@ -256,7 +256,7 @@ class chat_record_class extends PIXI.Container {
 		this.avatar.anchor.set(0,0)
 				
 		
-		this.msg = new PIXI.BitmapText('Имя Фамил', {fontName: 'mfont',fontSize: gdata.chat_record_text_font_size,align: 'left'}); 
+		this.msg = new PIXI.BitmapText('Имя Фамил', {fontName: 'mfont',fontSize: gdata.chat_record_text_font_size,align: 'left', lineSpacing:50}); 
 		this.msg.x=150;
 		this.msg.y=35;
 		this.msg.maxWidth=450;
