@@ -2166,7 +2166,7 @@ ad = {
 		
 		if(my_data.uid!=='vk39099558') return;
 		
-		const data=vkBridge.send('VKWebAppShowBannerAd', {banner_location: 'bottom',layout_type:'overlay'});
+		const data=await vkBridge.send('VKWebAppShowBannerAd', {banner_location: 'bottom',layout_type:'overlay'});
 		if(data.result&&my_turn) this.hide_vk_banner();		
 	},
 	
