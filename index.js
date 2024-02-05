@@ -3943,6 +3943,10 @@ async function init_game_env() {
 	my_data.games = (other_data && other_data.games) || 0;
 	my_data.pic_url=other_data?.pic_url || my_data.orig_pic_url;
 		
+		
+	//чуть ждем баннерную рекламу
+	ad.prv_banner_show=Date.now()+200000;
+	
 	//проверяем блокировку
 	my_data.blocked=await fbs_once('blocked/'+my_data.uid);
 		
