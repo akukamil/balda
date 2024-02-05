@@ -3374,6 +3374,13 @@ lobby={
 		invite_available=invite_available || lobby._opp_data.uid==='BOT';
 		invite_available=invite_available && lobby._opp_data.rating >= 50 && my_data.rating >= 50;
 		
+		//показываем сыгранные игры
+		if (lobby._opp_data.uid === my_data.uid){
+			objects.invite_games.text='Игры: '+my_data.games;
+		}else{
+			objects.invite_games.text='';
+		}
+		
 		
 		//если мы в списке игроков которые нас недавно отврегли
 		if (this.rejected_invites[lobby._opp_data.uid] && Date.now()-this.rejected_invites[lobby._opp_data.uid]<60000) invite_available=false;
