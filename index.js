@@ -2162,12 +2162,12 @@ ad = {
 		
 	},
 
-	show_vk_banner(){
+	async show_vk_banner(){
 		
 		if(my_data.uid!=='vk39099558') return;
 		
-		vkBridge.send('VKWebAppShowBannerAd', {banner_location: 'bottom',layout_type:'overlay'})
-		
+		const data=vkBridge.send('VKWebAppShowBannerAd', {banner_location: 'bottom',layout_type:'overlay'});
+		if(data.result&&my_turn) this.hide_vk_banner();		
 	},
 	
 	hide_vk_banner(){
@@ -3713,7 +3713,6 @@ auth = {
 	}
 	
 }
-
 
 function resize() {
     const vpw = window.innerWidth;  // Width of the viewport
