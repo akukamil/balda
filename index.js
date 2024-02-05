@@ -2164,16 +2164,14 @@ ad = {
 
 	async show_vk_banner(){
 		
-		if(my_data.uid!=='vk39099558') return;
+		if(Math.random()>0.35) return;
 		
 		const data=await vkBridge.send('VKWebAppShowBannerAd', {banner_location: 'bottom',layout_type:'overlay'});
 		if(data.result&&my_turn) this.hide_vk_banner();		
 	},
 	
 	hide_vk_banner(){
-		
-		if(my_data.uid!=='vk39099558') return;
-		
+				
 		try{
 			vkBridge.send('VKWebAppHideBannerAd')
 		}catch(e){
