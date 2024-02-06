@@ -1373,7 +1373,7 @@ word_waiting = {
 		
 	process() {
 		
-		let a = Math.sin(game_tick * 2);
+		let a = Math.sin(game_tick * 0.5);
 		if (a<0) a=-a;
 		objects.wait_opponent_move.alpha = a;
 	}
