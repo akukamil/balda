@@ -330,6 +330,15 @@ anim2={
 		return false;			
 	},
 	
+	easeBridge(x){
+		
+		if(x<0.1)
+			return x*10;
+		if(x>0.9)
+			return (1-x)*10;
+		return 1		
+	},
+	
 	linear(x) {
 		return x
 	},
@@ -530,17 +539,17 @@ sound = {
 		
 	},
 	
-	sw(){
+	switch(){
 		
 		if (this.on){
 			this.on=0;
-			objects.sound_switch_button.texture=gres.no_sound_icon.texture;
-		}else{
+			objects.pref_info.text=['Звуки отключены','Sounds is off'][LANG];
+			
+		} else{
 			this.on=1;
-			this.play('click');
-			objects.sound_switch_button.texture=gres.sound_switch_button.texture;
+			objects.pref_info.text=['Звуки включены','Sounds is on'][LANG];
 		}
-		
+		anim2.add(objects.pref_info,{alpha:[0,1]}, false, 3,'easeBridge',false);		
 		
 	}
 	
@@ -2086,6 +2095,141 @@ process_new_message = function(msg) {
 				req_dialog.hide(msg.sender);
 		}
 	}
+}
+
+pref={
+	
+	cur_pic_url:'',
+	avatar_changed:0,
+	
+	activate(){
+		
+		if(anim2.any_on()||objects.pref_cont.visible){
+			sound.play('locked');
+			return;			
+		}
+		
+		anim2.add(objects.pref_info,{alpha:[0,1]}, false, 3,'easeBridge',false);	
+		objects.pref_info.text=['Менять аватар и имя можно 1 раз в 30 дней!','You can change name and avatar once per month'][LANG];
+		
+		sound.play('click');
+		anim2.add(objects.pref_cont,{scale_x:[0,1]}, true, 0.2,'linear');
+		
+		this.avatar_changed=0;
+		objects.pref_cont.visible=true;
+		objects.pref_avatar.texture=players_cache.players[my_data.uid].texture;
+		
+	},
+	
+	check_time(last_time){
+
+
+		//провряем можно ли менять
+		const tm=Date.now();
+		const days_since_nick_change=~~((tm-last_time)/86400000);
+		const days_befor_change=30-days_since_nick_change;
+		const ln=days_befor_change%10;
+		const opt=[0,5,6,7,8,9].includes(ln)*0+[2,3,4].includes(ln)*1+(ln===1)*2;
+		const day_str=['дней','дня','день'][opt];
+		
+		if (days_befor_change>0){
+			objects.pref_info.text=[`Поменять можно через ${days_befor_change} ${day_str}`,`Wait ${days_befor_change} days`][LANG];
+			anim2.add(objects.pref_info,{alpha:[0,1]}, false, 3,'easeBridge',false);	
+			sound.play('locked');
+			return 0;
+		}
+		
+		return 1;
+	},
+	
+	async change_name(){
+		
+		//провряем можно ли менять ник
+		if(!this.check_time(my_data.nick_tm)) return;
+									
+		const name=await keyboard.read(15);
+		if (name.length>1){
+			my_data.name=name;
+
+			objects.my_card_name.set2(my_data.name,150);
+			set_state({});			
+			objects.pref_info.text=['Имя изменено','Name has been changed'][LANG];
+			anim2.add(objects.pref_info,{alpha:[0,1]}, false, 3,'easeBridge',false);		
+			my_data.nick_tm=Date.now();			
+			fbs.ref(`players/${my_data.uid}/nick_tm`).set(my_data.nick_tm);
+			fbs.ref(`players/${my_data.uid}/name`).set(my_data.name);
+
+		}else{
+			
+			objects.pref_info.text=['Какая-то ошибка','Unknown error'][LANG];
+			anim2.add(objects.pref_info,{alpha:[0,1]}, false, 3,'easeBridge',false);
+			
+		}
+		
+	},
+	
+	async reset_avatar(){
+		
+		this.avatar_changed=1;
+		this.cur_pic_url=my_data.orig_pic_url;
+		objects.pref_avatar.texture=await players_cache.load_pic(my_data.uid,my_data.orig_pic_url);
+		objects.pref_info.text=['Нажмите ОК чтобы сохранить','Press OK to confirm'][LANG];
+		objects.pref_info.visible=true;
+	},
+	
+	change_avatar(){
+		
+		if(!this.check_time(my_data.avatar_tm)) return;
+		this.avatar_changed=1;
+		this.cur_pic_url='mavatar'+irnd(10,999999);
+		objects.pref_avatar.texture=PIXI.Texture.from(multiavatar(this.cur_pic_url));
+		objects.pref_info.text=['Нажмите ОК чтобы сохранить','Press OK to confirm'][LANG];
+		objects.pref_info.visible=true;
+	},
+	
+	sound_switch(){
+		
+		if(anim2.any_on()){
+			sound.play('locked');
+			return;			
+		}
+		sound.switch();
+		sound.play('click');
+		const tar_x=sound.on?333:295;
+		anim2.add(objects.pref_sound_slider,{x:[objects.pref_sound_slider.x,tar_x]}, true, 0.1,'linear');	
+		
+	},
+	
+	ok_button_down(){
+		
+		if(anim2.any_on()){
+			sound.play('locked');
+			return;			
+		}
+		
+		sound.play('click');
+		anim2.add(objects.pref_cont,{scale_x:[1,0]}, false, 0.2,'linear');	
+		
+		if (this.avatar_changed){
+			
+			players_cache.players[my_data.uid].texture=0;
+			players_cache.players[my_data.uid].pic_url=this.cur_pic_url;
+						
+			fbs.ref(`players/${my_data.uid}/pic_url`).set(this.cur_pic_url);
+			
+			my_data.avatar_tm=Date.now();
+			fbs.ref(`players/${my_data.uid}/avatar_tm`).set(my_data.avatar_tm);
+
+						
+			players_cache.update_avatar(my_data.uid).then(()=>{
+				const my_card=objects.mini_cards.find(card=>card.uid===my_data.uid);
+				my_card.avatar.texture=players_cache.players[my_data.uid].texture;				
+			})	
+			
+		}		
+		
+	}
+	
 }
 
 ad = {		
@@ -3938,12 +4082,13 @@ async function init_game_env() {
 	let other_data = _other_data.val();
 	
 	//делаем защиту от неопределенности
-	my_data.rating = (other_data && other_data.rating) || 1400;
-	my_data.games = (other_data && other_data.games) || 0;
-
+	my_data.rating = other_data?.rating || 1400;
+	my_data.games = other_data?.games || 0;
+	my_data.nick_tm = other_data?.nick_tm || 0;
+	my_data.avatar_tm = other_data?.avatar_tm || 0;
 
 	//правильно определяем аватарку
-	if (other_data?.pic_url && other_data.pic_url.includes('mavatar'))
+	if (other_data?.pic_url.includes('mavatar'))
 		my_data.pic_url=other_data.pic_url
 	else
 		my_data.pic_url=my_data.orig_pic_url
@@ -4055,7 +4200,7 @@ async function load_resources() {
 
 
 	git_src="https://akukamil.github.io/balda/"
-	//git_src=""
+	git_src=""
 
 
 	game_res=new PIXI.Loader();
