@@ -3940,7 +3940,13 @@ async function init_game_env() {
 	//делаем защиту от неопределенности
 	my_data.rating = (other_data && other_data.rating) || 1400;
 	my_data.games = (other_data && other_data.games) || 0;
-	my_data.pic_url=other_data?.pic_url || my_data.orig_pic_url;
+
+
+	//правильно определяем аватарку
+	if (other_data?.pic_url && other_data.pic_url.includes('mavatar'))
+		my_data.pic_url=other_data.pic_url
+	else
+		my_data.pic_url=my_data.orig_pic_url
 		
 		
 	//чуть ждем баннерную рекламу
