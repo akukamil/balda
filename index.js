@@ -4086,6 +4086,7 @@ async function init_game_env() {
 	my_data.games = other_data?.games || 0;
 	my_data.nick_tm = other_data?.nick_tm || 0;
 	my_data.avatar_tm = other_data?.avatar_tm || 0;
+	my_data.name=other_data?.name || my_data.name;
 
 	//правильно определяем аватарку
 	if (other_data?.pic_url.includes('mavatar'))
