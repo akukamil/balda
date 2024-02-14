@@ -4215,6 +4215,7 @@ async function load_resources() {
 	game_res.add('game_start',git_src+'/sounds/game_start.mp3');
 	game_res.add('lose',git_src+'/sounds/lose.mp3');
 	game_res.add('receive_move',git_src+'/sounds/receive_move.mp3');
+	game_res.add('receive_sticker',git_src+'sounds/receive_sticker.mp3');
 	game_res.add('bad_word',git_src+'/sounds/bad_word.mp3');
 	game_res.add('good_word',git_src+'/sounds/good_word.mp3');
 	game_res.add('key_down',git_src+'/sounds/key_down.mp3');
