@@ -3048,7 +3048,7 @@ lobby={
 			chat.init();
 			
 			//создаем заголовки
-			const room_desc=['КОМНАТА #','ROOM #'][LANG]+{'states':1,'states2':2,'states3':3,'states4':4,'states5':5}[room_name];
+			const room_desc=['КОМНАТА #','ROOM #'][LANG]+{'states1':1,'states2':2,'states3':3,'states4':4,'states5':5,'states6':6,'states7':7}[room_name];
 			this.sw_header.header_list=[['ДОБРО ПОЖАЛОВАТЬ В ИГРУ БАЛДА ОНЛАЙН!','WELCOME!!!'][LANG],room_desc]
 			objects.lobby_header.text=this.sw_header.header_list[0];
 			this.sw_header.time=Date.now()+12000;
@@ -4078,7 +4078,7 @@ async function init_game_env() {
 	await auth.init();
 		
 	//загружаем остальные данные из файербейса
-	let _other_data = await fbs.ref("players/" + my_data.uid).once('value');
+	let _other_data = await fbs.ref('players/' + my_data.uid).once('value');
 	let other_data = _other_data.val();
 	
 	//делаем защиту от неопределенности
@@ -4111,19 +4111,19 @@ async function init_game_env() {
 	objects.id_avatar.texture=players_cache.players[my_data.uid].texture;
 	objects.my_avatar.texture=players_cache.players[my_data.uid].texture;
 
-	//номер комнаты в зависимости от рейтинга игрока	
-	if (my_data.rating <= 1389)
-		room_name= 'states';	
-	if (my_data.rating >= 1390 && my_data.rating <=1405)
-		room_name= 'states2';		
-	if (my_data.rating >= 1406 && my_data.rating <=1479)
-		room_name= 'states3';	
-	if (my_data.rating >= 1480 && my_data.rating <=1580)
-		room_name= 'states4';	
-	if (my_data.rating >= 1581 && my_data.rating <=1666)
-		room_name= 'states5';
-	if (my_data.rating >= 1667)
-		room_name= 'states6';
+	//номер комнаты в зависимости от рейтинга игрока
+	const rooms_bins=[0,1390,1401,1434,1498,1537,1684,9999];
+	for (let i=1;i>rooms_bins.length;i++){
+		const f=rooms_bins[i-1];
+		const t=rooms_bins[i];		
+		if (my_data.rating>f&&my_data.rating<=t){
+			room_name='states'+i;
+			break;
+		}
+	}
+	
+	
+
 	
 	
 	//room_name= 'states7';
