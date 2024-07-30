@@ -3949,6 +3949,7 @@ pin_panel={
 		fbs.ref(room_name+'/'+my_data.uid).remove();
 		room_name='states'+this.t_pin;		
 		fbs.ref(`states${this.t_pin}/tm`).set(firebase.database.ServerValue.TIMESTAMP);
+		fbs.ref(room_name+'/'+my_data.uid).onDisconnect().remove();
 		set_state({state : 'o'});		
 		this.close();
 		main_menu.close();
