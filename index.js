@@ -343,6 +343,15 @@ anim2={
 		return x
 	},
 	
+	easeTwiceBlink(x){
+		
+		if(x<0.333)
+			return 1;
+		if(x>0.666)
+			return 1;
+		return 0		
+	},
+	
 	kill_anim(obj) {
 		
 		for (var i=0;i<this.slot.length;i++)
@@ -2374,6 +2383,19 @@ main_menu = {
 
 	},
 
+	pin_panel_down(){
+		
+		if (anim2.any_on()) {
+			sound.play('locked');
+			return
+		};
+
+		sound.play('click');
+		
+		pin_panel.activate();
+		
+	},
+
 	chat_button_down() {
 
 
@@ -2755,13 +2777,13 @@ keyboard={
 		const [x,y,x2,y2,key]=key_data
 		
 		//подсвечиваем клавишу
-		objects.chat_keyboard_hl.width=x2-x;
-		objects.chat_keyboard_hl.height=y2-y;
+		objects.chat_keyboard_hl.width=20+x2-x;
+		objects.chat_keyboard_hl.height=20+y2-y;
 		
-		objects.chat_keyboard_hl.x = x+objects.chat_keyboard.x;
-		objects.chat_keyboard_hl.y = y+objects.chat_keyboard.y;	
+		objects.chat_keyboard_hl.x = x+objects.chat_keyboard.x-10;
+		objects.chat_keyboard_hl.y = y+objects.chat_keyboard.y-11;	
 		
-		anim2.add(objects.chat_keyboard_hl,{alpha:[1, 0]}, false, 0.5,'linear');
+		anim2.add(objects.chat_keyboard_hl,{alpha:[1, 0]}, false, 0.25,'linear');
 		
 	},	
 	
@@ -3048,7 +3070,7 @@ lobby={
 			chat.init();
 			
 			//создаем заголовки
-			const room_desc=['КОМНАТА #','ROOM #'][LANG]+{'states1':1,'states2':2,'states3':3,'states4':4,'states5':5,'states6':6,'states7':7}[room_name];
+			const room_desc=['КОМНАТА #','ROOM #'][LANG]+room_name.slice(6);
 			this.sw_header.header_list=[['ДОБРО ПОЖАЛОВАТЬ В ИГРУ БАЛДА ОНЛАЙН!','WELCOME!!!'][LANG],room_desc]
 			objects.lobby_header.text=this.sw_header.header_list[0];
 			this.sw_header.time=Date.now()+12000;
@@ -3779,6 +3801,191 @@ lobby={
 
 	}
 
+}
+
+pin_panel={
+	
+	buttons_data:[[20,101,69.13,150,'pin_button_1'],[80,101,129.13,150,'pin_button_2'],[140,101,190,151,'pin_button_3'],[20,160,70,210,'pin_button_4'],[80,160,130,210,'pin_button_5'],[140,160,190,210,'pin_button_6'],[20,220,70,271,'pin_button_7'],[80,221,130,271,'pin_button_8'],[140,221,190,271,'pin_button_9'],[20,281,130,331,'pin_button_create'],[140,281,250,331,'pin_button_enter'],[200,21,250,71,'pin_button_erase'],[200,101,250,151,'pin_button_close']],
+	t_pin:'',
+	check_is_on:0,
+	admin_mode:0,
+	
+	activate(){
+		
+		anim2.add(objects.pin_panel_cont,{alpha:[0, 1]}, true, 0.1,'linear');	
+		objects.pin_panel_msg.text='Введите четырехзначный номер комнаты';
+		anim2.add(objects.pin_panel_msg,{alpha:[0, 1]}, true, 0.15,'easeTwiceBlink');		
+		
+	},
+		
+	button_down(e){
+
+		//координаты нажатия в плоскости спрайта клавиатуры
+		let mx = e.data.global.x/app.stage.scale.x - objects.pin_panel_bcg.x;
+		let my = e.data.global.y/app.stage.scale.y - objects.pin_panel_bcg.y;
+		
+		//ищем попадание нажатия на кнопку
+		let margin = 2;
+		let button_data=0;
+		for (let k of this.buttons_data){
+			if (mx > k[0] - margin && mx <k[2] + margin  && my > k[1] - margin && my < k[3] + margin){
+				button_data=k;
+				break;
+			}			
+		}	
+		
+		if(!button_data) return;
+		
+		let [x,y,x2,y2,key]=button_data;
+		
+		//подсвечиваем клавишу
+		objects.pin_panel_hl.width=20+x2-x;
+		objects.pin_panel_hl.height=20+y2-y;		
+		objects.pin_panel_hl.x = x+objects.pin_panel_bcg.x-10;
+		objects.pin_panel_hl.y = y+objects.pin_panel_bcg.y-10;			
+		anim2.add(objects.pin_panel_hl,{alpha:[0, 1]}, false, 0.15,'easeTwiceBlink',false);
+		
+		
+		key=key.slice(11);
+		
+		if (isNaN(key)){
+			
+			if (key==='erase'){
+				this.t_pin='';
+				this.update_pin();				
+			}			
+			
+			if (key==='enter')
+				this.enter_room_down();					
+			
+			
+			if (key==='create')
+				this.create_room_down();			
+			
+			
+			if (key==='close')
+				this.close_button_down();		
+			
+			
+		}else{
+			
+			this.pin_button_down(key)
+			
+		}
+		
+		console.log(button_data);
+	
+		
+	},
+	
+	update_pin(){
+		
+		const t_pins=[objects.t_pin0,objects.t_pin1,objects.t_pin2,objects.t_pin3];		
+		t_pins.forEach(t=>t.text='');
+		for (let c=0;c<this.t_pin.length;c++)
+			t_pins[c].text=this.t_pin[c];
+		
+	},
+		
+	pin_button_down(num){
+		
+		if (anim2.any_on()) {
+			sound.play('locked');
+			return
+		};
+		sound.play('click');
+		
+		this.t_pin+=num;
+		if (this.t_pin.length>4) return;
+		this.update_pin();		
+	},
+	
+	create_room_down(){
+		
+		if(!this.admin_mode){
+			objects.pin_panel_msg.text='Это функция недоступна';
+			anim2.add(objects.pin_panel_msg,{alpha:[0, 1]}, true, 0.15,'easeTwiceBlink',false);	
+			return;				
+		}
+
+		if (anim2.any_on()) {
+			sound.play('locked');
+			return
+		};
+		sound.play('click');
+		
+		
+		if (this.t_pin.length!==4) return;
+		
+		//создаем комнату
+		fbs.ref(`states${this.t_pin}/tm`).set(firebase.database.ServerValue.TIMESTAMP);
+		objects.pin_panel_msg.text='Создали комнату №'+this.t_pin;
+		anim2.add(objects.pin_panel_msg,{alpha:[0, 1]}, true, 0.15,'easeTwiceBlink');
+	},
+	
+	async enter_room_down(){
+
+		
+		if (anim2.any_on() || this.t_pin.length!==4||this.check_is_on) {
+			sound.play('locked');
+			return
+		};		
+		
+		
+		this.check_is_on=1;
+		sound.play('click');			
+		
+		const check_room=await fbs_once('states'+this.t_pin);
+		this.check_is_on=0;		
+		if (!check_room){
+			this.t_pin='';
+			this.update_pin();
+			objects.pin_panel_msg.text='Такой комнаты не существует';
+			anim2.add(objects.pin_panel_msg,{alpha:[0, 1]}, true, 0.15,'easeTwiceBlink');	
+			return;
+		} 
+		
+
+		fbs.ref(room_name+'/'+my_data.uid).remove();
+		room_name='states'+this.t_pin;		
+		fbs.ref(`states${this.t_pin}/tm`).set(firebase.database.ServerValue.TIMESTAMP);
+		set_state({state : 'o'});		
+		this.close();
+		main_menu.close();
+		lobby.activate();
+		
+		
+	},
+	
+	close_button_down(){
+		
+		if (anim2.any_on()) {
+			sound.play('locked');
+			return
+		};
+		sound.play('click');
+		
+		this.close();
+		
+	},
+	
+	close(){
+		
+		anim2.add(objects.pin_panel_cont,{alpha:[1, 0]}, false, 0.1,'linear');	
+		
+	},
+	
+	erase_pin_down(){
+		
+		
+	},
+	
+	exit_down(){
+		
+		
+	}
+		
+	
 }
 
 auth = {
