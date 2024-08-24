@@ -3093,7 +3093,7 @@ lobby={
 		this.add_card_ai();
 		
 		//подписываемся на изменения состояний пользователей
-		fbs.ref(room_name) .on('value', (snapshot) => {lobby.players_list_updated(snapshot.val());});
+		fbs.ref(room_name).on('value', (snapshot) => {lobby.players_list_updated(snapshot.val());});
 
 	},
 
@@ -3986,7 +3986,6 @@ pin_panel={
 		
 	}
 		
-	
 }
 
 auth = {
@@ -4045,6 +4044,11 @@ auth = {
 			my_data.name = my_data.name || this.get_random_name(my_data.uid);
 			if (my_data.orig_pic_url === 'https://games-sdk.yandex.ru/games/api/sdk/v1/player/avatar/0/islands-retina-medium')
 				my_data.orig_pic_url = 'mavatar'+my_data.uid;	
+			
+			//убираем ё
+			my_data.name=my_data.name.replace(/ё/g, 'е');
+			my_data.name=my_data.name.replace(/Ё/g, 'Е');
+			
 			return;
 		}
 		
@@ -4065,7 +4069,9 @@ auth = {
 			my_data.name = _player.first_name + ' ' + _player.last_name;
 			my_data.uid  = "vk"+_player.id;
 			my_data.orig_pic_url = _player.photo_100;
-			
+			//убираем ё
+			my_data.name=my_data.name.replace(/ё/g, 'е');
+			my_data.name=my_data.name.replace(/Ё/g, 'Е');
 			return;
 			
 		}
