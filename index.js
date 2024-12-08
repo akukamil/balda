@@ -3992,12 +3992,12 @@ auth = {
 		
 	load_script(src) {
 	  return new Promise((resolve, reject) => {
-		const script = document.createElement('script')
-		script.type = 'text/javascript'
-		script.onload = resolve
-		script.onerror = reject
-		script.src = src
-		document.head.appendChild(script)
+        const script = document.createElement('script')
+        script.type = 'text/javascript'
+        script.onload = () => resolve(1)
+        script.onerror = () => resolve(0)
+        script.src = src
+        document.head.appendChild(script)
 	  })
 	},
 		
@@ -4056,8 +4056,8 @@ auth = {
 			
 			game_platform = 'VK';
 			
-			//try {await this.load_script('https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js')} catch (e) {alert(e)};
-			try {await this.load_script('https://akukamil.github.io/durak/vkbridge.js')} catch (e) {alert(e)};
+			await this.load_script('https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js')||await this.load_script('https://akukamil.github.io/durak/vkbridge.js');
+
 			let _player;
 			
 			try {
