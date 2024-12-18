@@ -65,11 +65,11 @@ class player_mini_card_class extends PIXI.Container {
 		this.name_text.tint=0xffffff;		
 
 		this.rating=0;
-		this.rating_text=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 30,align: 'center'});
+		this.rating_text=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 29,align: 'center'});
 		this.rating_text.tint=0xffff00;
 		this.rating_text.anchor.set(1,0.5);
-		this.rating_text.x=180;
-		this.rating_text.y=60;		
+		this.rating_text.x=185;
+		this.rating_text.y=65;		
 		this.rating_text.tint=0xffff00;
 
 		//аватар первого игрока
@@ -3896,7 +3896,7 @@ lobby={
 		//закрываем диалог стола если он открыт
 		if(objects.invite_cont.visible) this.close_invite_dialog();
 		
-		anim2.add(objects.td_cont,{y:[-400, objects.td_cont.sy]}, true, 0.1,'linear');
+		anim2.add(objects.td_cont,{y:[-400, objects.td_cont.sy]}, true, 0.1,'easeOutBack');
 		
 		const card=objects.mini_cards[card_id];
 		
@@ -3914,7 +3914,7 @@ lobby={
 	},
 	
 	close_table_dialog() {
-		sound.play('click');
+		sound.play('close_it');
 		anim2.add(objects.td_cont,{y:[objects.td_cont.y, 450]}, false, 0.1,'linear');
 	},
 
