@@ -3439,9 +3439,10 @@ lobby={
 		//убираем старое и подписываемся на новую комнату
 		if (room){			
 			if(room_name){
-				fbs.ref(room_name).off('value');
+				fbs.ref(room_name).off();
 				fbs.ref(room_name+'/'+my_data.uid).remove();
 				this.state_listener_on=0;
+				this.global_players={};
 			}
 			room_name=room;
 		}
