@@ -4604,6 +4604,22 @@ auth = {
 
 	},		
 	
+	get_random_uid_for_local (prefix) {
+		
+		let uid = prefix;
+		for ( let c = 0 ; c < 12 ; c++ )
+			uid += this.get_random_char();
+		
+		//сохраняем этот uid в локальном хранилище
+		try {
+			localStorage.setItem('poker_uid', uid);
+		} catch (e) {alert(e)}
+					
+		return uid;
+		
+	},
+	
+	
 	async init() {	
 			
 		if (game_platform === 'YANDEX') {
@@ -4661,6 +4677,16 @@ auth = {
 			my_data.orig_pic_url = 'mavatar'+my_data.uid;	
 			my_data.auth_mode='debug';			
 			return;
+		}
+		
+		if (game_platform === 'UNKNOWN') {
+			
+			//если не нашли платформу
+			alert('Неизвестная платформа. Кто Вы?')
+			my_data.uid = this.search_in_local_storage() || this.get_random_uid_for_local('LS_');
+			my_data.name = this.get_random_name(my_data.uid);
+			my_data.orig_pic_url = 'mavatar'+my_data.uid;		
+			my_data.auth_mode=0;
 		}
 	}
 	
