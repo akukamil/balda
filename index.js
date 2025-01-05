@@ -4644,7 +4644,7 @@ auth = {
 			my_data.uid=_player.getUniqueID().replace(/\//g, "Z");
 			my_data.orig_pic_url=_player.getPhoto('medium');						
 			my_data.name = my_data.name || this.get_random_name(my_data.uid);
-			my_data.auth_mode=_player.getMode()||'auth';
+			my_data.auth_mode=_player.getMode()==='lite'?0:1;
 			
 			//убираем ё
 			my_data.name=my_data.name.replace(/ё/g, 'е');
@@ -4670,7 +4670,7 @@ auth = {
 			my_data.name = _player.first_name + ' ' + _player.last_name;
 			my_data.uid  = "vk"+_player.id;
 			my_data.orig_pic_url = _player.photo_100;
-			my_data.auth_mode='auth';
+			my_data.auth_mode=1;
 			
 			//убираем ё
 			my_data.name=my_data.name.replace(/ё/g, 'е');
@@ -4985,7 +4985,7 @@ async function init_game_env() {
 	fbs.ref("inbox/"+my_data.uid).on('value', (snapshot) => { process_new_message(snapshot.val());});
 
 	//обновляем данные в файербейс так как могли поменяться имя или фото
-	fbs.ref("players/"+my_data.uid).set({name:my_data.name, pic_url: my_data.pic_url, avatar_tm:my_data.avatar_tm, nick_tm:my_data.nick_tm, rating : my_data.rating, games : my_data.games, tm:firebase.database.ServerValue.TIMESTAMP});
+	fbs.ref("players/"+my_data.uid).set({name:my_data.name, pic_url: my_data.pic_url,auth_mode:my_data.auth_mode||0, avatar_tm:my_data.avatar_tm, nick_tm:my_data.nick_tm, rating : my_data.rating, games : my_data.games, tm:firebase.database.ServerValue.TIMESTAMP});
 
 	//устанавливаем мой статус в онлайн
 	set_state({state : 'o'});
