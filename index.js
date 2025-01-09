@@ -2887,7 +2887,7 @@ chat={
 	async chat_updated(data, first_load) {		
 	
 		//console.log('receive message',data)
-		if(data===undefined) return;
+		if(data===undefined||!data.msg||!data.name||!data.uid) return;
 				
 		//ждем пока процессинг пройдет
 		for (let i=0;i<10;i++){			
