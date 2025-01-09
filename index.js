@@ -3516,9 +3516,6 @@ lobby={
 				}
 			}		
 
-			//запускаем чат
-			chat.init();			
-
 			this.activated=true;
 		}
 		
@@ -5132,8 +5129,12 @@ async function init_game_env() {
 	//keep-alive сервис
 	setInterval(function()	{keep_alive()}, 40000);
 	
-	//ждем и убираем попап
-	await new Promise((resolve, reject) => setTimeout(resolve, 1000));
+	//ждем загрузки чата
+	await Promise.race([
+		chat.init(),
+		new Promise(resolve=> setTimeout(() => {console.log('chat is not loaded!');resolve()}, 5000))
+	]);
+	
 	
 	//убираем лупу
 	some_process.loup_anim = function(){};		
