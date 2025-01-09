@@ -2683,6 +2683,10 @@ my_ws={
 			for (const path in this.child_added)				
 				this.socket.send(JSON.stringify({cmd:'child_added',path}))					
 			
+			clearInterval(this.keep_alive_timer)
+			this.keep_alive_timer=setInterval(()=>{
+				this.socket.send(1);
+			},45000);
 		};			
 		
 		this.socket.onmessage = event => {
