@@ -2704,6 +2704,7 @@ my_ws={
 		};
 		
 		this.socket.onclose = event => {			
+			clearInterval(this.keep_alive_timer)
 			//console.log('Socket closed:', event);
 			if(!this.reconnecting){
 				this.reconnecting=1;
