@@ -2646,6 +2646,126 @@ main_menu = {
 
 }
 
+my_ws={
+	
+	socket:0,
+	
+	child_added:{},
+	child_changed:{},
+	child_removed:{},
+	
+	get_resolvers:{},
+	get_req_id:0,
+	reconnecting:0,
+	reconnect_time:0,
+	connect_resolver:0,
+		
+	init(){		
+		if(this.socket.readyState===1) return;
+		return new Promise(resolve=>{
+			this.connect_resolver=resolve;
+			this.reconnect();
+		})
+	},
+	
+	reconnect(){
+		
+		this.reconnecting=0;
+
+		this.socket = new WebSocket('wss://timewebmtgames.ru:8443/balda/'+my_data.uid);
+				
+		this.socket.onopen = () => {
+			//console.log('Connected to server!');
+			this.connect_resolver();
+			this.reconnect_time=0;
+			
+			//обновляем подписки
+			for (const path in this.child_added)				
+				this.socket.send(JSON.stringify({cmd:'child_added',path}))					
+			
+		};			
+		
+		this.socket.onmessage = event => {
+			
+			const msg=JSON.parse(event.data);
+			//console.log("Получено от сервера:", msg);
+			
+			if (msg.event==='child_added')	
+				this.child_added[msg.node]?.(msg);
+			
+			if (msg.event==='get')
+				if (this.get_resolvers[msg.req_id])
+					this.get_resolvers[msg.req_id](msg.data);
+
+		};
+		
+		this.socket.onclose = event => {			
+			//console.log('Socket closed:', event);
+			if(!this.reconnecting){
+				this.reconnecting=1;
+				this.reconnect_time=Math.min(60000,this.reconnect_time+5000);
+				console.log(`reconnecting in ${this.reconnect_time*0.001} seconds:`, event);
+				setTimeout(()=>{this.reconnect()},this.reconnect_time);				
+			}
+		};
+
+		this.socket.onerror = error => {
+			//console.error("WebSocket error:", error);
+		};
+		
+	},
+	
+	get(path,limit_last){		
+		return new Promise(resolve=>{
+			
+			const req_id=irnd(1,999999);
+						
+			const timeoutId = setTimeout(() => {
+				delete this.get_resolvers[req_id];
+				resolve(0);
+			}, 5000);			
+			
+			this.get_resolvers[req_id]=(data)=>{				
+				clearTimeout(timeoutId);
+				resolve(data);					
+			}
+			
+			/*
+			this.get_resolvers[req_id] = {
+				resolve: (data) => {
+					clearTimeout(timeoutId);
+					resolve(data);
+				}
+			};*/
+			
+			this.socket.send(JSON.stringify({cmd:'get',path,req_id,limit_last}))				
+		
+		})	
+	},
+	
+	ss_child_added(path,callback){
+		
+		this.socket.send(JSON.stringify({cmd:'child_added',path}))	
+		this.child_added[path]=callback;
+		
+	},
+
+	ss_child_changed(path,callback){
+		
+		this.socket.send(JSON.stringify({cmd:'child_changed',node:path}))	
+		this.child_changed[path]=callback;
+		
+	},
+	
+	ss_child_removed(path,callback){
+		
+		this.socket.send(JSON.stringify({cmd:'child_removed',node:path}))	
+		this.child_removed[path]=callback;
+		
+	}	
+		
+}
+
 chat={
 	
 	last_record_end : 0,
@@ -2680,7 +2800,7 @@ chat={
 
 	},
 	
-	init(){
+	async init(){
 		
 		this.last_record_end = 0;
 		objects.chat_msg_cont.y = objects.chat_msg_cont.sy;		
@@ -2689,16 +2809,26 @@ chat={
 		objects.bcg.pointerdown=this.pointer_down.bind(this);
 		objects.bcg.pointerup=this.pointer_up.bind(this);
 		objects.bcg.pointerupoutside=this.pointer_up.bind(this);
+		
 		for(let rec of objects.chat_records) {
 			rec.visible = false;			
 			rec.msg_id = -1;	
 			rec.tm=0;
 		}		
 		
-		//загружаем чат		
-		fbs.ref(chat_path).orderByChild('tm').limitToLast(20).once('value', snapshot => {chat.chat_load(snapshot.val());});		
-		
 		this.init_yandex_payments();
+
+		await my_ws.init();	
+		
+		//загружаем чат		
+		const chat_data=await my_ws.get('balda/chat',25);
+		
+		await this.chat_load(chat_data);
+		
+		//подписываемся на новые сообщения
+		my_ws.ss_child_added('balda/chat',chat.chat_updated.bind(chat))
+		
+		console.log('Чат загружен!')
 	},		
 
 	init_yandex_payments(){
@@ -2713,16 +2843,6 @@ chat={
 		
 	},	
 
-	get_oldest_index () {
-		
-		let oldest = {tm:9671801786406 ,visible:true};		
-		for(let rec of objects.chat_records)
-			if (rec.tm < oldest.tm)
-				oldest = rec;	
-		return oldest.index;		
-		
-	},
-	
 	get_oldest_or_free_msg () {
 		
 		//проверяем пустые записи чата
@@ -2751,7 +2871,7 @@ chat={
 		
 	async chat_load(data) {
 		
-		if (data === null) return;
+		if (!data) return;
 		
 		//превращаем в массив
 		data = Object.keys(data).map((key) => data[key]);
@@ -2762,9 +2882,6 @@ chat={
 		//покаываем несколько последних сообщений
 		for (let c of data)
 			await this.chat_updated(c,true);	
-		
-		//подписываемся на новые сообщения
-		fbs.ref(chat_path).on('child_changed', snapshot => {chat.chat_updated(snapshot.val());});
 	},	
 				
 	async chat_updated(data, first_load) {		
@@ -2940,15 +3057,6 @@ chat={
 			objects.chat_msg_cont.y=-chat_top;
 		
 	},
-	
-	make_hash() {
-	  let hash = '';
-	  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	  for (let i = 0; i < 6; i++) {
-		hash += characters.charAt(Math.floor(Math.random() * characters.length));
-	  }
-	  return hash;
-	},
 		
 	async write_btn_down(){
 		
@@ -3005,8 +3113,7 @@ chat={
 		//пишем сообщение в чат и отправляем его		
 		const msg = await keyboard.read(70);		
 		if (msg) {			
-			const index=irnd(1,999);
-			fbs.ref(chat_path+'/'+index).set({uid:my_data.uid,name:my_data.name,msg, tm:firebase.database.ServerValue.TIMESTAMP,index});
+			my_ws.socket.send(JSON.stringify({cmd:'push',path:'balda/chat',val:{uid:my_data.uid,name:my_data.name,msg,tm:'TMS'}}))
 		}	
 		
 	},
@@ -4919,6 +5026,31 @@ async function init_game_env() {
 		objects.id_loup.x=20*Math.sin(game_tick*8)+90;
 		objects.id_loup.y=20*Math.cos(game_tick*8)+150;
 	}
+
+
+	const runScyfiLogs=async () => {
+		const scyfi_logs=[
+			'загрузка ядра...',
+			'размещение VDSO кода...',
+			'инициализация логгеров...',
+			'оптимизация RAM...',
+			'криптографическая решетка...',
+			'загрузка бинарного кода...',
+			'подготовка пула MMU...',
+			'выделение стека POSIX...',
+			'верификация прав доступа...',
+			'проверка цифровых подписей..',
+			'создание потока HAL...',
+			'завершено.'
+		]
+	
+		for (let i=0;i<scyfi_logs.length;i++){		
+			objects.scyfi_log.text=scyfi_logs[i];
+			await new Promise(resolve=>setTimeout(resolve, irnd(300,700)));		
+		}
+	};
+	runScyfiLogs();
+
 
 	//подгружаем библиотеку аватаров
 	await auth.load_script(git_src+'/multiavatar.min.js');
