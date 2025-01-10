@@ -5132,7 +5132,7 @@ async function init_game_env() {
 	objects.my_avatar.texture=players_cache.players[my_data.uid].texture;
 
 	//номер комнаты в зависимости от рейтинга игрока
-	const rooms_bins=[0,1390,1401,1434,1498,1537,1684,9999];
+	const rooms_bins=[0,1374,1399,1415,1444,1485,1511,1584,1738,9999];
 	for (let i=1;i<rooms_bins.length;i++){
 		const f=rooms_bins[i-1];
 		const t=rooms_bins[i];		
