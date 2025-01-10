@@ -2214,12 +2214,16 @@ process_new_message = function(msg) {
 		start_word=msg.start_word;
 		lobby.accepted_invite();
 	}
-
 	
 	//принимаем также отрицательный ответ от соответствующего соперника
 	if (msg.message?.includes("REJECT")  && pending_player === msg.sender) {
 		lobby.rejected_invite(msg.message);
 	}
+
+	//айди клиента для удаления дубликатов
+	if (msg.message==="CLIEND_ID") 
+		if (msg.client_id !== client_id)
+			kill_game();
 
 	//получение сообщение в состояни игры
 	if (state==="p") {
@@ -2264,6 +2268,13 @@ process_new_message = function(msg) {
 				req_dialog.hide(msg.sender);
 		}
 	}
+}
+
+var kill_game = function() {
+	
+	firebase.app().delete();
+	my_ws.kill();
+	document.body.innerHTML = 'CLIENT TURN OFF';
 }
 
 pref={
@@ -2667,6 +2678,13 @@ my_ws={
 			this.sleep=1;	
 			this.socket.close(1000, "sleep");
 		}
+	},
+	
+	kill(){
+		
+		this.sleep=1;
+		this.socket.close(1000, "kill");
+		
 	},
 	
 	reconnect(){
@@ -4890,7 +4908,6 @@ function set_state(params) {
 
 }
 
-
 function define_platform_and_language() {
 	
 	let s = window.location.href;
@@ -5168,6 +5185,9 @@ async function init_game_env() {
 
 	//это событие когда меняется видимость приложения
 	document.addEventListener("visibilitychange", function(){tabvis.change()});
+
+	//для удаления дубликатов
+	fbs.ref('inbox/'+my_data.uid).set({message:'CLIEND_ID',tm:Date.now(),client_id});
 
 	//keep-alive сервис
 	setInterval(function()	{keep_alive()}, 40000);
