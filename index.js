@@ -2063,14 +2063,7 @@ rating = {
 
 keep_alive = function() {
 	
-	if (h_state === 1) {		
-		
-		//убираем из списка если прошло время с момента перехода в скрытое состояние		
-		let cur_ts = Date.now();	
-		let sec_passed = (cur_ts - hidden_state_start)/1000;		
-		if ( sec_passed > 100 )	firebase.database().ref(room_name+"/"+my_data.uid).remove();
-		return;		
-	}
+	if (document.hidden) return;		
 
 	firebase.database().ref("players/"+my_data.uid+"/tm").set(firebase.database.ServerValue.TIMESTAMP);
 	firebase.database().ref("inbox/"+my_data.uid).onDisconnect().remove();
@@ -2653,12 +2646,13 @@ my_ws={
 	child_added:{},
 	child_changed:{},
 	child_removed:{},
-	
+		
 	get_resolvers:{},
 	get_req_id:0,
 	reconnecting:0,
 	reconnect_time:0,
 	connect_resolver:0,
+	sleep:0,
 		
 	init(){		
 		if(this.socket.readyState===1) return;
@@ -2668,14 +2662,22 @@ my_ws={
 		})
 	},
 	
+	send_to_sleep(){		
+		if (this.socket.readyState===1){
+			this.sleep=1;	
+			this.socket.close(1000, "sleep");
+		}
+	},
+	
 	reconnect(){
 		
+		this.sleep=0;
 		this.reconnecting=0;
 
 		this.socket = new WebSocket('wss://timewebmtgames.ru:8443/balda/'+my_data.uid);
 				
 		this.socket.onopen = () => {
-			//console.log('Connected to server!');
+			console.log('Connected to server!');
 			this.connect_resolver();
 			this.reconnect_time=0;
 			
@@ -2705,7 +2707,8 @@ my_ws={
 		
 		this.socket.onclose = event => {			
 			clearInterval(this.keep_alive_timer)
-			//console.log('Socket closed:', event);
+			console.log('Socket closed:', event);
+			if(this.sleep) return;
 			if(!this.reconnecting){
 				this.reconnecting=1;
 				this.reconnect_time=Math.min(60000,this.reconnect_time+5000);
@@ -3493,6 +3496,7 @@ lobby={
 	_opp_data : {},
 	activated:false,
 	rejected_invites:{},
+	on:0,
 	fb_cache:{},
 	first_run:0,
 	bot_on:1,
@@ -3524,6 +3528,7 @@ lobby={
 			this.activated=true;
 		}
 		
+		this.on=1;
 		anim2.add(objects.cards_cont,{alpha:[0, 1]}, true, 0.1,'linear');
 		anim2.add(objects.lobby_footer_cont,{y:[450, objects.lobby_footer_cont.sy]}, true, 0.1,'linear');
 		anim2.add(objects.lobby_header_cont,{y:[-50, objects.lobby_header_cont.sy]}, true, 0.1,'linear');
@@ -4232,6 +4237,7 @@ lobby={
 		
 		//больше ни ждем ответ ни от кого
 		pending_player='';
+		this.on=0;
 		
 		//отписываемся от изменений состояний пользователей через 30 секунд
 		this.state_listener_timeout=setTimeout(()=>{
@@ -4809,6 +4815,47 @@ auth = {
 	
 }
 
+tabvis={
+	
+	inactive_timer:0,
+	sleep:0,
+	
+	change(){
+		
+		if (document.hidden){
+			
+			//start wait for
+			this.inactive_timer=setTimeout(()=>{this.send_to_sleep()},120000);
+			
+		}else{
+			
+			if(this.sleep){		
+				console.log('Проснулись');
+				my_ws.reconnect();
+				this.sleep=0;
+			}
+			
+			clearTimeout(this.inactive_timer);			
+		}		
+		
+		set_state({hidden : document.hidden});
+		
+	},
+	
+	send_to_sleep(){		
+		
+		console.log('погрузились в сон')
+		this.sleep=1;
+		if (lobby.on){
+			fbs.ref(room_name+'/'+my_data.uid).remove();
+			lobby.close()
+			main_menu.activate();				
+		}		
+		my_ws.send_to_sleep();		
+	}
+	
+}
+
 function resize() {
     const vpw = document.body.clientWidth;  // Width of the viewport
     const vph = document.body.clientHeight; // Height of the viewport
@@ -4843,15 +4890,6 @@ function set_state(params) {
 
 }
 
-function vis_change() {
-
-	if (document.hidden === true)
-		hidden_state_start = Date.now();
-	
-	set_state({hidden : document.hidden});
-	
-		
-}
 
 function define_platform_and_language() {
 	
@@ -5029,7 +5067,7 @@ async function init_game_env() {
 		objects.id_loup.y=20*Math.cos(game_tick*8)+150;
 	}
 
-
+	//смешные научные загрузки
 	const runScyfiLogs=async () => {
 		const scyfi_logs=[
 			'загрузка ядра...',
@@ -5129,7 +5167,7 @@ async function init_game_env() {
 	fbs.ref(room_name+"/"+my_data.uid).onDisconnect().remove();
 
 	//это событие когда меняется видимость приложения
-	document.addEventListener("visibilitychange", vis_change);
+	document.addEventListener("visibilitychange", function(){tabvis.change()});
 
 	//keep-alive сервис
 	setInterval(function()	{keep_alive()}, 40000);
