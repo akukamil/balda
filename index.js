@@ -2664,6 +2664,7 @@ my_ws={
 	reconnect_time:0,
 	connect_resolver:0,
 	sleep:0,
+	keep_alive_timer:0,
 		
 	init(){		
 		if(this.socket.readyState===1) return;
