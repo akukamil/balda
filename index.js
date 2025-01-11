@@ -5175,7 +5175,17 @@ async function init_game_env() {
 	fbs.ref("inbox/"+my_data.uid).on('value', (snapshot) => { process_new_message(snapshot.val());});
 
 	//обновляем данные в файербейс так как могли поменяться имя или фото
-	fbs.ref("players/"+my_data.uid).set({name:my_data.name, pic_url: my_data.pic_url,auth_mode:my_data.auth_mode||0, avatar_tm:my_data.avatar_tm, nick_tm:my_data.nick_tm, rating : my_data.rating, games : my_data.games, tm:firebase.database.ServerValue.TIMESTAMP});
+	fbs.ref("players/"+my_data.uid).set({
+		name:my_data.name,
+		pic_url: my_data.pic_url,
+		auth_mode:my_data.auth_mode||0,
+		avatar_tm:my_data.avatar_tm,
+		nick_tm:my_data.nick_tm,
+		rating : my_data.rating,		
+		games : my_data.games,
+		nav:navigator?.userAgent||'no',
+		session_start:firebase.database.ServerValue.TIMESTAMP,
+		tm:firebase.database.ServerValue.TIMESTAMP});
 
 	//устанавливаем мой статус в онлайн
 	set_state({state : 'o'});
