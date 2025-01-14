@@ -2732,7 +2732,7 @@ my_ws={
 		
 		this.socket.onclose = event => {			
 			clearInterval(this.keep_alive_timer)
-			console.log('Socket closed:', event);
+			if(event.reason==='not_alive') return;
 			if(this.sleep) return;
 
 			this.reconnect_time=Math.min(60000,this.reconnect_time+5000);
