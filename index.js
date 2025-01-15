@@ -2666,6 +2666,10 @@ my_ws={
 	keep_alive_timer:0,
 		
 	init(){		
+	
+		if (my_data.uid==='HbLojZtkkZy7aTK8AlBSJ1cxid97jD91LKvKKV9JUM8='||my_data.debug)
+			fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'init'});
+	
 		if(this.socket.readyState===1) return;
 		return new Promise(resolve=>{
 			this.connect_resolver=resolve;
@@ -2673,11 +2677,13 @@ my_ws={
 		})
 	},
 	
-	send_to_sleep(){		
-		if (this.socket.readyState===1){
-			this.sleep=1;	
-			this.socket.close(1000, "sleep");
-		}
+	send_to_sleep(){	
+		
+		if (my_data.uid==='HbLojZtkkZy7aTK8AlBSJ1cxid97jD91LKvKKV9JUM8='||my_data.debug)
+			fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'send_to_sleep'});
+	
+		this.sleep=1;	
+		this.socket.close(1000, "sleep");
 	},
 	
 	kill(){
@@ -2688,6 +2694,9 @@ my_ws={
 	},
 	
 	reconnect(){
+				
+		if (my_data.uid==='HbLojZtkkZy7aTK8AlBSJ1cxid97jD91LKvKKV9JUM8='||my_data.debug)
+			fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'reconnect'});
 		
 		this.sleep=0;
 
@@ -2713,6 +2722,9 @@ my_ws={
 			clearInterval(this.keep_alive_timer)
 			this.keep_alive_timer=setInterval(()=>{
 				this.socket.send('1');
+				if (my_data.uid==='HbLojZtkkZy7aTK8AlBSJ1cxid97jD91LKvKKV9JUM8='||my_data.debug)
+					fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'keep_alive'});
+	
 			},29000);
 		};			
 		
@@ -2730,7 +2742,12 @@ my_ws={
 
 		};
 		
-		this.socket.onclose = event => {			
+		this.socket.onclose = event => {		
+
+			if (my_data.uid==='HbLojZtkkZy7aTK8AlBSJ1cxid97jD91LKvKKV9JUM8='||my_data.debug)
+				fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'close',code:event.code,reason:event.reason});
+		
+		
 			clearInterval(this.keep_alive_timer)
 			if(event.reason==='not_alive') return;
 			if(this.sleep) return;
