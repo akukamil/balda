@@ -2225,6 +2225,11 @@ process_new_message = function(msg) {
 		if (msg.client_id !== client_id)
 			kill_game();
 
+	//сообщение о блокировке чата
+	if (msg.message==='CHAT_BLOCK'){
+		my_data.blocked=1;		
+	}
+
 	//получение сообщение в состояни игры
 	if (state==="p") {
 
@@ -2341,7 +2346,7 @@ pref={
 		if(!this.check_time(my_data.nick_tm)) return;
 										
 		const name=await keyboard.read(15);
-		if (name.length>1){			
+		if (name.replace(/\s/g, '').length>3){			
 			this.name_changed=name;
 			objects.pref_name.set2(name,260);
 			objects.pref_info.text=['Нажмите ОК чтобы сохранить','Press OK to confirm'][LANG];
@@ -2744,15 +2749,13 @@ my_ws={
 		
 		this.socket.onclose = event => {		
 
-			if (my_data.uid==='HbLojZtkkZy7aTK8AlBSJ1cxid97jD91LKvKKV9JUM8='||my_data.debug)
-				fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'close',code:event.code,reason:event.reason});
-		
+			fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'close',code:event.code,reason:event.reason});
 		
 			clearInterval(this.keep_alive_timer)
 			if(event.reason==='not_alive') return;
 			if(this.sleep) return;
 
-			this.reconnect_time=Math.min(60000,this.reconnect_time+5000);
+			this.reconnect_time=Math.min(60000,this.reconnect_time+5000)+event.code===1006?60000:0;
 			console.log(`reconnecting in ${this.reconnect_time*0.001} seconds:`, event);
 			setTimeout(()=>{this.reconnect()},this.reconnect_time);				
 		};
