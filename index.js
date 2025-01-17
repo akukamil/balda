@@ -2735,7 +2735,7 @@ my_ws={
 				if (my_data.uid==='HbLojZtkkZy7aTK8AlBSJ1cxid97jD91LKvKKV9JUM8='||my_data.debug)
 					fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'keep_alive'});
 	
-			},29000);
+			},45000);
 		};			
 		
 		this.socket.onmessage = event => {
@@ -2760,7 +2760,7 @@ my_ws={
 			if(event.reason==='not_alive') return;
 			if(this.sleep) return;
 
-			this.reconnect_time=Math.min(60000,this.reconnect_time+5000)+event.code===1006?60000:0;
+			this.reconnect_time=Math.min(60000,this.reconnect_time+5000)+(event.code===1006)?60000:0;
 			console.log(`reconnecting in ${this.reconnect_time*0.001} seconds:`, event);
 			setTimeout(()=>{this.reconnect()},this.reconnect_time);				
 		};
