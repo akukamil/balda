@@ -2676,7 +2676,7 @@ my_ws={
 	keep_alive_timer:0,
 		
 	init(){		
-	
+		fbs.ref('WSDEBUG/'+my_data.uid).remove();
 		if (my_data.uid==='HbLojZtkkZy7aTK8AlBSJ1cxid97jD91LKvKKV9JUM8='||my_data.debug)
 			fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'init'});
 	
