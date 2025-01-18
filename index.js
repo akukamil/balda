@@ -2731,10 +2731,13 @@ my_ws={
 			
 			clearInterval(this.keep_alive_timer)
 			this.keep_alive_timer=setInterval(()=>{
-				this.socket.send('1');
-				if (my_data.uid==='HbLojZtkkZy7aTK8AlBSJ1cxid97jD91LKvKKV9JUM8='||my_data.debug)
-					fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'keep_alive'});
-	
+				
+				try{
+					this.socket.send('1');
+				}catch(e){
+					fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'keep_alive_error'});
+				}
+				
 			},45000);
 		};			
 		
