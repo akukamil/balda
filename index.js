@@ -2774,6 +2774,7 @@ my_ws={
 			
 			try{
 				this.socket.send('1');
+				fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'keep_alive'});
 			}catch(e){
 				fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'keep_alive_error'});
 			}
