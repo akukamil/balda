@@ -2678,8 +2678,7 @@ my_ws={
 		
 	init(){		
 		fbs.ref('WSDEBUG/'+my_data.uid).remove();
-		if (my_data.uid==='HbLojZtkkZy7aTK8AlBSJ1cxid97jD91LKvKKV9JUM8='||my_data.debug)
-			fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'init'});
+		fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'init'});
 	
 		if(this.socket.readyState===1) return;
 		return new Promise(resolve=>{
@@ -2763,7 +2762,7 @@ my_ws={
 		};
 
 		this.socket.onerror = error => {
-			fbs.ref('WSERRORS/'+my_data.uid).push({tm:Date.now(),event:'error'});
+			//fbs.ref('WSERRORS/'+my_data.uid).push({tm:Date.now(),event:'error'});
 		};
 		
 	},
@@ -2776,7 +2775,7 @@ my_ws={
 			try{
 				this.socket.send('1');
 			}catch(e){
-				fbs.ref('WSERRORS/'+my_data.uid).push({tm:Date.now(),event:'keep_alive_error'});
+				fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'keep_alive_error'});
 			}
 			
 			this.reset_keep_alive('timer');
