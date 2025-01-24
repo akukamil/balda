@@ -4620,9 +4620,31 @@ auth = {
 	async init() {	
 			
 		if (game_platform === 'YANDEX') {
-						
-			try {await this.load_script('https://yandex.ru/games/sdk/v2')} catch (e) {alert(e)};									
-					
+				
+
+			function loadSDK() {
+				return new Promise((resolve, reject) => {
+					var s = document.createElement('script');
+					s.src = "https://sdk.games.s3.yandex.net/sdk.js";
+					s.async = true;
+					s.onload = resolve;
+					s.onerror = reject;
+					document.body.appendChild(s);
+				});
+			}
+
+			async function initSDK() {
+				try {
+					await loadSDK();
+					// Your SDK initialization code here
+					console.log("SDK loaded successfully");
+				} catch (error) {
+					console.error("Failed to load SDK:", error);
+				}
+			}
+
+			await initSDK();
+	
 			let _player;			
 			try {
 				window.ysdk = await YaGames.init({});			
@@ -5140,6 +5162,9 @@ async function init_game_env() {
 	//заполняем клавиатуру
 	for (let i = 0 ; i < 33 ; i ++)
 		objects.keys[i].letter.text = rus_let[i];
+	
+	if (game_platform==='YANDEX')
+		window.ysdk.features.LoadingAPI?.ready()
 		
 	console.clear()
 
