@@ -2307,6 +2307,7 @@ pref={
 		
 		//заполняем имя и аватар
 		objects.pref_name.set2(my_data.name,260);
+		objects.pref_rating.text=my_data.rating;
 		objects.pref_avatar.set_texture(players_cache.players[my_data.uid].texture);	
 		
 		this.avatar_switch_center=this.avatar_swtich_cur=irnd(9999,999999);
