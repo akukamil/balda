@@ -2292,6 +2292,7 @@ pref={
 	tex_loading:0,
 	avatar_switch_center:0,
 	avatar_swtich_cur:0,
+	info_timer:0,
 	
 	activate(){					
 				
@@ -2334,14 +2335,7 @@ pref={
 		
 		return 1;
 	},
-			
-	message(msg){
-		
-		objects.pref_info.text=msg;
-		anim2.add(objects.pref_info,{alpha:[0,1]}, false, 3,'easeBridge',false);	
-	
-	},
-	
+				
 	async change_name_down(){
 				
 		//провряем можно ли менять ник
@@ -2831,13 +2825,7 @@ chat={
 			console.log('Игрок убит: ',player_data.uid);
 			this.kill_next_click=0;
 		}
-		
-		if(this.delete_message_mode){			
-			fbs.ref(`${chat_path}/${player_data.index}`).remove();
-			console.log(`сообщение ${player_data.index} удалено`)
-		}
-		
-		
+				
 		if(this.moderation_mode||this.block_next_click||this.kill_next_click||this.delete_message_mode) return;
 		
 		if (objects.chat_keyboard_cont.visible)		
@@ -5087,9 +5075,8 @@ async function init_game_env() {
 	}
 			
 	
-	//room_name= 'states8';
-	//это путь к чату
-	chat_path='chat';
+	//room_name= 'states10';
+
 	
 	//устанавливаем рейтинг в попап
 	objects.id_rating.text=objects.my_card_rating.text=my_data.rating;
@@ -5146,11 +5133,13 @@ async function init_game_env() {
 	//контроль за присутсвием
 	var connected_control = fbs.ref(".info/connected");
 	connected_control.on("value", (snap) => {
-	  if (snap.val() === true) {
-		connected = 1;
-	  } else {
-		connected = 0;
-	  }
+		if (snap.val() === true) {
+			connected = 1;
+			message.add('Связь с сервером восстановлена!');
+		} else {
+			message.add('Связь с сервером потеряна!');
+			connected = 0;
+		}
 	});
 		
 	//событие ролика мыши в карточном меню и нажатие кнопки
