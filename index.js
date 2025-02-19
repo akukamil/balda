@@ -5134,8 +5134,9 @@ async function init_game_env() {
 	var connected_control = fbs.ref(".info/connected");
 	connected_control.on("value", (snap) => {
 		if (snap.val() === true) {
+			if(!connected)
+				message.add('Связь с сервером восстановлена!');
 			connected = 1;
-			message.add('Связь с сервером восстановлена!');
 		} else {
 			message.add('Связь с сервером потеряна!');
 			connected = 0;
