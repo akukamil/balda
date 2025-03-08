@@ -6,7 +6,7 @@ const adj_cells = {0:[1,5],1:[0,6,2],2:[1,7,3],3:[2,8,4],4:[3,9],5:[0,6,10],6:[1
 const LANG=0;
 
 fbs_once=async function(path){
-	const info=await fbs.ref(path).once('value');
+	const info=await fbs.ref(path).get();
 	return info.val();	
 }
 
@@ -5031,8 +5031,8 @@ async function init_game_env() {
 	await auth.init();
 		
 	//загружаем остальные данные из файербейса
-	let _other_data = await fbs.ref('players/' + my_data.uid).once('value');
-	let other_data = _other_data.val();
+	const other_data = await fbs_once('players/' + my_data.uid);
+
 	
 	//делаем защиту от неопределенности
 	my_data.rating = other_data?.rating || 1400;
