@@ -5032,7 +5032,6 @@ async function init_game_env() {
 		
 	//загружаем остальные данные из файербейса
 	const other_data = await fbs_once('players/' + my_data.uid);
-
 	
 	//делаем защиту от неопределенности
 	my_data.rating = other_data?.rating || 1400;
