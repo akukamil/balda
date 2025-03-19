@@ -4902,8 +4902,13 @@ async function init_game_env() {
 	fbs=firebase.database();
 
 	//создаем приложение
+	
+	const dw=M_WIDTH/document.body.clientWidth;
+	const dh=M_HEIGHT/document.body.clientHeight;
+	const resolution=Math.min(1.5,Math.max(dw,dh,1));	
+	const opts={width:M_WIDTH, height:M_HEIGHT,antialias:false,resolution,autoDensity:true};
 	app.stage = new PIXI.Container();
-	app.renderer = new PIXI.Renderer({width:M_WIDTH, height:M_HEIGHT,antialias:true});
+	app.renderer = new PIXI.Renderer(opts);
 	document.body.appendChild(app.renderer.view).style["boxShadow"] = "0 0 15px #000000";
 	document.body.style.backgroundColor = 'rgb(62,52,62)';
 
