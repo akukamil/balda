@@ -360,6 +360,14 @@ class chat_record_class extends PIXI.Container {
 						
 		//получаем pic_url из фб
 		this.avatar.set_texture(PIXI.Texture.WHITE);
+		
+		if (msg_data.uid==='admin'){
+			this.msg_bcg.tint=0x55ff55;
+			this.avatar.set_texture(assets.pc_icon);
+		}else{
+			this.msg_bcg.tint=0xffffff;
+			await this.update_avatar(msg_data.uid, this.avatar);
+		}	
 				
 		await this.update_avatar(msg_data.uid, this.avatar);
 
@@ -2744,10 +2752,14 @@ chat={
 		
 	},
 		
-	block_player(uid){
+	async block_player(uid){
 		
 		fbs.ref('blocked/'+uid).set(Date.now());
 		fbs.ref('inbox/'+uid).set({message:'CHAT_BLOCK',tm:Date.now()});
+		
+		const name=await fbs_once(`players/${uid}/name`);
+		const msg=`Игрок ${name} занесен в черный список.`;
+		my_ws.socket.safe_send({cmd:'push',path:`${game_name}/chat`,val:{uid:'admin',name:'Админ',msg,tm:'TMS'}});		
 		
 		//увеличиваем количество блокировок
 		fbs.ref('players/'+uid+'/block_num').transaction(val=> {return (val || 0) + 1});
@@ -2805,7 +2817,10 @@ chat={
 		
 	},
 						
-	avatar_down(player_data){
+	avatar_down(player_data){		
+		
+		if (player_data.uid==='admin')
+			return;
 		
 		if (this.moderation_mode){
 			console.log(player_data.index,player_data.uid,player_data.name.text,player_data.msg.text);
@@ -2949,7 +2964,7 @@ chat={
 			if(game_platform==='YANDEX'){
 				
 				this.payments.purchase({ id: 'unblock'+block_num}).then(purchase => {
-					this.unblock_chat();
+					this.unblock_chat(block_num);
 				}).catch(err => {
 					message.add('Ошибка при покупке!');
 				})				
@@ -2958,7 +2973,7 @@ chat={
 			if (game_platform==='VK') {
 				
 				vkBridge.send('VKWebAppShowOrderBox', { type: 'item', item: 'unblock'+block_num}).then(data =>{
-					this.unblock_chat();
+					this.unblock_chat(block_num);
 				}).catch((err) => {
 					message.add('Ошибка при покупке!');
 				});			
@@ -2991,13 +3006,16 @@ chat={
 		
 	},
 	
-	unblock_chat(){
+	unblock_chat(block_num){
 		objects.chat_rules.text='Правила чата!\n1. Будьте вежливы: Общайтесь с другими игроками с уважением. Избегайте угроз, грубых выражений, оскорблений, конфликтов.\n2. Отправлять сообщения в чат могут игроки сыгравшие более 200 онлайн партий.\n3. За нарушение правил игрок может попасть в черный список.'
 		objects.chat_enter_btn.texture=assets.send_message_btn;	
 		fbs.ref('blocked/'+my_data.uid).remove();
 		my_data.blocked=0;
 		message.add('Вы разблокировали чат');
 		sound.play('mini_dialog');	
+		
+		//отправляем на сервер
+		my_ws.safe_send({cmd:'log_inst',logger:'payments',data:{game_name,uid:my_data.uid,name:my_data.name,block_num}});
 	},
 		
 	close() {
