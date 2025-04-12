@@ -2714,12 +2714,12 @@ chat={
 		await my_ws.init();	
 		
 		//загружаем чат		
-		const chat_data=await my_ws.get(`${game_name}/chat`,25);
+		const chat_data=await my_ws.get('chat',25);
 		
 		await this.chat_load(chat_data);
 		
 		//подписываемся на новые сообщения
-		my_ws.ss_child_added(`${game_name}/chat`,chat.chat_updated.bind(chat))
+		my_ws.ss_child_added('chat',chat.chat_updated.bind(chat))
 		
 		console.log('Чат загружен!')
 	},		
@@ -2759,7 +2759,7 @@ chat={
 		
 		const name=await fbs_once(`players/${uid}/name`);
 		const msg=`Игрок ${name} занесен в черный список.`;
-		my_ws.safe_send({cmd:'push',path:`${game_name}/chat`,val:{uid:'admin',name:'Админ',msg,tm:'TMS'}});		
+		my_ws.safe_send({cmd:'push',path:'chat',val:{uid:'admin',name:'Админ',msg,tm:'TMS'}});		
 		
 		//увеличиваем количество блокировок
 		fbs.ref('players/'+uid+'/block_num').transaction(val=> {return (val || 0) + 1});
@@ -3001,7 +3001,7 @@ chat={
 		//пишем сообщение в чат и отправляем его		
 		const msg = await keyboard.read(70);		
 		if (msg) {			
-			my_ws.socket.send(JSON.stringify({cmd:'push',path:`${game_name}/chat`,val:{uid:my_data.uid,name:my_data.name,msg,tm:'TMS'}}))
+			my_ws.socket.send(JSON.stringify({cmd:'push',path:'chat',val:{uid:my_data.uid,name:my_data.name,msg,tm:'TMS'}}))
 		}	
 		
 	},
@@ -5097,7 +5097,7 @@ async function init_game_env() {
 	}
 			
 	
-	//room_name= 'states10';
+	//room_name= 'states11';
 
 	
 	//устанавливаем рейтинг в попап
