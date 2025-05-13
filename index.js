@@ -2939,15 +2939,7 @@ chat={
 		
 	wheel_event(delta) {
 		
-		objects.chat_msg_cont.y-=delta*50;	
-		const chat_bottom = this.last_record_end;
-		const chat_top = this.last_record_end - objects.chat_records.filter(obj => obj.visible === true).length*70;
-		
-		if (objects.chat_msg_cont.y+chat_bottom<430)
-			objects.chat_msg_cont.y = 430-chat_bottom;
-		
-		if (objects.chat_msg_cont.y+chat_top>0)
-			objects.chat_msg_cont.y=-chat_top;
+		this.shift(-delta*30)
 		
 	},
 		
@@ -5190,14 +5182,12 @@ async function init_game_env() {
 
 function main_loop() {
 
-
 	game_tick+=0.016666666;
 	anim2.process();
 	
 	//обрабатываем минипроцессы
 	for (let key in some_process)
 		some_process[key]();
-
 
 	app.renderer.render(app.stage);	
 	requestAnimationFrame(main_loop);
