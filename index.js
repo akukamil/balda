@@ -3552,6 +3552,23 @@ lobby={
 		//это свободные игроки
 		let single = {};
 		
+		
+		//конвертируем сокращенные данные начали 25.06.2025, нужно позже перейти полностью на сокращенный режим
+		for (let uid in players){	
+			
+			const player=players[uid]
+			if (player.n)
+				player.name=player.n
+			if (player.r)
+				player.rating=player.r
+			if (player.s)
+				player.state=player.s
+			if (player.h)
+				player.hidden=player.hidden
+			if (player.g)
+				player.game_id=player.g
+		}
+		
 		//удаляем инвалидных игроков
 		for (let uid in players){	
 			if(!players[uid].name||!players[uid].rating||!players[uid].state)
