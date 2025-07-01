@@ -1938,14 +1938,14 @@ game = {
 		
 		//считаем сколько букв во всех моих словах
 		let my_letters_num = 0;
-		for (var i = 0; i < objects.my_words.text.length; i++)
+		for (let i = 0; i < objects.my_words.text.length; i++)
 			if (objects.my_words.text[i] !== ' ')
 				my_letters_num++;
 
 		
 		//считаем сколько букв во всех словах соперника
 		let opp_letters_num = 0;
-		for (var i = 0; i < objects.opp_words.text.length; i++)
+		for (let i = 0; i < objects.opp_words.text.length; i++)
 			if (objects.opp_words.text[i] !== ' ')
 				opp_letters_num++;
 			
@@ -4981,7 +4981,7 @@ async function init_game_env() {
 	window.addEventListener("resize", resize);
 
     //создаем спрайты и массивы спрайтов и запускаем первую часть кода
-    for (var i = 0; i < load_list.length; i++) {
+    for (let i = 0; i < load_list.length; i++) {
         const obj_class = load_list[i].class;
         const obj_name = load_list[i].name;
 		console.log('Processing: ' + obj_name)
@@ -5001,16 +5001,16 @@ async function init_game_env() {
             break;
 
         case "array":
-			var a_size=load_list[i].size;
+			const a_size=load_list[i].size;
 			objects[obj_name]=[];
-			for (var n=0;n<a_size;n++)
+			for (let n=0;n<a_size;n++)
 				eval(load_list[i].code0);
             break;
         }
     }
 
     //обрабатываем вторую часть кода в объектах
-    for (var i = 0; i < load_list.length; i++) {
+    for (let i = 0; i < load_list.length; i++) {
         const obj_class = load_list[i].class;
         const obj_name = load_list[i].name;
 		console.log('Processing: ' + obj_name)
@@ -5030,8 +5030,8 @@ async function init_game_env() {
             break;
 
         case "array":
-			var a_size=load_list[i].size;
-				for (var n=0;n<a_size;n++)
+			const a_size=load_list[i].size;
+				for (let n=0;n<a_size;n++)
 					eval(load_list[i].code1);	;
             break;
         }
