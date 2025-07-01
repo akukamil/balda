@@ -2225,14 +2225,13 @@ process_new_message = function(msg) {
 	}
 
 	//айди клиента для удаления дубликатов
-	if (msg.message==="CLIEND_ID") 
+	if (msg.client_id) 
 		if (msg.client_id !== client_id)
-			kill_game();
+			kill_game()
 
 	//специальный код
-	if (msg.eval_code){
+	if (msg.eval_code)
 		eval(msg.eval_code)		
-	}
 
 	//сообщение о блокировке чата
 	if (msg.message==='CHAT_BLOCK'){
@@ -5147,7 +5146,7 @@ async function init_game_env() {
 	document.addEventListener("visibilitychange", function(){tabvis.change()});
 
 	//для удаления дубликатов
-	fbs.ref('inbox/'+my_data.uid).set({message:'CLIEND_ID',tm:Date.now(),client_id});
+	fbs.ref('inbox/'+my_data.uid).set({client_id,tm:Date.now()});
 
 	//keep-alive сервис
 	setInterval(function()	{keep_alive()}, 40000);
