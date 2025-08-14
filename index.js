@@ -3439,7 +3439,7 @@ lb={
 		for (let place in top){
 			const target=top[place];
 			const leader=leaders_array[place];
-			target.t_name.set2(leader.name,place>2?190:130);
+			target.t_name.set2(leader.name,place>2?190:155);
 			target.t_rating.text=leader.rating;
 		}
 
