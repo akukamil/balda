@@ -2344,7 +2344,7 @@ pref={
 		
 		//это бонусы
 		objects.pref_energy.text=my_data.energy
-		objects.pref_games.text='Игр: '+my_data.games
+		objects.pref_games.text='Игры: '+my_data.games
 		
 		this.avatar_switch_center=this.avatar_swtich_cur=irnd(9999,999999);
 		
