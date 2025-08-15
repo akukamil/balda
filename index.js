@@ -5308,6 +5308,9 @@ async function init_game_env() {
 	//отображаем лидеров вчерашнего дня
 	top3.activate()
 	
+	//разные проверки
+	pref.init()
+	
 	//убираем лупу
 	some_process.loup_anim = function(){};		
 	anim2.add(objects.id_cont,{y:[objects.id_cont.y, -200]}, false, 1,'easeInBack');	
