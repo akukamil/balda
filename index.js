@@ -3524,7 +3524,7 @@ lobby={
 				this.state_listener_on=0;
 				this.global_players={};
 			}
-			room_name=room;
+			room_name=room
 		}
 		
 		
