@@ -3384,7 +3384,7 @@ lb={
 		objects.lb_3_cont.visible=false;
 		objects.lb_cards_cont.visible=false;
 		objects.lb_back_btn.visible=false;
-		objects.bcg.texture=assets.bcg;
+		objects.bcg.texture=assets.bcg
 
 	},
 
