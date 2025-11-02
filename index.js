@@ -4993,8 +4993,8 @@ async function load_resources() {
 	document.body.style.color = "red";
 	return;*/
 
-	git_src="https://akukamil.github.io/balda/"
-	//git_src=""
+	//git_src="https://akukamil.github.io/balda/"
+	git_src=''
 
 	const loader=new PIXI.Loader();
 	loader.add('1', git_src+'fonts/exosoft_bold_128/font.fnt');//это для поля
