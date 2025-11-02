@@ -4993,7 +4993,7 @@ async function load_resources() {
 	document.body.style.color = "red";
 	return;*/
 
-	git_src="https://akukamil.github.io/balda/"
+	git_src='https://balda.hb.ru-msk.vkcloud-storage.ru/'
 	//git_src=''
 
 	const loader=new PIXI.Loader();
