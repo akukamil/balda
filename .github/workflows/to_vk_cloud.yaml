@@ -21,7 +21,7 @@ jobs:
 
     - name: Sync files to Yandex Storage (with exclude)
       run: |
-        aws --endpoint-url=hb.ru-msk.vkcloud-storage.ru s3 sync ./ s3://balda/ \
+        aws --endpoint-url=https://hb.ru-msk.vkcloud-storage.ru s3 sync ./ s3://balda/ \
           --delete \
           --exclude ".git/*" \
           --exclude ".github/*" \
