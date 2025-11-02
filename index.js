@@ -5001,25 +5001,25 @@ async function load_resources() {
 	loader.add('2', git_src+'fonts/exosoft_bold_64/font.fnt');//это для поля
 	loader.add('3', git_src+'fonts/core_sans_ds/font.fnt');
 	
-	loader.add('click',git_src+'/sounds/click.mp3');
-	loader.add('locked',git_src+'/sounds/locked.mp3');
-	loader.add('clock',git_src+'/sounds/clock.mp3');
-	loader.add('close_it',git_src+'/sounds/close_it.mp3');
-	loader.add('game_start',git_src+'/sounds/game_start.mp3');
-	loader.add('lose',git_src+'/sounds/lose.mp3');
-	loader.add('receive_move',git_src+'/sounds/receive_move.mp3');
+	loader.add('click',git_src+'sounds/click.mp3');
+	loader.add('locked',git_src+'sounds/locked.mp3');
+	loader.add('clock',git_src+'sounds/clock.mp3');
+	loader.add('close_it',git_src+'sounds/close_it.mp3');
+	loader.add('game_start',git_src+'sounds/game_start.mp3');
+	loader.add('lose',git_src+'sounds/lose.mp3');
+	loader.add('receive_move',git_src+'sounds/receive_move.mp3');
 	loader.add('receive_sticker',git_src+'sounds/receive_sticker.mp3');
-	loader.add('bad_word',git_src+'/sounds/bad_word.mp3');
-	loader.add('good_word',git_src+'/sounds/good_word.mp3');
-	loader.add('key_down',git_src+'/sounds/key_down.mp3');
-	loader.add('cell_down',git_src+'/sounds/cell_down.mp3');
-	loader.add('cell_move',git_src+'/sounds/cell_move.mp3');
-	loader.add('bad_move',git_src+'/sounds/bad_move.mp3');
-	loader.add('win',git_src+'/sounds/win.mp3');
-	loader.add('invite',git_src+'/sounds/invite.mp3');
-	loader.add('draw',git_src+'/sounds/draw.mp3');
-	loader.add('keypress',git_src+'/sounds/keypress.mp3');
-	loader.add('online_message',git_src+'/sounds/online_message.mp3');
+	loader.add('bad_word',git_src+'sounds/bad_word.mp3');
+	loader.add('good_word',git_src+'sounds/good_word.mp3');
+	loader.add('key_down',git_src+'sounds/key_down.mp3');
+	loader.add('cell_down',git_src+'sounds/cell_down.mp3');
+	loader.add('cell_move',git_src+'sounds/cell_move.mp3');
+	loader.add('bad_move',git_src+'sounds/bad_move.mp3');
+	loader.add('win',git_src+'sounds/win.mp3');
+	loader.add('invite',git_src+'sounds/invite.mp3');
+	loader.add('draw',git_src+'sounds/draw.mp3');
+	loader.add('keypress',git_src+'sounds/keypress.mp3');
+	loader.add('online_message',git_src+'sounds/online_message.mp3');
 	loader.add('inst_msg',git_src+'sounds/inst_msg.mp3');
 	loader.add('top3',git_src+'sounds/top3.mp3');
 	
