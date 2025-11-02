@@ -6,7 +6,7 @@ const adj_cells = {0:[1,5],1:[0,6,2],2:[1,7,3],3:[2,8,4],4:[3,9],5:[0,6,10],6:[1
 const LANG=0;
 
 fbs_once=async function(path){
-	const info=await fbs.ref(path).get();
+	const info=await fbs.ref(path).get()
 	return info.val();	
 }
 
