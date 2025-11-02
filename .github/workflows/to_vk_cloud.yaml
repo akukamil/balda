@@ -15,13 +15,13 @@ jobs:
 
     - name: Configure AWS CLI for Yandex Cloud
       run: |
-        aws configure set aws_access_key_id ${{ secrets.YC_SERVICE_ACCOUNT_KEY_ID }}
-        aws configure set aws_secret_access_key ${{ secrets.YC_SERVICE_ACCOUNT_SECRET }}
+        aws configure set aws_access_key_id ${{ secrets.VC_SERVICE_ACCOUNT_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.VC_SERVICE_ACCOUNT_SECRET }}
         aws configure set default.region ru-central1
 
     - name: Sync files to Yandex Storage (with exclude)
       run: |
-        aws --endpoint-url=https://storage.yandexcloud.net s3 sync ./ s3://durak/ \
+        aws --endpoint-url=hb.ru-msk.vkcloud-storage.ru s3 sync ./ s3://balda/ \
           --delete \
           --exclude ".git/*" \
           --exclude ".github/*" \
