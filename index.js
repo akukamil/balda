@@ -5028,7 +5028,10 @@ async function load_resources() {
 
 	//добавляем смешные загрузки
 	loader.add('fun_logs', 'https://akukamil.github.io/common/fun_logs.txt');	
-	
+
+	//добавляем библиотеку аватаров
+	loader.add('multiavatar', 'https://akukamil.github.io/common/multiavatar.min.txt');
+
     //добавляем из листа загрузки
     for (var i = 0; i < load_list.length; i++)
         if (load_list[i].class === 'sprite' || load_list[i].class === 'image' )
@@ -5206,8 +5209,10 @@ async function init_game_env() {
 	//загрузка сокета
 	await auth.load_script('https://akukamil.github.io/common/my_ws.js');	
 
-	//подгружаем библиотеку аватаров
-	await auth.load_script(git_src+'/multiavatar.min.js');
+	//добавялем библиотеку аватаров
+	const script = document.createElement('script');
+	script.textContent = assets.multiavatar;
+	document.head.appendChild(script);
 
 	//получаем данные об игроке из социальных сетей
 	await auth.init();
