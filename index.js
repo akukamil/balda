@@ -1632,8 +1632,7 @@ word_creation = {
 			message.add("Не твоя очередь");
 			return;
 		}
-		
-		
+				
 		if (this.show_word_mode === 1) {
 			
 
@@ -1704,7 +1703,6 @@ word_creation = {
 			return;				
 		}
 		
-
 		
 		sound.play('cell_down');
 		
@@ -1715,11 +1713,11 @@ word_creation = {
 		this.show_word_mode = 1;
 		
 		//убираем клавиатуру и показываем диалог
-		anim2.add(objects.keys_cont,{y:[objects.keys_cont.sy,450]}, false, 1,'easeInOutCubic');
-		anim2.add(objects.word_cont,{y:[450,objects.word_cont.sy]}, true, 0.5,'linear');
-		objects.keys[this.active_key].bcg.texture = assets.key_image;
-		objects.word.text="";
-		this.active_key=-1;
+		anim2.add(objects.keys_cont,{y:[objects.keys_cont.sy,450]}, false, 1,'easeInOutCubic')
+		anim2.add(objects.word_cont,{y:[450,objects.word_cont.sy]}, true, 0.5,'linear')
+		objects.keys[this.active_key].bcg.texture = assets.key_image
+		objects.word.text=""
+		this.active_key=-1
 		
 	},
 	
@@ -1730,6 +1728,16 @@ word_creation = {
 				return true;
 		}
 		return false;
+	},
+	
+	show_bonus(bonus){
+		
+		objects.bonus_t.text='+'+bonus
+		anim2.add(objects.bonus_cont,{y:[480,objects.bonus_cont.sy],angle:[0,irnd(-5,5)]}, true, 0.25,'easeOutBack')
+		setTimeout(()=>{
+			anim2.add(objects.bonus_cont,{y:[objects.bonus_cont.y,480]}, false, 0.25,'easeInBack')
+		},3000)
+		
 	},
 	
 	async ok_down () {		
@@ -1783,12 +1791,13 @@ word_creation = {
 		//бонус за слово
 		const energy_bonus=[0,0,0,0,0,0,3,5,7,10,10,10,10,10,10,10][this.word.length]
 		online_player.energy_bonus+=energy_bonus
+		if (energy_bonus) this.show_bonus(energy_bonus)
 				
 		sound.play('good_word');
 
 		//записываем в столбик слов
-		objects.my_words.text += _word;
-		objects.my_words.text += ' ';	
+		objects.my_words.text += _word
+		objects.my_words.text += ' '
 		
 		
 		//показываем что теперь счет справедливый
