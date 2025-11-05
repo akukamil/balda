@@ -5294,7 +5294,6 @@ async function init_game_env() {
 		rating : my_data.rating,		
 		games : my_data.games,
 		block_num:other_data?.block_num||0,
-		nav:navigator?.userAgent||'no',
 		session_start:firebase.database.ServerValue.TIMESTAMP,
 		tm:firebase.database.ServerValue.TIMESTAMP});
 
