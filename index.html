@@ -2,59 +2,38 @@
 <html>
  <meta name="http-equiv" content="Content-type: text/html; charset=windows-1251">
 <style>
-		html,
-		body {
-		margin: 0;
-		padding: 0;
-		height: 100%;
-		background-color: rgb(41, 41, 41);
-	}
-	
-	body {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-direction: column
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
 
-	}
-	
-	
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(62,52,62,1);
+}
 
-  #m_progress {
-		background-color: #1a1a1a;
-		height: 25px;
-		padding: 5px;
-		width: 70%;
-		margin: 50px 0;
-		border-radius: 5px;
-		box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;
-	}
-
-	#m_bar {
-		display: inline-block;
-		height: 100%;
-		border-radius: 3px;
-		background-color: rgb(119, 119, 119);
-		box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset;
-	}
-	
+.loading-title {
+    color: #ffe699;
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+}
 </style>
 
+<div class="loading-title"  id="loadingText">Загружаем...</div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="pixi_scale.min.js" ></script>
-<script src="pixi-sound.js"></script>
-
-
-<script src="load_list.txt"></script>
-<div id="m_progress">
-  <div id="m_bar"></div>
-</div>
-
+<script src="https://f2771470-common.website.twcstorage.ru/pixi_scale.min.js" ></script>
+<script src="https://f2771470-common.website.twcstorage.ru/pixi-sound.js"></script>
+<script src="https://f2771470-common.website.twcstorage.ru/my_ws.js"></script>
 <script src="rus_dict.js" charset="utf-8"></script>
 <script src="index.js" charset="utf-8"></script>
  
+
 <body onload="init_game_env()">
 
 </body>

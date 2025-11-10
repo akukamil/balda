@@ -4,6 +4,7 @@ const rus_let = ['А','Б','В','Г','Д','Е','Ё','Ж','З','И','Й','К','Л
 const rus_let2 = ['А','Б','В','Г','Д','Е','Ж','З','И','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ь','Ю','Я'];
 const adj_cells = {0:[1,5],1:[0,6,2],2:[1,7,3],3:[2,8,4],4:[3,9],5:[0,6,10],6:[1,5,7,11],7:[2,6,8,12],8:[3,7,9,13],9:[4,8,14],10:[5,11,15],11:[6,10,12,16],12:[7,11,13,17],13:[8,12,14,18],14:[9,13,19],15:[10,16,20],16:[11,15,17,21],17:[12,16,18,22],18:[13,17,19,23],19:[14,18,24],20:[15,21],21:[16,20,22],22:[17,21,23],23:[18,22,24],24:[19,23]};
 const LANG=0;
+const TW_PATH='https://f2771470-common.website.twcstorage.ru'
 
 fbs_once=async function(path){
 	const info=await fbs.ref(path).get()
@@ -14,11 +15,6 @@ irnd = function (min,max) {
 	//мин и макс включительно
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
-const rgb_to_hex = (r,g,b) => '0x' + [r, g, b].map(x => {
-  const hex = x.toString(16)
-  return hex.length === 1 ? '0' + hex : hex
-}).join('')
 
 class player_mini_card_class extends PIXI.Container {
 
@@ -2323,8 +2319,7 @@ var kill_game = function() {
 	document.body.innerHTML = 'CLIENT TURN OFF';
 }
 
-pref={
-	
+pref={	
 
 	cur_pic_url:'',
 	avatar_changed:0,
@@ -2694,14 +2689,14 @@ main_menu = {
 		//просто добавляем контейнер с кнопками
 		objects.bcg.visible=true;
 		objects.bcg.texture=assets.bcg;
-		anim2.add(objects.game_header,{y:[-180,objects.game_header.sy]}, true, 0.6,'easeOutCubic');	
+		anim2.add(objects.game_title,{y:[-180,objects.game_title.sy]}, true, 0.6,'easeOutCubic');	
 		anim2.add(objects.main_buttons_cont,{y:[500,objects.main_buttons_cont.sy]}, true, 0.6,'easeOutCubic');	
 
 	},
 
 	close() {
 
-		anim2.add(objects.game_header,{y:[objects.game_header.y,-380]}, false, 0.6,'easeOutCubic');	
+		anim2.add(objects.game_title,{y:[objects.game_title.y,-380]}, false, 0.6,'easeOutCubic');	
 		anim2.add(objects.main_buttons_cont,{y:[objects.main_buttons_cont.y,500]}, false, 0.6,'easeOutCubic');	
 
 	},
@@ -4994,83 +4989,250 @@ function define_platform_and_language() {
 	
 }
 
-async function load_resources() {
-	
-	//это нужно удалить потом
-	/*document.body.innerHTML = "Привет!\nДобавляем в игру некоторые улучшения))\nЗайдите через 40 минут.";
-	document.body.style.fontSize="24px";
-	document.body.style.color = "red";
-	return;*/
+main_loader={
 
-	git_src="https://balda.hb.ru-msk.vkcloud-storage.ru/"
-	//git_src=''
+	preload_assets:0,
 
-	const loader=new PIXI.Loader();
-	loader.add('1', git_src+'fonts/exosoft_bold_128/font.fnt');//это для поля
-	loader.add('2', git_src+'fonts/exosoft_bold_64/font.fnt');//это для поля
-	loader.add('3', git_src+'fonts/core_sans_ds/font.fnt');
-	
-	loader.add('click',git_src+'sounds/click.mp3');
-	loader.add('locked',git_src+'sounds/locked.mp3');
-	loader.add('clock',git_src+'sounds/clock.mp3');
-	loader.add('close_it',git_src+'sounds/close_it.mp3');
-	loader.add('game_start',git_src+'sounds/game_start.mp3');
-	loader.add('lose',git_src+'sounds/lose.mp3');
-	loader.add('receive_move',git_src+'sounds/receive_move.mp3');
-	loader.add('receive_sticker',git_src+'sounds/receive_sticker.mp3');
-	loader.add('bad_word',git_src+'sounds/bad_word.mp3');
-	loader.add('good_word',git_src+'sounds/good_word.mp3');
-	loader.add('key_down',git_src+'sounds/key_down.mp3');
-	loader.add('cell_down',git_src+'sounds/cell_down.mp3');
-	loader.add('cell_move',git_src+'sounds/cell_move.mp3');
-	loader.add('bad_move',git_src+'sounds/bad_move.mp3');
-	loader.add('win',git_src+'sounds/win.mp3');
-	loader.add('invite',git_src+'sounds/invite.mp3');
-	loader.add('draw',git_src+'sounds/draw.mp3');
-	loader.add('keypress',git_src+'sounds/keypress.mp3');
-	loader.add('online_message',git_src+'sounds/online_message.mp3');
-	loader.add('inst_msg',git_src+'sounds/inst_msg.mp3');
-	loader.add('top3',git_src+'sounds/top3.mp3');
-	
-	for (let i=1;i<9;i++)
-		loader.add('cell_click'+i,git_src+`sounds/cell_click${i}.mp3`);
+	spritesheet_to_tex(t,xframes,yframes,total_w,total_h,xoffset,yoffset){
 
-	//добавляем смешные загрузки
-	loader.add('fun_logs', 'https://akukamil.github.io/common/fun_logs.txt');	
 
-	//добавляем библиотеку аватаров
-	loader.add('multiavatar', 'https://akukamil.github.io/common/multiavatar.min.txt');
+		const frame_width=xframes?total_w/xframes:0;
+		const frame_height=yframes?total_h/yframes:0;
 
-    //добавляем из листа загрузки
-    for (var i = 0; i < load_list.length; i++)
-        if (load_list[i].class === 'sprite' || load_list[i].class === 'image' )
-            loader.add(load_list[i].name, git_src+'res/RUS/' + load_list[i].name + '.' +  load_list[i].image_format);		
+		const textures=[];
+		for (let y=0;y<yframes;y++){
+			for (let x=0;x<xframes;x++){
 
-	loader.onProgress.add(l=>{
-		document.getElementById("m_bar").style.width =  Math.round(loader.progress)+"%";
-	})	
-	await new Promise(resolve=> loader.load(resolve));
-	
-	//загружаем и переносим в assets
-	await new Promise(resolve=> loader.load(resolve));
-	for (const res_name in loader.resources){
-		const res=loader.resources[res_name];			
-		assets[res_name]=res.texture||res.sound||res.data;			
-	}	
+				const rect = new PIXI.Rectangle(xoffset+x*frame_width, yoffset+y*frame_height, frame_width, frame_height);
+				const quadTexture = new PIXI.Texture(t.baseTexture, rect);
+				textures.push(quadTexture);
+			}
+		}
+		return textures;
+	},
+
+	async load1(){
+		
+		git_src=''
+
+
+		const loader=new PIXI.Loader();
+
+		//добавляем текстуры из листа загрузки
+		loader.add('load_bar_bcg', git_src+'res/common/load_bar_bcg.png');
+		loader.add('bcg', git_src+'res/common/bcg.jpg');
+		loader.add('load_bar_progress', git_src+'res/common/load_bar_progress.png');
+		loader.add('3', git_src+'fonts/core_sans_ds/font.fnt');
+		loader.add('main_load_list',git_src+'load_list.txt');
+
+		//переносим все в ассеты
+		await new Promise(res=>loader.load(res))
+		for (const res_name in loader.resources){
+			const res=loader.resources[res_name];
+			assets[res_name]=res.texture||res.sound||res.data;
+		}
+
+		//главный бэкграунд
+		objects.bcg=new PIXI.Sprite(assets.bcg)
+		objects.bcg.width=820
+		objects.bcg.height=470
+		objects.bcg.x=-10
+		objects.bcg.y=-10
+		app.stage.addChild(objects.bcg)		
+		
+		const load_bar_bcg=new PIXI.Sprite(assets.load_bar_bcg);
+		load_bar_bcg.x=220;
+		load_bar_bcg.y=210;
+		load_bar_bcg.width=360;
+		load_bar_bcg.height=50;		
+
+		this.load_bar_mask=new PIXI.Graphics();
+		this.load_bar_mask.beginFill(0xff0000);
+		this.load_bar_mask.drawRect(0,0,1,30);
+		this.load_bar_mask.x=235;
+		this.load_bar_mask.y=224;
+
+		this.load_bar_progress=new PIXI.Sprite(assets.load_bar_progress);
+		this.load_bar_progress.y=210;		
+		this.load_bar_progress.x=220;
+		this.load_bar_progress.width=360;
+		this.load_bar_progress.height=50;
+		this.load_bar_progress.mask=this.load_bar_mask
+
+		this.t_progress=new PIXI.BitmapText('0%', {fontName: 'mfont',fontSize: 25,align: 'center'})
+		this.t_progress.y=235
+		this.t_progress.x=400
+		this.t_progress.tint=0xffffff
+		this.t_progress.anchor.set(0.5,0.5)
+
+		objects.load_cont=new PIXI.Container();
+		objects.load_cont.addChild(load_bar_bcg,this.load_bar_progress,this.load_bar_mask,this.t_progress)
+		app.stage.addChild(objects.bcg,objects.load_cont);
+
+	},
+
+	async load2(){
+
+		const loader=new PIXI.Loader();
+
+		loader.add('1', git_src+'fonts/exosoft_bold_128/font.fnt');//это для поля
+		loader.add('2', git_src+'fonts/exosoft_bold_64/font.fnt');//это для поля
+		
+		
+		loader.add('click',git_src+'sounds/click.mp3');
+		loader.add('locked',git_src+'sounds/locked.mp3');
+		loader.add('clock',git_src+'sounds/clock.mp3');
+		loader.add('close_it',git_src+'sounds/close_it.mp3');
+		loader.add('game_start',git_src+'sounds/game_start.mp3');
+		loader.add('lose',git_src+'sounds/lose.mp3');
+		loader.add('receive_move',git_src+'sounds/receive_move.mp3');
+		loader.add('receive_sticker',git_src+'sounds/receive_sticker.mp3');
+		loader.add('bad_word',git_src+'sounds/bad_word.mp3');
+		loader.add('good_word',git_src+'sounds/good_word.mp3');
+		loader.add('key_down',git_src+'sounds/key_down.mp3');
+		loader.add('cell_down',git_src+'sounds/cell_down.mp3');
+		loader.add('cell_move',git_src+'sounds/cell_move.mp3');
+		loader.add('bad_move',git_src+'sounds/bad_move.mp3');
+		loader.add('win',git_src+'sounds/win.mp3');
+		loader.add('invite',git_src+'sounds/invite.mp3');
+		loader.add('draw',git_src+'sounds/draw.mp3');
+		loader.add('keypress',git_src+'sounds/keypress.mp3');
+		loader.add('online_message',git_src+'sounds/online_message.mp3');
+		loader.add('inst_msg',git_src+'sounds/inst_msg.mp3');
+		loader.add('top3',git_src+'sounds/top3.mp3');
+		
+		for (let i=1;i<9;i++)
+			loader.add('cell_click'+i,git_src+`sounds/cell_click${i}.mp3`);
+
+		//добавляем библиотеку аватаров
+		loader.add('multiavatar', TW_PATH+'/multiavatar.min.txt');
+
+		//добавляем смешные загрузки
+		loader.add('fun_logs', TW_PATH+'/fun_logs.txt');
+
+		//добавляем из листа загрузки
+		const main_load_list=eval(assets.main_load_list);
+		for (var i = 0; i < main_load_list.length; i++)
+			if (main_load_list[i].class === 'sprite' || main_load_list[i].class === 'image' )
+				loader.add(main_load_list[i].name, git_src+'res/RUS/' + main_load_list[i].name + '.' +  main_load_list[i].image_format);	
+
+		//прогресс
+		loader.onProgress.add((l,res)=>{
+			this.load_bar_mask.width=3.28*l.progress;
+			this.t_progress.text=Math.round(l.progress)+'%';
+		});
+
+		await new Promise(res=>loader.load(res))
+
+		//переносим все в ассеты
+		await new Promise(res=>loader.load(res))
+		for (const res_name in loader.resources){
+			const res=loader.resources[res_name];
+			assets[res_name]=res.texture||res.sound||res.data;
+		}
+
+		//добавялем библиотеку аватаров
+		const script = document.createElement('script');
+		script.textContent = assets.multiavatar;
+		document.head.appendChild(script);
+
+		anim2.add(objects.load_cont,{alpha:[1,0]}, false, 0.5,'linear');
+
+		//создаем спрайты и массивы спрайтов и запускаем первую часть кода
+		for (let i = 0; i < main_load_list.length; i++) {
+			const obj_class = main_load_list[i].class;
+			const obj_name = main_load_list[i].name;
+			console.log('Processing: ' + obj_name)
+
+			switch (obj_class) {
+			case "sprite":
+				objects[obj_name] = new PIXI.Sprite(assets[obj_name]);
+				eval(main_load_list[i].code0);
+				break;
+
+			case "block":
+				eval(main_load_list[i].code0);
+				break;
+
+			case "cont":
+				eval(main_load_list[i].code0);
+				break;
+
+			case "array":
+				const a_size=main_load_list[i].size;
+				objects[obj_name]=[];
+				for (let n=0;n<a_size;n++)
+					eval(main_load_list[i].code0);
+				break;
+			}
+		}
+
+		//обрабатываем вторую часть кода в объектах
+		for (let i = 0; i < main_load_list.length; i++) {
+			const obj_class = main_load_list[i].class;
+			const obj_name = main_load_list[i].name;
+			console.log('Processing: ' + obj_name)
+
+
+			switch (obj_class) {
+			case "sprite":
+				eval(main_load_list[i].code1);
+				break;
+
+			case "block":
+				eval(main_load_list[i].code1);
+				break;
+
+			case "cont":
+				eval(main_load_list[i].code1);
+				break;
+
+			case "array":
+				const a_size=main_load_list[i].size;
+					for (let n=0;n<a_size;n++)
+						eval(main_load_list[i].code1);	;
+				break;
+			}
+		}
+
+
+	}
 
 }
 
 async function init_game_env() {	
 	
-	await define_platform_and_language();	
+	await define_platform_and_language();		
+
+	//убираем надпись
+	document.getElementById('loadingText').remove();
 	
-	//ждем когда загрузятся ресурсы
-	await load_resources();
-
-	//убираем загрузочные данные
-	document.getElementById("m_bar").outerHTML = "";
-	document.getElementById("m_progress").outerHTML = "";
-
+	//создаем приложение
+	const dw=M_WIDTH/document.body.clientWidth;
+	const dh=M_HEIGHT/document.body.clientHeight;
+	const resolution=Math.min(1.5,Math.max(dw,dh,1));	
+	const opts={width:M_WIDTH, height:M_HEIGHT,antialias:false,resolution,autoDensity:true};
+	app.stage = new PIXI.Container();
+	app.renderer = new PIXI.Renderer(opts);
+	document.body.appendChild(app.renderer.view).style["boxShadow"] = "0 0 15px #000000";
+	
+	resize();
+	window.addEventListener("resize", resize);
+		
+	//запускаем главный цикл так как уже надо обрабатывать
+	main_loop();				
+		
+	await main_loader.load1()
+	await main_loader.load2()
+	
+	anim2.add(objects.id_cont,{y:[-200, 100]}, true, 0.25,'easeOutBack');
+	
+	//анимация лупы
+	some_process.loup_anim=function() {
+		objects.id_loup.x=20*Math.sin(game_tick*8)+90;
+		objects.id_loup.y=20*Math.cos(game_tick*8)+150;
+	}
+	
 	//инициируем файербейс
 	if (firebase.apps.length===0) {
 		firebase.initializeApp({
@@ -5086,17 +5248,6 @@ async function init_game_env() {
 	
 	//коротко файрбейс
 	fbs=firebase.database();
-
-	//создаем приложение
-	
-	const dw=M_WIDTH/document.body.clientWidth;
-	const dh=M_HEIGHT/document.body.clientHeight;
-	const resolution=Math.min(1.5,Math.max(dw,dh,1));	
-	const opts={width:M_WIDTH, height:M_HEIGHT,antialias:false,resolution,autoDensity:true};
-	app.stage = new PIXI.Container();
-	app.renderer = new PIXI.Renderer(opts);
-	document.body.appendChild(app.renderer.view).style["boxShadow"] = "0 0 15px #000000";
-	document.body.style.backgroundColor = 'rgb(62,52,62)';
 
 	//доп функция для текста битмап
 	PIXI.BitmapText.prototype.set2=function(text,w){		
@@ -5132,77 +5283,8 @@ async function init_game_env() {
 		
 	}
 		
-	resize();
-	window.addEventListener("resize", resize);
-
-    //создаем спрайты и массивы спрайтов и запускаем первую часть кода
-    for (let i = 0; i < load_list.length; i++) {
-        const obj_class = load_list[i].class;
-        const obj_name = load_list[i].name;
-		console.log('Processing: ' + obj_name)
-
-        switch (obj_class) {
-        case "sprite":
-            objects[obj_name] = new PIXI.Sprite(assets[obj_name]);
-            eval(load_list[i].code0);
-            break;
-
-        case "block":
-            eval(load_list[i].code0);
-            break;
-
-        case "cont":
-            eval(load_list[i].code0);
-            break;
-
-        case "array":
-			const a_size=load_list[i].size;
-			objects[obj_name]=[];
-			for (let n=0;n<a_size;n++)
-				eval(load_list[i].code0);
-            break;
-        }
-    }
-
-    //обрабатываем вторую часть кода в объектах
-    for (let i = 0; i < load_list.length; i++) {
-        const obj_class = load_list[i].class;
-        const obj_name = load_list[i].name;
-		console.log('Processing: ' + obj_name)
-		
-		
-        switch (obj_class) {
-        case "sprite":
-            eval(load_list[i].code1);
-            break;
-
-        case "block":
-            eval(load_list[i].code1);
-            break;
-
-        case "cont":	
-			eval(load_list[i].code1);
-            break;
-
-        case "array":
-			const a_size=load_list[i].size;
-				for (let n=0;n<a_size;n++)
-					eval(load_list[i].code1);	;
-            break;
-        }
-    }
-	
 	//идентификатор клиента
-	client_id = irnd(10,999999);
-	
-	//запускаем главный цикл так как уже надо обрабатывать
-	main_loop();
-	
-	//анимация лупы
-	some_process.loup_anim=function() {
-		objects.id_loup.x=20*Math.sin(game_tick*8)+90;
-		objects.id_loup.y=20*Math.cos(game_tick*8)+150;
-	}
+	client_id = irnd(10,999999);	
 
 	//смешные логи
 	const runScyfiLogs=async () => {
@@ -5214,14 +5296,6 @@ async function init_game_env() {
 		}
 	};
 	runScyfiLogs();
-
-	//загрузка сокета
-	await auth.load_script('https://akukamil.github.io/common/my_ws.js');	
-
-	//добавялем библиотеку аватаров
-	const script = document.createElement('script');
-	script.textContent = assets.multiavatar;
-	document.head.appendChild(script);
 
 	//получаем данные об игроке из социальных сетей
 	await auth.init();
@@ -5270,10 +5344,8 @@ async function init_game_env() {
 			break;
 		}
 	}
-			
-	
+				
 	//room_name= 'states12';
-
 	
 	//устанавливаем рейтинг в попап
 	objects.id_rating.text=objects.my_card_rating.text=my_data.rating;
@@ -5297,8 +5369,7 @@ async function init_game_env() {
 		session_start:firebase.database.ServerValue.TIMESTAMP,
 		tm:firebase.database.ServerValue.TIMESTAMP});
 
-	//устанавливаем мой статус в онлайн
-	set_state({state : 'o'});
+
 
 	//отключение от игры и удаление не нужного
 	fbs.ref("inbox/"+my_data.uid).onDisconnect().remove();
@@ -5325,9 +5396,11 @@ async function init_game_env() {
 	//разные проверки
 	pref.init()
 	
+	
+	
 	//убираем лупу
 	some_process.loup_anim = function(){};		
-	anim2.add(objects.id_cont,{y:[objects.id_cont.y, -200]}, false, 1,'easeInBack');	
+	anim2.add(objects.id_cont,{y:[objects.id_cont.y, -200]}, false, 0.5,'easeInBack');	
 		
 	//контроль за присутсвием
 	var connected_control = fbs.ref(".info/connected");
@@ -5348,6 +5421,9 @@ async function init_game_env() {
 		
 	//показыаем основное меню
 	main_menu.activate();
+	
+	//устанавливаем мой статус в онлайн
+	set_state({state : 'o'});
 		
 	//заполняем клавиатуру
 	for (let i = 0 ; i < 33 ; i ++)
