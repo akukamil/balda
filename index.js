@@ -4759,7 +4759,7 @@ auth = {
 			my_data.uid=_player.getUniqueID().replace(/\//g, "Z");
 			my_data.orig_pic_url=_player.getPhoto('medium');						
 			my_data.name = my_data.name || this.get_random_name(my_data.uid);
-			my_data.auth_mode=_player.getMode()==='lite'?0:1;
+			my_data.auth_mode=+_player.isAuthorized()
 			
 			//убираем ё
 			my_data.name=my_data.name.replace(/ё/g, 'е');
