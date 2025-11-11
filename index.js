@@ -1,5 +1,5 @@
 var M_WIDTH=800, M_HEIGHT=450;
-var app ={stage:{},renderer:{}}, assets={},fbs,SERVER_TM=0, objects={}, state='',git_src, my_role='', game_tick=0, my_turn=0, game_id=0, start_word='БАЛДА', me_conf_play=0,opp_conf_play=0, client_id =0, h_state=0, game_platform='', room_name = '', connected = 1,no_invite=false, pending_player='', my_data={opp_id : ''},opp_data={}, some_process = {},game_name='balda';
+var app ={stage:{},renderer:{}}, assets={},fbs,SERVER_TM=0, objects={}, state='',git_src, my_role='', game_tick=0, my_turn=0, game_id=0, start_word='БАЛДА', me_conf_play=0,opp_conf_play=0, client_id =0, h_state=0, game_platform='', ROOM_NAME = '', connected = 1,no_invite=false, pending_player='', my_data={opp_id : ''},opp_data={}, some_process = {},game_name='balda';
 const rus_let = ['А','Б','В','Г','Д','Е','Ё','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ','Ы','Ь','Э','Ю','Я'];
 const rus_let2 = ['А','Б','В','Г','Д','Е','Ж','З','И','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ь','Ю','Я'];
 const adj_cells = {0:[1,5],1:[0,6,2],2:[1,7,3],3:[2,8,4],4:[3,9],5:[0,6,10],6:[1,5,7,11],7:[2,6,8,12],8:[3,7,9,13],9:[4,8,14],10:[5,11,15],11:[6,10,12,16],12:[7,11,13,17],13:[8,12,14,18],14:[9,13,19],15:[10,16,20],16:[11,15,17,21],17:[12,16,18,22],18:[13,17,19,23],19:[14,18,24],20:[15,21],21:[16,20,22],22:[17,21,23],23:[18,22,24],24:[19,23]};
@@ -990,7 +990,7 @@ online_player = {
 		
 		objects.my_card_rating.text = my_data.rating;
 		fbs.ref("players/"+my_data.uid+"/rating").set(my_data.rating);	
-		fbs.ref(room_name+"/"+my_data.uid+"/rating").set(my_data.rating);	
+		fbs.ref(ROOM_NAME+"/"+my_data.uid+"/rating").set(my_data.rating);	
 		
 		
 		let res_s="";
@@ -1366,7 +1366,7 @@ bot_player = {
 				
 				my_data.rating = my_data.rating + 1;			
 				fbs.ref("players/"+my_data.uid+"/rating").set(my_data.rating);	
-				fbs.ref(room_name+"/"+my_data.uid+"/rating").set(my_data.rating);					
+				fbs.ref(ROOM_NAME+"/"+my_data.uid+"/rating").set(my_data.rating);					
 			}
 		}				
 
@@ -2098,9 +2098,9 @@ keep_alive = function() {
 	
 	if (document.hidden) return;		
 
-	firebase.database().ref("players/"+my_data.uid+"/tm").set(firebase.database.ServerValue.TIMESTAMP);
-	firebase.database().ref("inbox/"+my_data.uid).onDisconnect().remove();
-	firebase.database().ref(room_name+"/"+my_data.uid).onDisconnect().remove();
+	fbs.ref("players/"+my_data.uid+"/tm").set(firebase.database.ServerValue.TIMESTAMP);
+	//fbs.ref("inbox/"+my_data.uid).onDisconnect().remove();
+	fbs.ref(ROOM_NAME+"/"+my_data.uid).onDisconnect().remove();
 
 	set_state({});
 }
@@ -2175,7 +2175,7 @@ req_dialog={
 		anim2.add(objects.req_cont,{y:[objects.req_cont.y, -260]},false,0.4,'easeInBack');
 		
 		//удаляем из комнаты
-		//firebase.database().ref(room_name + "/" + my_data.uid).remove();
+		//firebase.database().ref(ROOM_NAME + "/" + my_data.uid).remove();
 		firebase.database().ref('inbox/'+req_dialog._opp_data.uid).set({sender:my_data.uid,message:'REJECT_ALL',tm:Date.now()});
 	
 	},
@@ -3474,7 +3474,7 @@ lobby={
 	state_listener_on:0,
 	state_listener_timeout:0,
 		
-	activate(room,bot_on) {
+	activate(room_to_go,bot_on) {
 		
 		//первый запуск лобби
 		if (!this.activated){			
@@ -3497,6 +3497,7 @@ lobby={
 
 			this.activated=true;
 		}
+				
 		
 		this.on=1;
 		anim2.add(objects.cards_cont,{alpha:[0, 1]}, true, 0.1,'linear');
@@ -3520,17 +3521,10 @@ lobby={
 		}
 		
 		
-		//убираем старое и подписываемся на новую комнату
-		if (room){			
-			if(room_name){
-				fbs.ref(room_name).off();
-				fbs.ref(room_name+'/'+my_data.uid).remove();
-				this.state_listener_on=0;
-				this.global_players={};
-			}
-			room_name=room
-		}
-		
+		//определяем комнату
+		room_to_go=this.get_room_to_go()
+		if (ROOM_NAME!==room_to_go)
+			this.change_room(room_to_go)		
 		
 		//удаляем таймаут слушателя комнаты
 		clearTimeout(this.state_listener_timeout);
@@ -3538,69 +3532,14 @@ lobby={
 		this.players_list_updated(this.global_players);
 		
 		//включаем прослушивание если надо
-		if (!this.state_listener_on){
-			
-			//console.log('Подключаем прослушивание...');
-			fbs.ref(room_name).on('child_changed', snapshot => {	
-				const val=snapshot.val()
-				//console.log('child_changed',snapshot.key,val,JSON.stringify(val).length)
-				this.global_players[snapshot.key]=val;
-				lobby.players_list_updated(this.global_players);
-			});
-			fbs.ref(room_name).on('child_added', snapshot => {			
-				const val=snapshot.val()
-				//console.log('child_added',snapshot.key,val,JSON.stringify(val).length)
-				this.global_players[snapshot.key]=val;
-				lobby.players_list_updated(this.global_players);
-			});
-			fbs.ref(room_name).on('child_removed', snapshot => {			
-				const val=snapshot.val()
-				//console.log('child_removed',snapshot.key,val,JSON.stringify(val).length)
-				delete this.global_players[snapshot.key];
-				lobby.players_list_updated(this.global_players);
-			});
-			
-			fbs.ref(room_name+'/'+my_data.uid).onDisconnect().remove();	
-			
-			this.state_listener_on=1;						
-		}
+		if (!this.state_listener_on) this.connect()
 
 		set_state({state : 'o'});
 		
 		//создаем заголовки
-		const room_desc=['КОМНАТА #','ROOM #'][LANG]+room_name.slice(6);
+		const room_desc=['КОМНАТА #','ROOM #'][LANG]+ROOM_NAME.slice(6);
 		objects.t_room_name.text=room_desc;				
 
-	},
-	
-	change_room(new_room){
-				
-		//создаем заголовки
-		const room_desc=['КОМНАТА #','ROOM #'][LANG]+new_room.slice(6);
-		objects.t_room_name.text=room_desc;
-		
-		//отписываемся от изменений текущей комнаты
-		fbs.ref(room_name).off('value');
-		
-		//анимации разные
-		anim2.add(objects.cards_cont,{alpha:[0, 1]}, true, 0.1,'linear');
-		anim2.add(objects.lobby_footer_cont,{y:[450, objects.lobby_footer_cont.sy]}, true, 0.1,'linear');
-		anim2.add(objects.lobby_header_cont,{y:[-50, objects.lobby_header_cont.sy]}, true, 0.1,'linear');
-		objects.cards_cont.x=0;
-		
-		//отключаем все карточки
-		objects.mini_cards.forEach(c=>c.visible=false);
-		
-		room_name=new_room;
-		
-		set_state ({state : 'o'});
-		
-		//бота нету
-		this.bot_on=0;
-		
-		//подписываемся на изменения состояний пользователей
-		fbs.ref(room_name).on('value', snapshot => {lobby.players_list_updated(snapshot.val());});
-		
 	},
 		
 	pref_btn_down(){
@@ -4221,9 +4160,7 @@ lobby={
 		
 		//отписываемся от изменений состояний пользователей через 30 секунд
 		this.state_listener_timeout=setTimeout(()=>{
-			fbs.ref(room_name).off();
-			this.state_listener_on=0;
-			//console.log('Отключаем прослушивание...');
+			this.disconnect();
 		},30000);
 
 	},
@@ -4243,18 +4180,75 @@ lobby={
 		objects.inst_msg_cont.tm=Date.now();
 	},
 	
-	get_room_index_from_rating(){		
+	get_room_to_go(){
+				
+		//московское время и ночная комната
+		if (SERVER_TM){
+			const msk_hour=+new Date(SERVER_TM).toLocaleString('en-US', {timeZone: 'Europe/Moscow',hour:'numeric',hourCycle:'h23'})
+			if (msk_hour>=1&&msk_hour<6)
+				return 'statesNIGHT'		
+		}		
+		
 		//номер комнаты в зависимости от рейтинга игрока
-		const rooms_bins=[0,1366,1437,1580,9999];
-		let room_to_go='state1';
+		const rooms_bins=[0,1370,1400,1410,1433,1460,1496,1509,1552,1636,1736,9999]
 		for (let i=1;i<rooms_bins.length;i++){
 			const f=rooms_bins[i-1];
-			const t=rooms_bins[i];		
+			const t=rooms_bins[i];
 			if (my_data.rating>f&&my_data.rating<=t)
-				return i;
-		}				
-		return 1;
+				return 'states'+i
+		}
+		return 'states1'
+
+	},
+	
+	disconnect(){		
+		console.log('lobby disconnected')
+		this.global_players={}
+		if(ROOM_NAME)
+			fbs.ref(ROOM_NAME).off()
+		this.state_listener_on=0
+	},
+
+	connect(){
+
+		console.log('lobby connected');
+		fbs.ref(ROOM_NAME).on('child_changed', snapshot => {
+			const val=snapshot.val()
+			//console.log('child_changed',snapshot.key,val,JSON.stringify(val).length)
+			this.global_players[snapshot.key]=val;
+			lobby.players_list_updated(this.global_players);
+		});
+		fbs.ref(ROOM_NAME).on('child_added', snapshot => {
+			const val=snapshot.val()
+			//console.log('child_added',snapshot.key,val,JSON.stringify(val).length)
+			this.global_players[snapshot.key]=val;
+			lobby.players_list_updated(this.global_players);
+		});
+		fbs.ref(ROOM_NAME).on('child_removed', snapshot => {
+			const val=snapshot.val()
+			//console.log('child_removed',snapshot.key,val,JSON.stringify(val).length)
+			delete this.global_players[snapshot.key];
+			lobby.players_list_updated(this.global_players);
+		});
+
+		fbs.ref(ROOM_NAME+'/'+my_data.uid).onDisconnect().remove()
+		this.state_listener_on=1
+
+	},
+	
+	change_room(new_room){
 		
+		this.disconnect()
+		if(ROOM_NAME)
+			fbs.ref(ROOM_NAME+'/'+my_data.uid).remove()
+		ROOM_NAME=new_room
+		this.connect()
+		
+		//создаем заголовки
+		const room_desc='КОМНАТА #'+ROOM_NAME.slice(6)
+		objects.t_room_name.text=room_desc	
+		
+		set_state({state:'o'})
 	},
 	
 	process(){
@@ -4621,10 +4615,10 @@ pin_panel={
 		} 
 		
 
-		fbs.ref(room_name+'/'+my_data.uid).remove();
-		room_name='states'+this.t_pin;		
+		fbs.ref(ROOM_NAME+'/'+my_data.uid).remove();
+		ROOM_NAME='states'+this.t_pin;		
 		fbs.ref(`states${this.t_pin}/tm`).set(firebase.database.ServerValue.TIMESTAMP);
-		fbs.ref(room_name+'/'+my_data.uid).onDisconnect().remove();
+		fbs.ref(ROOM_NAME+'/'+my_data.uid).onDisconnect().remove();
 		set_state({state : 'o'});		
 		this.close();
 		main_menu.close();
@@ -4847,7 +4841,7 @@ tabvis={
 		console.log('погрузились в сон')
 		this.sleep=1;
 		if (lobby.on){
-			fbs.ref(room_name+'/'+my_data.uid).remove();
+			fbs.ref(ROOM_NAME+'/'+my_data.uid).remove();
 			lobby.close()
 			main_menu.activate();				
 		}		
@@ -4948,7 +4942,7 @@ function set_state(params) {
 		small_opp_id=opp_data.uid.substring(0,10);
 
 	if(!no_invite)
-		fbs.ref(room_name+'/'+my_data.uid).set({state:state, name:my_data.name, rating : my_data.rating, hidden:h_state, opp_id : small_opp_id});
+		fbs.ref(ROOM_NAME+'/'+my_data.uid).set({state:state, name:my_data.name, rating : my_data.rating, hidden:h_state, opp_id : small_opp_id});
 
 }
 
@@ -5340,12 +5334,12 @@ async function init_game_env() {
 		const f=rooms_bins[i-1];
 		const t=rooms_bins[i];		
 		if (my_data.rating>f&&my_data.rating<=t){
-			room_name='states'+i;
+			ROOM_NAME='states'+i;
 			break;
 		}
 	}
 				
-	//room_name= 'states12';
+	//ROOM_NAME= 'states12';
 	
 	//устанавливаем рейтинг в попап
 	objects.id_rating.text=objects.my_card_rating.text=my_data.rating;
@@ -5372,8 +5366,8 @@ async function init_game_env() {
 
 
 	//отключение от игры и удаление не нужного
-	fbs.ref("inbox/"+my_data.uid).onDisconnect().remove();
-	fbs.ref(room_name+"/"+my_data.uid).onDisconnect().remove();
+	//fbs.ref("inbox/"+my_data.uid).onDisconnect().remove();
+	fbs.ref(ROOM_NAME+"/"+my_data.uid).onDisconnect().remove();
 
 	//это событие когда меняется видимость приложения
 	document.addEventListener("visibilitychange", function(){tabvis.change()});
@@ -5394,9 +5388,7 @@ async function init_game_env() {
 	top3.activate()
 	
 	//разные проверки
-	pref.init()
-	
-	
+	pref.init()	
 	
 	//убираем лупу
 	some_process.loup_anim = function(){};		
