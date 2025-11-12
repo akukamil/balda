@@ -4950,14 +4950,15 @@ function define_platform_and_language() {
 	
 	let s = window.location.href;
 	
+
+	if (s.includes('vk.com')||s.includes('vk_app_id')) {
+		game_platform = 'VK';	
+		return;
+	}
+		
 	if (s.includes('yandex')) {
 		
 		game_platform = 'YANDEX';
-		return;
-	}
-	
-	if (s.includes('vk.com')||s.includes('vk_app_id')) {
-		game_platform = 'VK';	
 		return;
 	}
 			
