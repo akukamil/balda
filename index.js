@@ -4,7 +4,7 @@ const rus_let = ['А','Б','В','Г','Д','Е','Ё','Ж','З','И','Й','К','Л
 const rus_let2 = ['А','Б','В','Г','Д','Е','Ж','З','И','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ь','Ю','Я'];
 const adj_cells = {0:[1,5],1:[0,6,2],2:[1,7,3],3:[2,8,4],4:[3,9],5:[0,6,10],6:[1,5,7,11],7:[2,6,8,12],8:[3,7,9,13],9:[4,8,14],10:[5,11,15],11:[6,10,12,16],12:[7,11,13,17],13:[8,12,14,18],14:[9,13,19],15:[10,16,20],16:[11,15,17,21],17:[12,16,18,22],18:[13,17,19,23],19:[14,18,24],20:[15,21],21:[16,20,22],22:[17,21,23],23:[18,22,24],24:[19,23]};
 const LANG=0;
-const TW_PATH='https://f2771470-common.website.twcstorage.ru'
+const COM_URL='https://mtcom.website.yandexcloud.net'
 
 fbs_once=async function(path){
 	const info=await fbs.ref(path).get()
@@ -5099,10 +5099,10 @@ main_loader={
 			loader.add('cell_click'+i,git_src+`sounds/cell_click${i}.mp3`);
 
 		//добавляем библиотеку аватаров
-		loader.add('multiavatar', TW_PATH+'/multiavatar.min.txt');
+		loader.add('multiavatar', COM_URL+'/multiavatar.min.txt');
 
 		//добавляем смешные загрузки
-		loader.add('fun_logs', TW_PATH+'/fun_logs.txt');
+		loader.add('fun_logs', COM_URL+'/fun_logs.txt');
 
 		//добавляем из листа загрузки
 		const main_load_list=eval(assets.main_load_list);
