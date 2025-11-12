@@ -2805,8 +2805,6 @@ chat={
 		
 		this.init_yandex_payments();
 
-		await my_ws.init();	
-		
 		//загружаем чат		
 		const chat_data=await my_ws.get('chat',25);
 		
@@ -5099,9 +5097,6 @@ main_loader={
 		for (let i=1;i<9;i++)
 			loader.add('cell_click'+i,git_src+`sounds/cell_click${i}.mp3`);
 
-		//добавляем библиотеку аватаров
-		loader.add('multiavatar', COM_URL+'/multiavatar.min.txt');
-
 		//добавляем смешные загрузки
 		loader.add('fun_logs', COM_URL+'/fun_logs.txt');
 
@@ -5125,11 +5120,6 @@ main_loader={
 			const res=loader.resources[res_name];
 			assets[res_name]=res.texture||res.sound||res.data;
 		}
-
-		//добавялем библиотеку аватаров
-		const script = document.createElement('script');
-		script.textContent = assets.multiavatar;
-		document.head.appendChild(script);
 
 		anim2.add(objects.load_cont,{alpha:[1,0]}, false, 0.5,'linear');
 
@@ -5293,7 +5283,9 @@ async function init_game_env() {
 	runScyfiLogs();
 
 	//получаем данные об игроке из социальных сетей
-	await auth.init();
+	await auth.init()
+	
+	await my_ws.init()
 		
 	//загружаем остальные данные из файербейса
 	const other_data = await fbs_once('players/' + my_data.uid)
