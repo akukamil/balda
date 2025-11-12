@@ -4956,7 +4956,7 @@ function define_platform_and_language() {
 		return;
 	}
 		
-	if (s.includes('yandex')) {
+	if (s.includes('app-id=176226')) {
 		
 		game_platform = 'YANDEX';
 		return;
