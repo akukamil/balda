@@ -4952,7 +4952,7 @@ function define_platform_and_language() {
 	let s = window.location.href;
 	
 
-	if (s.includes('vk.com')||s.includes('vk.ru')||s.includes('vk_app_id')) {
+	if (s.includes('vk.com')||s.includes('vk.ru')||s.includes('vk_app_id')||s.includes('ok.ru')) {
 		game_platform = 'VK';	
 		return;
 	}
