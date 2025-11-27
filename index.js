@@ -166,25 +166,28 @@ class cells_class extends PIXI.Container {
 		this.y=y;
 
 		this.bcg=new PIXI.Sprite(assets.big_letter_image);
+		this.bcg.anchor.set(0.5,0.5);
 		this.bcg.interactive=true;
 		this.bcg.buttonMode = true;
 		this.bcg.pointerover=function(){this.tint=0x55ffff};
 		this.bcg.pointerout=function(){this.tint=0xffffff};
-		this.bcg.width=this.bcg.height=60;
+		this.bcg.width=this.bcg.height=74.5;
 		
 		this.bcg2=new PIXI.Sprite(assets.big_letter_image_h);
+		this.bcg2.anchor.set(0.5,0.5);
 		this.bcg2.visible = false;
-		this.bcg2.width=this.bcg2.height=60;
+		this.bcg2.width=this.bcg2.height=74.5;
 		
 		this.bcg3=new PIXI.Sprite(assets.big_letter_image_h2);
+		this.bcg3.anchor.set(0.5,0.5);
 		this.bcg3.visible = false;
-		this.bcg3.width=this.bcg3.height=60;
+		this.bcg3.width=this.bcg3.height=74.5;
 
 		this.letter=new PIXI.BitmapText('', {fontName: 'exosoft_bold_128',fontSize: 58});
 		this.letter.tint=objects.cell_color;
 		this.letter.anchor.set(0.5,0.5);
-		this.letter.x=30;
-		this.letter.y=31;
+		this.letter.x=0;
+		this.letter.y=1;
 		
 		this.bcg.pointerdown = this.pointer_down.bind(this);
 
