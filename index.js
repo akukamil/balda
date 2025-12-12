@@ -2668,7 +2668,7 @@ ad = {
 	async show_vk_banner(){
 		
 		const cur_tm=Date.now();
-		if(cur_tm-this.prv_banner_show<200000) return;
+		if(cur_tm-this.prv_banner_show<180000) return;
 		
 		this.prv_banner_show=cur_tm;		
 		const data=await vkBridge.send('VKWebAppShowBannerAd', {banner_location: 'bottom',layout_type:'overlay'});
