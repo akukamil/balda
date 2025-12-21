@@ -2102,7 +2102,6 @@ keep_alive = function() {
 	if (document.hidden) return;		
 
 	fbs.ref("players/"+my_data.uid+"/tm").set(firebase.database.ServerValue.TIMESTAMP);
-	//fbs.ref("inbox/"+my_data.uid).onDisconnect().remove();
 	fbs.ref(ROOM_NAME+"/"+my_data.uid).onDisconnect().remove();
 
 	set_state({});
@@ -4658,7 +4657,7 @@ pin_panel={
 		
 }
 
-auth = {
+auth={
 		
 	load_script(src) {
 	  return new Promise((resolve, reject) => {
@@ -4763,7 +4762,7 @@ auth = {
 			return;
 		}
 		
-		if (game_platform === 'VK') {
+		if (game_platform === 'VK' || game_platform==='OK') {
 			
 			game_platform = 'VK';
 			
@@ -4778,7 +4777,7 @@ auth = {
 
 			
 			my_data.name = _player.first_name + ' ' + _player.last_name;
-			my_data.uid  = "vk"+_player.id;
+			my_data.uid=game_platform.toLowerCase()+_player.id
 			my_data.orig_pic_url = _player.photo_100;
 			my_data.auth_mode=1;
 			
@@ -4951,11 +4950,20 @@ function define_platform_and_language() {
 	
 	let s = window.location.href;
 	
+	if (s.includes('vk_ok_app_id')||s.includes('vk_ok_user_id')) {
 
-	if (s.includes('vk.com')||s.includes('vk.ru')||s.includes('vk_app_id')||s.includes('ok.ru')) {
+		game_platform = 'OK';
+		LANG = 0;
+		return;
+	}
+
+
+	if (s.includes('vk.com')||s.includes('vk.ru')||s.includes('vk_app_id')) {
 		game_platform = 'VK';	
 		return;
 	}
+		
+		
 		
 	if (s.includes('app-id=176226')) {
 		
@@ -5323,18 +5331,7 @@ async function init_game_env() {
 	objects.my_card_name.set2(my_data.name,150);	
 	objects.id_avatar.set_texture(players_cache.players[my_data.uid].texture);
 	objects.my_avatar.texture=players_cache.players[my_data.uid].texture;
-
-	//номер комнаты в зависимости от рейтинга игрока
-	const rooms_bins=[0,1370,1400,1410,1433,1460,1496,1509,1552,1636,1736,9999];
-	for (let i=1;i<rooms_bins.length;i++){
-		const f=rooms_bins[i-1];
-		const t=rooms_bins[i];		
-		if (my_data.rating>f&&my_data.rating<=t){
-			ROOM_NAME='states'+i;
-			break;
-		}
-	}
-				
+			
 	//ROOM_NAME= 'states12';
 	
 	//устанавливаем рейтинг в попап
