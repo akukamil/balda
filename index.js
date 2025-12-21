@@ -4953,7 +4953,6 @@ function define_platform_and_language() {
 	if (s.includes('vk_ok_app_id')||s.includes('vk_ok_user_id')) {
 
 		game_platform = 'OK';
-		LANG = 0;
 		return;
 	}
 
