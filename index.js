@@ -1946,7 +1946,7 @@ game = {
 		
 		//заполняем карточку соперника
 		const opp=players_cache.players[opp_data.uid];
-		objects.opp_card_name.set2(opp.name,160);
+		objects.opp_card_name.set2(opp.name,200);
 		objects.opp_card_rating.text=opp.rating;
 		objects.opp_avatar.texture=opp.texture;
 		
@@ -5327,7 +5327,7 @@ async function init_game_env() {
 	
 	//устанавливаем фотки в попап
 	objects.id_name.set2(my_data.name,150);	
-	objects.my_card_name.set2(my_data.name,150);	
+	objects.my_card_name.set2(my_data.name,200);	
 	objects.id_avatar.set_texture(players_cache.players[my_data.uid].texture);
 	objects.my_avatar.texture=players_cache.players[my_data.uid].texture;
 			
