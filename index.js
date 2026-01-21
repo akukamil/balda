@@ -2503,7 +2503,7 @@ pref={
 
 			objects.pref_name.set2(name,250)
 			this.send_info('Вы изменили имя)))')
-			sound.play('confirm_dialog');
+			sound.play('note')
 
 		}else{
 			this.send_info('Неправильное имя(((');
@@ -2588,7 +2588,7 @@ pref={
 		fbs.ref(`players/${my_data.uid}/avatar_tm`).set(my_data.avatar_tm)
 
 		this.send_info('Вы изменили фото)))')
-		sound.play('confirm_dialog')
+		sound.play('note')
 
 		this.update_buttons()
 		
@@ -5176,6 +5176,7 @@ main_loader={
 		loader.add('online_message',git_src+'sounds/online_message.mp3');
 		loader.add('inst_msg',git_src+'sounds/inst_msg.mp3');
 		loader.add('top3',git_src+'sounds/top3.mp3');
+		loader.add('note',git_src+'sounds/note.mp3');
 		
 		for (let i=1;i<9;i++)
 			loader.add('cell_click'+i,git_src+`sounds/cell_click${i}.mp3`);
