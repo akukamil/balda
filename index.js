@@ -2324,11 +2324,11 @@ var kill_game = function() {
 pref={	
 
 	cur_pic_url:'',
-	avatar_changed:0,
-	name_changed:0,
 	tex_loading:0,
 	avatar_switch_center:0,
 	avatar_swtich_cur:0,
+	hours_to_nick_change:0,
+	hours_to_photo_change:0,	
 	info_timer:0,
 	
 	activate(){
@@ -2337,11 +2337,8 @@ pref={
 		anim2.add(objects.pref_info,{alpha:[0,1]}, false, 3,'easeBridge',false);	
 		objects.pref_info.text=['Менять аватар и имя можно 1 раз в 30 дней!','You can change name and avatar once per month'][LANG];
 				
-		objects.pref_sound_slider.x=sound.on?367:322;
-		
-		//пока ничего не изменено
-		this.avatar_changed=0;
-		this.name_changed=0;
+			
+		this.update_buttons()
 		
 		//заполняем имя и аватар
 		objects.pref_name.set2(my_data.name,260);
@@ -2368,6 +2365,62 @@ pref={
 			
 		},1000)
 		
+	},
+	
+	getHoursEnding(hours) {
+		hours = Math.abs(hours) % 100;
+		let lastDigit = hours % 10;
+
+		if (hours > 10 && hours < 20) {
+			return 'часов';
+		} else if (lastDigit == 1) {
+			return 'час';
+		} else if (lastDigit >= 2 && lastDigit <= 4) {
+			return 'часа';
+		} else {
+			return 'часов';
+		}
+	},
+
+	bcg_down(e){
+		
+		const mx = e.data.global.x/app.stage.scale.x
+		const my = e.data.global.y/app.stage.scale.y
+		
+		if (mx>590&&mx<720&&my>240&&my<290)
+			this.sound_switch_down()
+
+
+		
+	},
+	
+	update_buttons(){
+		
+		if (!SERVER_TM){
+			this.send_info('Ошибка получения серверного времени(((')
+			return
+		}
+
+		//сколько осталось до изменения
+		this.hours_to_nick_change=Math.max(0,Math.floor(720-(SERVER_TM-my_data.nick_tm)*0.001/3600));
+		this.hours_to_photo_change=Math.max(0,Math.floor(720-(SERVER_TM-my_data.avatar_tm)*0.001/3600));
+
+		//определяем какие кнопки доступны
+		objects.pref_change_name_btn.alpha=(this.hours_to_nick_change>0||my_data.games<200||!SERVER_TM)?0.5:1;
+		objects.pref_arrow_left.alpha=(this.hours_to_photo_change>0||!SERVER_TM)?0.5:1;
+		objects.pref_arrow_right.alpha=(this.hours_to_photo_change>0||!SERVER_TM)?0.5:1;
+		objects.pref_reset_avatar_btn.alpha=(this.hours_to_photo_change>0||!SERVER_TM)?0.5:1;
+		
+	},
+	
+	send_info(msg,timeout){
+
+		objects.pref_info.text=msg;
+		anim2.add(objects.pref_info,{alpha:[0,1]}, true, 0.25,'linear',false);
+		clearTimeout(this.info_timer);
+		this.info_timer=setTimeout(()=>{
+			anim2.add(objects.pref_info,{alpha:[1,0]}, false, 0.25,'linear',false);
+		},timeout||3000);
 	},
 	
 	update_server_tm(){
@@ -2413,56 +2466,71 @@ pref={
 		safe_ls('balda_energy_prv_tm',SERVER_TM)
 	
 	},
-			
-	check_time(last_time){
-
-
-		//провряем можно ли менять
-		const tm=Date.now();
-		const days_since_nick_change=~~((tm-last_time)/86400000);
-		const days_befor_change=30-days_since_nick_change;
-		const ln=days_befor_change%10;
-		const opt=[0,5,6,7,8,9].includes(ln)*0+[2,3,4].includes(ln)*1+(ln===1)*2;
-		const day_str=['дней','дня','день'][opt];
-		
-		if (days_befor_change>0){
-			objects.pref_info.text=[`Поменять можно через ${days_befor_change} ${day_str}`,`Wait ${days_befor_change} days`][LANG];
-			anim2.add(objects.pref_info,{alpha:[0,1]}, false, 3,'easeBridge',false);	
-			sound.play('locked');
-			return 0;
-		}
-		
-		return 1;
-	},
-				
+					
 	async change_name_down(){
 				
+		if (!SERVER_TM){
+			this.send_info('Ошибка получения серверного времени(((');
+			sound.play('locked');
+			return;
+		}
+
+		if (my_data.games<200){
+			this.send_info('Нужно сыграть 200 онлайн партий чтобы поменять имя(((');
+			sound.play('locked');
+			return;
+		}
+
 		//провряем можно ли менять ник
-		if(!this.check_time(my_data.nick_tm)) return;
-										
-		const name=await keyboard.read(15);
-		if (name&&name.replace(/\s/g, '').length>3){			
-			this.name_changed=name;
-			objects.pref_name.set2(name,260);
-			objects.pref_info.text=['Нажмите ОК чтобы сохранить','Press OK to confirm'][LANG];
-			objects.pref_info.visible=true;	
-		}else{			
-			objects.pref_info.text=['Какая-то ошибка','Unknown error'][LANG];
-			anim2.add(objects.pref_info,{alpha:[0,1]}, false, 3,'easeBridge',false);			
+		if(this.hours_to_nick_change>0){
+			this.send_info(`Имя можно поменять через ${this.hours_to_nick_change} ${this.getHoursEnding(this.hours_to_nick_change)}.`);
+			sound.play('locked');
+			return;
+		}
+
+		//получаем новое имя
+		const name=await keyboard.read(15)
+		if (name&&name.replace(/\s/g, '').length>3){
+
+			//обновляем данные о времени
+			my_data.nick_tm=SERVER_TM
+			fbs.ref(`players/${my_data.uid}/nick_tm`).set(my_data.nick_tm)
+
+			my_data.name=name
+			fbs.ref(`players/${my_data.uid}/name`).set(my_data.name)
+
+			this.update_buttons()
+
+			objects.pref_name.set2(name,250)
+			this.send_info('Вы изменили имя)))')
+			sound.play('confirm_dialog');
+
+		}else{
+			this.send_info('Неправильное имя(((');
 		}
 		
 	},
 			
 	async arrow_down(dir){
 		
+		if (!SERVER_TM){
+			this.send_info('Ошибка получения серверного времени(((');
+			sound.play('locked');
+			return;
+		}
+
 		if (anim2.any_on()||this.tex_loading) {
 			sound.play('blocked');
 			return;
 		}
-				
-		if(!this.check_time(my_data.avatar_tm)) return;
-		this.avatar_changed=1;
-				
+
+		//провряем можно ли менять фото
+		if(this.hours_to_photo_change>0){
+			this.send_info(`Фото можно поменять через ${this.hours_to_photo_change} ${this.getHoursEnding(this.hours_to_photo_change)}.`);
+			sound.play('locked');
+			return;
+		}
+
 		//перелистываем аватары
 		this.avatar_swtich_cur+=dir;
 		if (this.avatar_swtich_cur===this.avatar_switch_center){
@@ -2470,47 +2538,86 @@ pref={
 		}else{
 			this.cur_pic_url='mavatar'+this.avatar_swtich_cur;
 		}
+
+
+		if (!objects.pref_conf_photo_btn.visible)
+			anim2.add(objects.pref_conf_photo_btn,{alpha:[0,1]}, true, 0.25,'linear')
 		
-		
-		this.tex_loading=1;		
+		this.tex_loading=1;
 		const t=await players_cache.my_texture_from(multiavatar(this.cur_pic_url));
-		this.tex_loading=0;
-		
 		objects.pref_avatar.set_texture(t);
-		objects.pref_info.text=['Нажмите ОК чтобы сохранить','Press OK to confirm'][LANG];
-		objects.pref_info.visible=true;		
+		this.tex_loading=0;
 	
 	},
 	
 	async reset_avatar_down(){
 				
+		if (!SERVER_TM){
+			this.send_info('Ошибка получения серверного времени(((');
+			sound.play('locked');
+			return;
+		}
+
 		if (anim2.any_on()||this.tex_loading) {
 			sound.play('blocked');
 			return;
 		}
-		
-		this.avatar_changed=1;
+
+		//провряем можно ли менять фото
+		if(this.hours_to_photo_change>0){
+			this.send_info(`Фото можно поменять через ${this.hours_to_photo_change}  ${this.getHoursEnding(this.hours_to_photo_change)}.`);
+			sound.play('locked');
+			return;
+		}
+
 		this.cur_pic_url=my_data.orig_pic_url;
+
+		if (!objects.pref_conf_photo_btn.visible)
+			anim2.add(objects.pref_conf_photo_btn,{alpha:[0,1]}, true, 0.25,'linear')
+		
 		this.tex_loading=1;
 		const t=await players_cache.my_texture_from(my_data.orig_pic_url);
 		objects.pref_avatar.set_texture(t);
 		this.tex_loading=0;
-		objects.pref_info.text=['Нажмите ОК чтобы сохранить','Press OK to confirm'][LANG];
-		objects.pref_info.visible=true;
 	},
-				
-	sound_btn_down(){
+
+	conf_photo_down(){
+
+		my_data.avatar_tm=SERVER_TM;
+		fbs.ref(`players/${my_data.uid}/pic_url`).set(this.cur_pic_url)
+		fbs.ref(`players/${my_data.uid}/avatar_tm`).set(my_data.avatar_tm)
+
+		this.send_info('Вы изменили фото)))')
+		sound.play('confirm_dialog')
+
+		this.update_buttons()
 		
+		anim2.add(objects.pref_conf_photo_btn,{alpha:[1,0]}, false, 0.25,'linear')
+
+		//обновляем аватар в кэше
+		players_cache.update_avatar_forced(my_data.uid,this.cur_pic_url).then(()=>{
+			const my_card=objects.mini_cards.find(card=>card.uid===my_data.uid)
+			my_card.avatar.set_texture(players_cache.players[my_data.uid].texture)
+		})
+
+	},
+		
+	sound_switch_down(){
+
 		if(anim2.any_on()){
-			sound.play('locked');
-			return;			
+			sound.play('locked')
+			return;
 		}
-		
-		sound.switch();
-		sound.play('click');
-		const tar_x=sound.on?367:322;
-		anim2.add(objects.pref_sound_slider,{x:[objects.pref_sound_slider.x,tar_x]}, true, 0.1,'linear');	
-		
+
+		if (sound.on){
+			sound.on=0
+			objects.pref_snd_bcg.texture=assets.pref_snd_off_img
+		}else{
+			sound.on=1;
+			objects.pref_snd_bcg.texture=assets.pref_snd_on_img
+			sound.play('click')
+		}
+
 	},
 		
 	close(){
@@ -2548,45 +2655,11 @@ pref={
 			return;			
 		}
 		
-		sound.play('click');		
-		this.switch_to_lobby();	
-		
-		if (this.avatar_changed){
-									
-			fbs.ref(`players/${my_data.uid}/pic_url`).set(this.cur_pic_url);
-			//fbs.ref(`pdata/${my_data.uid}/PUB/pic_url`).set(this.cur_pic_url);			
-
-			my_data.avatar_tm=Date.now();
-			fbs.ref(`players/${my_data.uid}/avatar_tm`).set(my_data.avatar_tm);
-			//fbs.ref(`pdata/${my_data.uid}/PRV/avatar_tm`).set(my_data.avatar_tm);
-					
-			//обновляем аватар в кэше
-			players_cache.update_avatar_forced(my_data.uid,this.cur_pic_url).then(()=>{
-				const my_card=objects.mini_cards.find(card=>card.uid===my_data.uid);
-				my_card.avatar.set_texture(players_cache.players[my_data.uid].texture);				
-			})				
-		}
-		
-		if (this.name_changed){			
-			
-			my_data.name=this.name_changed;
-
-			//обновляем мое имя в разных системах			
-			set_state({});			
-			
-			my_data.nick_tm=Date.now();			
-			fbs.ref(`players/${my_data.uid}/nick_tm`).set(my_data.nick_tm);
-			fbs.ref(`players/${my_data.uid}/name`).set(my_data.name);
-			
-			//fbs.ref(`pdata/${my_data.uid}/PRV/nick_tm`).set(my_data.nick_tm);
-			//fbs.ref(`pdata/${my_data.uid}/PUB/name`).set(my_data.name);
-			
-		}
-		
+		sound.play('click')	
+		this.switch_to_lobby()		
 
 	}
 	
-		
 }
 
 ad = {		
@@ -5299,7 +5372,7 @@ async function init_game_env() {
 		
 	//загружаем остальные данные из файербейса
 	const other_data = await fbs_once('players/' + my_data.uid)
-	SERVER_TM=await fbs_once('tm') 
+	SERVER_TM=await my_ws.get_tms() 
 	
 	//делаем защиту от неопределенности
 	my_data.rating = other_data?.rating || 1400
@@ -5330,8 +5403,6 @@ async function init_game_env() {
 	objects.my_card_name.set2(my_data.name,200);	
 	objects.id_avatar.set_texture(players_cache.players[my_data.uid].texture);
 	objects.my_avatar.texture=players_cache.players[my_data.uid].texture;
-			
-	//ROOM_NAME= 'states12';
 	
 	//устанавливаем рейтинг в попап
 	objects.id_rating.text=objects.my_card_rating.text=my_data.rating;
