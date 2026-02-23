@@ -1465,7 +1465,8 @@ word_waiting = {
 		anim2.add(objects.cells_cont,{y:[objects.cells_cont.y,75]}, true, 0.5,'easeInOutCubic');
 		
 		//показываем баннер пока игрок думает
-		if(game_platform==='VK') ad.show_vk_banner();
+		if (game_platform==='VK' || game_platform==='OK')
+			ad.show_vk_banner();
 	},
 	
 	async show_new_word_anim(word_ids) {
@@ -2678,7 +2679,7 @@ ad = {
 			})
 		}
 		
-		if (game_platform==="VK") {
+		if (game_platform==='VK' || game_platform==='OK') {
 					 
 			vkBridge.send("VKWebAppShowNativeAds", {ad_format:"interstitial"})
 			.then(data => console.log(data.result))
