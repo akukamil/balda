@@ -5274,6 +5274,9 @@ async function init_game_env() {
 	
 	await define_platform_and_language();		
 
+	//получаем данные об игроке из социальных сетей
+	await auth.init()
+	
 	//убираем надпись
 	document.getElementById('loadingText').remove();
 	
@@ -5367,8 +5370,6 @@ async function init_game_env() {
 	};
 	runScyfiLogs();
 
-	//получаем данные об игроке из социальных сетей
-	await auth.init()
 	
 	await my_ws.init()
 		
