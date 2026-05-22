@@ -4,32 +4,12 @@ const rus_let = ['А','Б','В','Г','Д','Е','Ё','Ж','З','И','Й','К','Л
 const rus_let2 = ['А','Б','В','Г','Д','Е','Ж','З','И','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ь','Ю','Я'];
 const adj_cells = {0:[1,5],1:[0,6,2],2:[1,7,3],3:[2,8,4],4:[3,9],5:[0,6,10],6:[1,5,7,11],7:[2,6,8,12],8:[3,7,9,13],9:[4,8,14],10:[5,11,15],11:[6,10,12,16],12:[7,11,13,17],13:[8,12,14,18],14:[9,13,19],15:[10,16,20],16:[11,15,17,21],17:[12,16,18,22],18:[13,17,19,23],19:[14,18,24],20:[15,21],21:[16,20,22],22:[17,21,23],23:[18,22,24],24:[19,23]};
 const LANG=0;
-const COM_URL='https://akukamil.github.io/common'
+const COM_URL='https://akukamil.github.io/com'
 const TM={s:0,ms:0}
-
-hf={
-	
-	randIntInc(min,max){
-		min = Math.ceil(min)
-		max = Math.floor(max)
-		return Math.floor(Math.random() * (max - min + 1) + min)
-	},
-
-	hash(s){
-		
-		let h = 0;
-		for (let i = 0; i < s.length; i++) {
-			h = (h << 5) - h + s.charCodeAt(i)
-			h |= 0
-		}
-		return h
-	}	
-	
-}
 
 fbs_once=async function(path){
 	const info=await fbs.ref(path).get()
-	return info.val();	
+	return info.val()
 }
 
 class player_mini_card_class extends PIXI.Container {
@@ -66,14 +46,14 @@ class player_mini_card_class extends PIXI.Container {
 		this.avatar_frame.width=this.avatar_frame.height=81.48;
 				
 		this.name="";
-		this.name_text=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 22,align: 'center'});
+		this.name_text=new PIXI.BitmapText('', {fontName: 'core_sans_ds',fontSize: 22,align: 'center'});
 		this.name_text.anchor.set(1,0);
 		this.name_text.x=180;
 		this.name_text.y=20;
 		this.name_text.tint=0xffffff;		
 
 		this.rating=0;
-		this.rating_text=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 29,align: 'center'});
+		this.rating_text=new PIXI.BitmapText('', {fontName: 'core_sans_ds',fontSize: 29,align: 'center'});
 		this.rating_text.tint=0xffff00;
 		this.rating_text.anchor.set(1,0.5);
 		this.rating_text.x=185;
@@ -105,19 +85,19 @@ class player_mini_card_class extends PIXI.Container {
 		this.avatar2_frame.width=this.avatar2_frame.height=81.48;
 		
 		
-		this.rating_text1=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 24,align: 'center'});
+		this.rating_text1=new PIXI.BitmapText('', {fontName: 'core_sans_ds',fontSize: 24,align: 'center'});
 		this.rating_text1.tint=0xffff00;
 		this.rating_text1.anchor.set(0.5,0);
 		this.rating_text1.x=48.1;
 		this.rating_text1.y=56;
 
-		this.rating_text2=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 24,align: 'center'});
+		this.rating_text2=new PIXI.BitmapText('', {fontName: 'core_sans_ds',fontSize: 24,align: 'center'});
 		this.rating_text2.tint=0xffff00;
 		this.rating_text2.anchor.set(0.5,0);
 		this.rating_text2.x=150.1;
 		this.rating_text2.y=56;		
 		
-		this.t_country=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 25,align: 'center'});
+		this.t_country=new PIXI.BitmapText('', {fontName: 'core_sans_ds',fontSize: 25,align: 'center'});
 		this.t_country.tint=0xffff00;
 		this.t_country.anchor.set(1,0.5);
 		this.t_country.x=100;
@@ -144,7 +124,7 @@ class lb_player_card_class extends PIXI.Container{
 		this.bcg.width = 370;
 		this.bcg.height = 70;
 
-		this.place=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 25,align: 'center'});
+		this.place=new PIXI.BitmapText('', {fontName: 'core_sans_ds',fontSize: 25,align: 'center'});
 		this.place.tint=0xffffff;
 		this.place.x=20;
 		this.place.y=22;
@@ -156,12 +136,12 @@ class lb_player_card_class extends PIXI.Container{
 		this.avatar.width=this.avatar.height=44
 
 
-		this.name=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 25,align: 'center'});
+		this.name=new PIXI.BitmapText('', {fontName: 'core_sans_ds',fontSize: 25,align: 'center'});
 		this.name.tint=0xcceeff;
 		this.name.x=105;
 		this.name.y=22;
 
-		this.rating=new PIXI.BitmapText('', {fontName: 'mfont',fontSize: 25,align: 'center'});
+		this.rating=new PIXI.BitmapText('', {fontName: 'core_sans_ds',fontSize: 25,align: 'center'});
 		this.rating.x=305;
 		this.rating.tint=0xFFFF00;
 		this.rating.y=22;
@@ -287,7 +267,7 @@ class chat_record_class extends PIXI.Container {
 		this.avatar_frame.x=this.avatar.x-10;
 		this.avatar_frame.y=this.avatar.y-10;
 
-		this.name = new PIXI.BitmapText('Имя Фамил', {fontName: 'mfont',fontSize: 17});
+		this.name = new PIXI.BitmapText('Имя Фамил', {fontName: 'core_sans_ds',fontSize: 17});
 		this.name.anchor.set(0,0.5);
 		this.name.x=this.avatar.x+72;
 		this.name.y=this.avatar.y-1;
@@ -313,14 +293,14 @@ class chat_record_class extends PIXI.Container {
 		this.msg_bcg.x=this.avatar.x+45;
 		this.msg_bcg.y=this.avatar.y+2;
 
-		this.msg = new PIXI.BitmapText('Имя Фамил', {fontName: 'mfont',fontSize: 19,lineSpacing:55,align: 'left'});
+		this.msg = new PIXI.BitmapText('Имя Фамил', {fontName: 'core_sans_ds',fontSize: 19,lineSpacing:55,align: 'left'});
 		this.msg.x=this.avatar.x+75;
 		this.msg.y=this.avatar.y+30;
 		this.msg.maxWidth=450;
 		this.msg.anchor.set(0,0.5);
 		this.msg.tint = 0xffffff;
 
-		this.msg_tm = new PIXI.BitmapText('28.11.22 12:31', {fontName: 'mfont',fontSize: 15});
+		this.msg_tm = new PIXI.BitmapText('28.11.22 12:31', {fontName: 'core_sans_ds',fontSize: 15});
 		this.msg_tm.tint=0x999999;
 		this.msg_tm.anchor.set(1,0);
 
@@ -1309,37 +1289,6 @@ bot_player = {
 			field.push(objects.cells[i].letter.text);		
 		let _adj_cells = this.get_adj_cells(field);
 		let _adj_cells_cnt = _adj_cells.length;
-
-		/*
-		//здесь нужно поискать 3-буквенные слова чтобы не остасть когда суррогатов нет
-		let new_letter_cell_id = _adj_cells[irnd(0 , _adj_cells_cnt - 1 )];	
-		let new_letter = rus_let2[irnd(0,27)];
-		let letters_pos = [];
-		for (let i = 0 ; i < 25 ; i++)
-			if (field[i] !== "")
-				letters_pos.push(i);			
-			
-		let [acc_word, acc_pos] = this.read_random_word4(field, letters_pos);
-		
-		if ( this.found_words.includes(acc_word[0]) !== true && game.words_hist.includes(acc_word[0]) !== true && dict0.includes(acc_word[0])=== true) {
-			this.found_data[acc_word[0].length]=[new_letter_cell_id, new_letter, acc_pos.slice()];		
-			this.found_words.push(acc_word[0]);	
-			console.log('Совпадение #4 ',acc_word[0] )
-		}
-		
-		//если 4 буквы проверяем еще 3 буквы
-		if (acc_word[0].length === 4) {			
-			let acc_word3 = acc_word[0].substring(0, 3);	
-			acc_pos.pop();				
-			if ( this.found_words.includes(acc_word3) !== true && game.words_hist.includes(acc_word3) !== true && dict0.includes(acc_word3)=== true) {
-				this.found_data[3]=[new_letter_cell_id, new_letter, acc_pos.slice()];		
-				this.found_words.push(acc_word3);	
-				console.log('Совпадение #3 ',acc_word3 )
-			}
-		}*/
-
-	
-		
 
 		//несколько попыток найти слово-суррогат начиная с рандомной смежной ячейки
 		for (let i = 0 ; i < _adj_cells_cnt ; i++) {			
@@ -3640,7 +3589,7 @@ players_cache={
 
 		while(Object.keys(this.loading).length>5){
 			console.log('Много загрузок, ждем...')
-			await new Promise(r => setTimeout(r, irnd(400,800)));
+			await new Promise(r => setTimeout(r, hf.randIntInc(400,800)));
 		}
 
 		this.loading[uid]=1
@@ -3715,18 +3664,31 @@ players_cache={
 
 	},
 
-	async my_texture_from(pic_url){
+	my_texture_from(pic_url){
 
-		if(!pic_url) return PIXI.Texture.WHITE
+		const white_tex = PIXI.Texture.WHITE;
+
+		if (!pic_url) return white_tex
 		
-		//если это мультиаватар
-		if(pic_url.includes('mavatar')) pic_url=multiavatar(pic_url);
+		// Handle multiavatar
+		if (pic_url.includes('mavatar')) pic_url = multiavatar(pic_url)
+		
+		return new Promise(res => {
+			const timeout = setTimeout(() => {
+			console.log('Timeout to load: ', pic_url);
+			res(white_tex);
+		}, 3000);
 
-		try{
-			return await PIXI.Texture.fromURL(pic_url);
-		}catch(er){
-			return PIXI.Texture.WHITE;
-		}
+		PIXI.Texture.fromURL(pic_url).then(t => {
+				clearTimeout(timeout);
+				res(t||white_tex);
+			})
+			.catch((error) => {
+				clearTimeout(timeout);
+				console.error('Failed to load texture:', error);
+				res(white_tex);
+			});
+		});
 
 	},
 
@@ -5406,7 +5368,7 @@ main_loader={
 		loader.add('load_bar_bcg', git_src+'res/common/load_bar_bcg.png');
 		loader.add('bcg', git_src+'res/common/bcg.jpg');
 		loader.add('load_bar_progress', git_src+'res/common/load_bar_progress.png');
-		loader.add('3', git_src+'fonts/core_sans_ds/font.fnt');
+		loader.add('3', COM_URL+'/fonts/core_sans_ds/f.fnt');
 		loader.add('main_load_list',git_src+'load_list.txt');
 
 		//переносим все в ассеты
@@ -5443,7 +5405,7 @@ main_loader={
 		this.load_bar_progress.height=50;
 		this.load_bar_progress.mask=this.load_bar_mask
 
-		this.t_progress=new PIXI.BitmapText('0%', {fontName: 'mfont',fontSize: 25,align: 'center'})
+		this.t_progress=new PIXI.BitmapText('0%', {fontName: 'core_sans_ds',fontSize: 25,align: 'center'})
 		this.t_progress.y=235
 		this.t_progress.x=400
 		this.t_progress.tint=0xffffff
@@ -5459,8 +5421,8 @@ main_loader={
 
 		const loader=new PIXI.Loader();
 
-		loader.add('1', git_src+'fonts/exosoft_bold_128/font.fnt');//это для поля
-		loader.add('2', git_src+'fonts/exosoft_bold_64/font.fnt');//это для поля
+		loader.add('1', COM_URL+'/fonts/exosoft_bold_128/f.fnt');//это для поля
+		loader.add('2', COM_URL+'/fonts/exosoft_bold_64/f.fnt');//это для поля
 		
 		
 		loader.add('click',git_src+'sounds/click.mp3');
@@ -5488,9 +5450,6 @@ main_loader={
 		
 		for (let i=1;i<9;i++)
 			loader.add('cell_click'+i,git_src+`sounds/cell_click${i}.mp3`);
-
-		//добавляем смешные загрузки
-		loader.add('fun_logs', COM_URL+'/fun_logs.txt');
 
 		//добавляем из листа загрузки
 		const main_load_list=eval(assets.main_load_list);
@@ -5604,9 +5563,7 @@ async function init_game_env() {
 
 	await main_loader.load1()
 	await main_loader.load2()
-	
-
-	
+		
 	anim3.add(objects.id_cont,{y:[-230, 100,'easeOutBack']}, true, 0.5);
 	
 	//запускаем лупную анимацию
