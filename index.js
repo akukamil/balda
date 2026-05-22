@@ -3800,30 +3800,21 @@ lb={
 		//сортируем....
 		leaders_array.sort(function(a,b) {return b.rating - a.rating});
 
-		//обновляем данные
-		const load_promises=[]
-		for (let i=0;i<10;i++){
-			const leader_data=leaders_array[i];
-			players_cache.update_params(leader_data.uid,leader_data);
-			const p=players_cache.update(leader_data.uid,{source:'lb'});
-			load_promises.push(p)
-		}
-		
 		
 		//заполняем имя и рейтинг
 		for (let place in top){
 			const target=top[place];
 			const leader=leaders_array[place];
+			players_cache.update_params(leader.uid,leader);
 			target.t_name.set2(leader.name,place>2?190:130);
 			target.t_rating.text=leader.rating;
-		}		
+		}	
 		
-		await Promise.allSettled(load_promises)
-
-		//заполняем аватар
-		for (let place in top){
-			const target=top[place];
-			const leader=leaders_array[place];
+		//заполняем аватар		
+		for (let i=0;i<10;i++){
+			const leader=leaders_array[i];
+			await players_cache.update(leader.uid,{source:'lb'});
+			const target=top[i];
 			target.avatar.set_texture(players_cache[leader.uid].texture)
 		}
 
