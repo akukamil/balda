@@ -2710,7 +2710,11 @@ gif_sel={
 	
 	activate(){
 		
-		if (!this.ids) this.ids=this.get_unique_int(100,typeof MAX_GIF_ID_INC !== 'undefined' ? MAX_GIF_ID_INC : 200,new Date(SERVER_TM).getDate(),my_data.uid)
+		if (!this.ids){
+			const millisecondsInDay = 24 * 60 * 60 * 1000
+			const daysSinceEpoch = Math.floor(Date.now() / millisecondsInDay)
+			this.ids=this.get_unique_int(100,typeof MAX_GIF_ID_INC !== 'undefined' ? MAX_GIF_ID_INC : 200,daysSinceEpoch,my_data.uid)
+		}
 		this.sel_id=-1
 		objects.gif_sel_hl.visible=false
 		objects.gif_sel_send_btn.visible=false
@@ -2787,7 +2791,7 @@ gif_sel={
 		
 	},
 		
-	get_unique_int(min, max,day,uid) {//inclusive
+	get_unique_int(min,max,day,uid) {//inclusive
 		
 		let seed = hf.hash(`${day}-${uid}`);
 
