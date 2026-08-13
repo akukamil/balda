@@ -2713,7 +2713,8 @@ gif_sel={
 		if (!this.ids){
 			const millisecondsInDay = 24 * 60 * 60 * 1000
 			const daysSinceEpoch = Math.floor(Date.now() / millisecondsInDay)
-			this.ids=this.get_unique_int(100,typeof MAX_GIF_ID_INC !== 'undefined' ? MAX_GIF_ID_INC : 200,daysSinceEpoch,my_data.uid)
+			const str=my_data.uid+daysSinceEpoch
+			this.ids=this.get_unique_int(100,typeof MAX_GIF_ID_INC !== 'undefined' ? MAX_GIF_ID_INC : 200,str,4)
 		}
 		this.sel_id=-1
 		objects.gif_sel_hl.visible=false
@@ -2791,9 +2792,9 @@ gif_sel={
 		
 	},
 		
-	get_unique_int(min,max,day,uid) {//inclusive
+	get_unique_int(min,max,str,len=4) {//inclusive
 		
-		let seed = hf.hash(`${day}-${uid}`);
+		let seed = hf.hash(str);
 
 		function random() {
 			seed |= 0;
@@ -2809,12 +2810,12 @@ gif_sel={
 		const arr = Array.from({ length: size }, (_, i) => i + min);
 
 		// Partial Fisher–Yates (only 4 picks)
-		for (let i = 0; i < 4; i++) {
+		for (let i = 0; i < len; i++) {
 			const j = i + Math.floor(random() * (size - i));
 			[arr[i], arr[j]] = [arr[j], arr[i]];
 		}
 
-		return arr.slice(0, 4);
+		return arr.slice(0, len);
 	},
 	
 	send_btn_down(){
