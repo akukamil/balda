@@ -5294,14 +5294,11 @@ function define_platform_and_language() {
 		return;
 	}
 
-
 	if (s.includes('vk.com')||s.includes('vk.ru')||s.includes('vk_app_id')) {
 		game_platform = 'VK';	
 		return;
 	}
-		
-		
-		
+						
 	if (s.includes('app-id=176226')) {
 		
 		game_platform = 'YANDEX';
@@ -5737,8 +5734,9 @@ async function init_game_env() {
 	for (let i = 0 ; i < 33 ; i ++)
 		objects.keys[i].letter.text = rus_let[i];
 	
+	//ready api yandex
 	if (game_platform==='YANDEX')
-		window.ysdk.features.LoadingAPI?.ready()
+		window.ysdk.features.LoadingAPI.ready()
 		
 	console.clear()
 
